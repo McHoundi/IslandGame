@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void spawnObject();
+    //void spawnObject();
 private:
     Ui::MainWindow *ui;
     QGraphicsView* view_;

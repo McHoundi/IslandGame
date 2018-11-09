@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QGraphicsItem>
 #include <QPainter>
-
+#include <QPointF>
 
 class Hexagon : public QGraphicsItem
 {

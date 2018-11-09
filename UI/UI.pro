@@ -14,13 +14,15 @@ CONFIG += c++14
 
 
 SOURCES += main.cc \
-    mainwindow.cpp
+    mainwindow.cpp \
+    piirtotesti.cpp
 
 HEADERS  += \
     gameboard.hh \
     player.hh \
     gamestate.hh \
-    mainwindow.hh
+    mainwindow.hh \
+    piirtotesti.hh
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
 DEPENDPATH += $$PWD/../GameLogic/Engine

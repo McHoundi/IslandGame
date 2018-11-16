@@ -1,5 +1,7 @@
 #include "hexagon.hh"
 #include <iostream>
+#include <math.h>
+
 Hexagon::Hexagon()
 {
 
@@ -14,17 +16,16 @@ QRectF Hexagon::boundingRect() const
                           20 + penWidth, 20 + penWidth);
 }
 
+// HEX_SIZE on matka keskipisteestä kulmaan.
+const int HEX_SIZE = 50;
+
+const int HEX_WIDTH = 2 * HEX_SIZE;
+
+const int HEX_HEIGHT = sqrt(3) * HEX_SIZE;
+
 // Polygon vertex calculator, radius 100
 // HUOM! y axis on positiivinen alaspäin.
 
-static const QPointF points[6] = {
-    QPointF(50/2,-87/2),
-    QPointF(-50/2,-87/2),
-    QPointF(-100/2,0),
-    QPointF(-50/2,87/2),
-    QPointF(50/2,87/2),
-    QPointF(100/2,0)
-};
 
 //2nd layer keskipistehexagon, kulma 30 astetta
 QPointF layer2hex[6] = {
@@ -107,28 +108,28 @@ void Hexagon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     for (QPointF midpoint : keskipisteet2){
 
         QPointF point1;
-        point1.setX(midpoint.x()+50/2);
-        point1.setY(midpoint.y()-87/2);
+        point1.setX( midpoint.x() + HEX_WIDTH / 4 );
+        point1.setY( midpoint.y() - HEX_HEIGHT / 2 );
 
         QPointF point2;
-        point2.setX(midpoint.x()-50/2);
-        point2.setY(midpoint.y()-87/2);
+        point2.setX( midpoint.x() - HEX_WIDTH / 4 );
+        point2.setY( midpoint.y() - HEX_HEIGHT / 2);
 
         QPointF point3;
-        point3.setX(midpoint.x()-100/2);
-        point3.setY(midpoint.y());
+        point3.setX( midpoint.x() - HEX_WIDTH / 2 );
+        point3.setY( midpoint.y() );
 
         QPointF point4;
-        point4.setX(midpoint.x()-50/2);
-        point4.setY(midpoint.y()+87/2);
+        point4.setX( midpoint.x() - HEX_WIDTH / 4 );
+        point4.setY( midpoint.y() + HEX_HEIGHT / 2 );
 
         QPointF point5;
-        point5.setX(midpoint.x()+50/2);
-        point5.setY(midpoint.y()+87/2);
+        point5.setX( midpoint.x() + HEX_WIDTH / 4 );
+        point5.setY( midpoint.y() + HEX_HEIGHT / 2 );
 
         QPointF point6;
-        point6.setX(midpoint.x()+100/2);
-        point6.setY(midpoint.y());
+        point6.setX( midpoint.x() + HEX_WIDTH / 2 );
+        point6.setY( midpoint.y() );
 
         QPointF temphex[6] = {
             point1,

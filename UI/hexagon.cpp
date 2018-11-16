@@ -17,6 +17,7 @@ QRectF Hexagon::boundingRect() const
 }
 
 // HEX_SIZE on matka keskipisteestä kulmaan.
+
 const int HEX_SIZE = 50;
 
 const int HEX_WIDTH = 2 * HEX_SIZE;
@@ -26,15 +27,19 @@ const int HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 // Polygon vertex calculator, radius 100
 // HUOM! y axis on positiivinen alaspäin.
 
+//**************************************//
+//          KESKIPISTE-LAYERIT          //
+//**************************************//
+
 
 //2nd layer keskipistehexagon, kulma 30 astetta
 QPointF layer2hex[6] = {
-    QPointF(75,-43),
-    QPointF(0,-87),
-    QPointF(-75,-44),
-    QPointF(-75,43),
-    QPointF(0,87),
-    QPointF(75,44)
+    QPointF(HEX_WIDTH*3/4, -HEX_HEIGHT/2),
+    QPointF(0, -HEX_HEIGHT),
+    QPointF(-HEX_WIDTH*3/4, -HEX_HEIGHT/2),
+    QPointF(-HEX_WIDTH*3/4, HEX_HEIGHT/2),
+    QPointF(0, HEX_HEIGHT),
+    QPointF(HEX_WIDTH*3/4, HEX_HEIGHT/2)
 };
 //3rd layer keskipistehexagon, kulma 0 astetta
 QPointF layer3hexA[6] = {
@@ -56,31 +61,38 @@ QPointF layer3hexB[6] = {
     QPointF(152,88)
 };
 
-//Hexagonien keskipisteet, tässä 7 hexagonin mappi
+//**************************************//
+//     KESKIPISTEET KOKONAISUUTENA      //
+//**************************************//
+
+
+// 7 Hexin midpoint array
 
 static const QPointF keskipisteet[7] = {
+    // (Sama kuin layer2hex, mutta origo lisätty.
     QPointF(0,0),
-    QPointF(75,-43),
-    QPointF(0,-87),
-    QPointF(-75,-44),
-    QPointF(-75,43),
-    QPointF(0,87),
-    QPointF(75,44)
+    QPointF(HEX_WIDTH*3/4, -HEX_HEIGHT/2),
+    QPointF(0, -HEX_HEIGHT),
+    QPointF(-HEX_WIDTH*3/4, -HEX_HEIGHT/2),
+    QPointF(-HEX_WIDTH*3/4, HEX_HEIGHT/2),
+    QPointF(0, HEX_HEIGHT),
+    QPointF(HEX_WIDTH*3/4, HEX_HEIGHT/2)
 };
 
-//19 hexagonin mappi
+// 19 hexin midpoint array
+
 static const QPointF keskipisteet2[19] = {
     QPointF(0,0),
 
-    //2nd layer
-    QPointF(75,-43),
-    QPointF(0,-87),
-    QPointF(-75,-44),
-    QPointF(-75,43),
-    QPointF(0,87),
-    QPointF(75,44),
+    //2nd layer Hex
+    QPointF(HEX_WIDTH*3/4, -HEX_HEIGHT/2),
+    QPointF(0, -HEX_HEIGHT),
+    QPointF(-HEX_WIDTH*3/4, -HEX_HEIGHT/2),
+    QPointF(-HEX_WIDTH*3/4, HEX_HEIGHT/2),
+    QPointF(0, HEX_HEIGHT),
+    QPointF(HEX_WIDTH*3/4, HEX_HEIGHT/2),
 
-    //3rd layer A
+    //3rd layer Hex A
     QPointF(150,0),
     QPointF(75,-130),
     QPointF(-75,-130),
@@ -88,7 +100,7 @@ static const QPointF keskipisteet2[19] = {
     QPointF(-75,130),
     QPointF(75,130),
 
-    //3rd layer B
+    //3rd layer Hex B
     QPointF(152,-87),
     QPointF(0,-175),
     QPointF(-152,-88),
@@ -104,7 +116,7 @@ static const QPointF keskipisteet2[19] = {
 void Hexagon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
-    //asetetaan midpointin perusteella hexagonin pisteet, ja piirretään hexagoni midpointin ympärille.
+    //Asetetaan midpointin perusteella hexagonin pisteet, ja piirretään hexagoni midpointin ympärille.
     for (QPointF midpoint : keskipisteet2){
 
         QPointF point1;
@@ -131,7 +143,7 @@ void Hexagon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         point6.setX( midpoint.x() + HEX_WIDTH / 2 );
         point6.setY( midpoint.y() );
 
-        QPointF temphex[6] = {
+        QPointF TempHex[6] = {
             point1,
             point2,
             point3,
@@ -140,9 +152,20 @@ void Hexagon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
             point6
         };
 
+        painter->drawPolygon(TempHex, 6);
 
 
-        painter->drawPolygon(temphex, 6);
+        /*
+        std::cout << HEX_WIDTH << std::endl;
+        int counter = 1;
+        for (QPointF point : layer2hex ) {
+            std::cout << point.x() << " <-- X " << point.y() << " <-- Y --- Counter --> " << counter << std::endl;
+            counter++;
+        }
+        */
+
+
+
         /*
         painter->drawPolygon(layer2hex, 6);
         painter->drawPolygon(layer3hexA, 6);

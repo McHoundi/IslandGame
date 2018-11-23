@@ -20,10 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QGraphicsScene* scene = new QGraphicsScene;
-    QGraphicsItem* item = new QGraphicsSimpleTextItem("Käytännössä \n koordinaattijärjestelmiä on kolme eli jokaiselle \n osalle omansa. Käytössä on siten: elementtikoordinaatit, maisemakoordinaatit, näkymäkoordinaatit. Näkymäkoordinaatit ovat QGraphicsView:n koordinaatteja. Maisemakoordinaatit ovat maiseman sisällä olevien elementtien paikan määrittäviä koordinaatteja. Jokaiselle elementillä on myös omat koordinaattinsa, jossa 0,0 sijaitsee keskellä elementtiä. Elementtikoordinaateilla on merkitystä omia elementtejä luotaessa, sillä esimerkiksi hiiren klikkaustapahtumien sijainti määritellään niiden avulla. Myös elementin ulkoreunan määräävä suorakaide ja muoto määritellään elementtikoordinaateilla.");
 
-    kartta uus_kartta;
-    uus_kartta.build_map(scene);
+    kartta meidan_kartta;
+    meidan_kartta.build_map(scene);
 
     //Hexagon* hexagoni = new Hexagon;
     //scene->addItem(hexagoni);

@@ -1,18 +1,16 @@
-#include "kartta.hh"
-#include <QDebug>
-#include <QLayout>
-#include <QWidget>
-#include <QGraphicsScene>
-#include <QGraphicsSimpleTextItem>
-#include <QGraphicsView>
+#include "gameboard.hh"
 
-kartta::kartta()
+
+GameBoard::GameBoard()
 {
     determine_midpoints();
-
 }
 
-void kartta::determine_midpoints()
+GameBoard::~GameBoard()
+{
+}
+
+void GameBoard::determine_midpoints()
 {
     //Lisätään aluksi origo, eli ensimmäinen layeri
     QPointF midpoint_marker(0,0);
@@ -65,7 +63,7 @@ void kartta::determine_midpoints()
     }
 }
 
-QPointF kartta::move_midpoint(QPointF midpoint_marker, std::string direction)
+QPointF GameBoard::move_midpoint(QPointF midpoint_marker, std::string direction)
 {
     //Directionit merkataan ilmansuunnilla: North, South, Northwest, jne.
     if (direction == "N") {
@@ -89,15 +87,12 @@ QPointF kartta::move_midpoint(QPointF midpoint_marker, std::string direction)
     return midpoint_marker;
 }
 
-void kartta::build_map(QGraphicsScene* skene)
+void GameBoard::build_map(QGraphicsScene *skene)
 {
-
     for ( QPointF keskipiste : midpoints_ ) {
         hexagon* uus_hexagon = new hexagon;
 
         uus_hexagon->set_coords(keskipiste);
         skene->addItem(uus_hexagon);
-
     }
 }
-

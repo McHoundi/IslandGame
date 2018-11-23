@@ -17,7 +17,8 @@ SOURCES += main.cc \
     mainwindow.cpp \
     kartta.cpp \
     hexagon2.cpp \
-    hexagon.cpp
+    hexagon.cpp \
+    gameboard.cpp
 
 HEADERS  += \
     gameboard.hh \

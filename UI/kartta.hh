@@ -22,7 +22,7 @@ class kartta
 public:
     kartta(); 
 
-    //Määrittää karttapalojen keskipisteiden koordinaatit, ja tallentaa vektoriin midpoints_
+    //Määrittää karttapalojen keskipisteiden koordinaatit, ja tallentaa ne vektoriin midpoints_
     void determine_midpoints();
 
     //determine midpoints()-funktion käyttämä funktio, liikuttelee keskipistettä tarpeen mukaan

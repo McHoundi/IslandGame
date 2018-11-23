@@ -1,8 +1,7 @@
 #ifndef HEXAGON_HH
 #define HEXAGON_HH
 
-
-
+#include "hex.hh"
 #include <QObject>
 #include <QGraphicsItem>
 #include <QPainter>
@@ -17,7 +16,7 @@
 #include "transport.hh"
 #include "pawn.hh"
 
-class hexagon : public QGraphicsItem
+class hexagon : public QGraphicsItem, public Common::Hex
 {
 public:
     hexagon();

@@ -15,7 +15,7 @@ public:
     Hexagon();
     struct TempStruct
     {
-        QPointF keskipiste_array[100];
+        QPointF keskipiste_array[1000];
     };
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,

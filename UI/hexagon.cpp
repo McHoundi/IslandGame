@@ -18,11 +18,11 @@ QRectF Hexagon::boundingRect() const
 
 // HEX_SIZE on matka keskipisteestä kulmaan.
 
-const int HEX_SIZE = 30;
+const double HEX_SIZE = 20;
 
-const int HEX_WIDTH = 2 * HEX_SIZE;
+const double HEX_WIDTH = 2 * HEX_SIZE;
 
-const int HEX_HEIGHT = sqrt(3) * HEX_SIZE;
+const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 
 
 QPointF Hexagon::move_midpoint(QPointF midpoint_marker, std::string direction) {
@@ -33,16 +33,16 @@ QPointF Hexagon::move_midpoint(QPointF midpoint_marker, std::string direction) {
     } else if (direction == "S") {
         midpoint_marker.setY( midpoint_marker.y() + HEX_HEIGHT );
     } else if (direction == "SW") {
-        midpoint_marker.setX( midpoint_marker.x() - HEX_WIDTH * 3/4 );
+        midpoint_marker.setX( midpoint_marker.x() - HEX_WIDTH * .75 );
         midpoint_marker.setY( midpoint_marker.y() + HEX_HEIGHT / 2) ;
     } else if (direction == "SE") {
-        midpoint_marker.setX( midpoint_marker.x() + HEX_WIDTH * 3/4 );
+        midpoint_marker.setX( midpoint_marker.x() + HEX_WIDTH * .75 );
         midpoint_marker.setY( midpoint_marker.y() + HEX_HEIGHT / 2) ;
     } else if (direction == "NW") {
-        midpoint_marker.setX( midpoint_marker.x() - HEX_WIDTH * 3/4 );
+        midpoint_marker.setX( midpoint_marker.x() - HEX_WIDTH * .75 );
         midpoint_marker.setY( midpoint_marker.y() - HEX_HEIGHT / 2) ;
     } else if (direction == "NE") {
-        midpoint_marker.setX( midpoint_marker.x() + HEX_WIDTH * 3/4 );
+        midpoint_marker.setX( midpoint_marker.x() + HEX_WIDTH * .75 );
         midpoint_marker.setY( midpoint_marker.y() - HEX_HEIGHT / 2) ;
     }
     return midpoint_marker;
@@ -131,7 +131,7 @@ void Hexagon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     // START OF "TESTAUSTA" //
 
-    int layers = 2;
+    int layers = 11;
     //std::cout << "Set number of layers: ";
     //std::cin >> layers;
 

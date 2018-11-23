@@ -15,6 +15,8 @@ CONFIG += c++14
 
 SOURCES += main.cc \
     mainwindow.cpp \
+    kartta.cpp \
+    hexagon2.cpp \
     hexagon.cpp
 
 HEADERS  += \
@@ -22,6 +24,8 @@ HEADERS  += \
     player.hh \
     gamestate.hh \
     mainwindow.hh \
+    kartta.hh \
+    hexagon2.hh \
     hexagon.hh
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine

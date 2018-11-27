@@ -1,7 +1,7 @@
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
 
-
+#include "gameboard.hh"
 #include <QDebug>
 #include <QLayout>
 #include <QWidget>
@@ -21,8 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QGraphicsScene* scene = new QGraphicsScene;
 
-    kartta meidan_kartta;
-    meidan_kartta.build_map(scene);
+    GameBoard* meidan_kartta = new GameBoard;
+
+
+    meidan_kartta->build_map(scene);
 
     //Hexagon* hexagoni = new Hexagon;
     //scene->addItem(hexagoni);

@@ -4,6 +4,7 @@
 #include <map>
 #include <unordered_map>
 
+#include "new_hex.hh"
 #include "igameboard.hh"
 #include "hexagon.hh"
 #include "vector"
@@ -20,7 +21,7 @@ const double HEX_SIZE = 20;
 const double HEX_WIDTH = 2 * HEX_SIZE;
 const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 
-class GameBoard : public Common::IGameBoard
+class GameBoard //: public Common::IGameBoard
 {
 public:
     GameBoard();
@@ -30,6 +31,8 @@ public:
 
     //determine midpoints()-funktion käyttämä funktio, liikuttelee keskipistettä tarpeen mukaan
     QPointF move_midpoint(QPointF midpoint_marker, std::string direction);
+
+    //void addHex(hexagon newHex);
 
     //Alustaa ja piirtää kartan
     void build_map(QGraphicsScene* skene);

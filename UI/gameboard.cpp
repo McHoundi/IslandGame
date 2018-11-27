@@ -1,6 +1,6 @@
 #include "gameboard.hh"
 
-
+#include "iostream"
 GameBoard::GameBoard()
 {
     determine_midpoints();
@@ -13,13 +13,17 @@ GameBoard::~GameBoard()
 void GameBoard::determine_midpoints()
 {
     //Lisätään aluksi origo, eli ensimmäinen layeri
+
     QPointF midpoint_marker(0,0);
+    Common::CubeCoordinate cube_coords;
+    Common::CubeCoordinate(0, 0, 0) = cube_coords;
+
     midpoints_.push_back(midpoint_marker);
     int layer_counter = 1;
 
     while ( layer_counter < layer_count_ ) {
 
-        // Siirrytään loopin alussa seuraavaan layeriin.
+        // Siirrytään loopin alussa seuraavaan layeriin, eli ylöspäin, ja aloitetaan piirtäminen siitä.
         layer_counter++;
         midpoint_marker = move_midpoint(midpoint_marker, "N");
 
@@ -58,7 +62,11 @@ void GameBoard::determine_midpoints()
 
         for ( i = side_hops; i != 0; i-- ) {
             midpoint_marker = move_midpoint(midpoint_marker, "NW");
-            midpoints_.push_back(midpoint_marker);
+            //Tarkistetaan, että olemmeko yhden kuvion päässä layerin ylimmästä hexagonista, josta aloitettiin piirtäminen
+            if ( i != 1 ) {
+                midpoints_.push_back(midpoint_marker);
+            }
+
         }
     }
 }
@@ -87,12 +95,21 @@ QPointF GameBoard::move_midpoint(QPointF midpoint_marker, std::string direction)
     return midpoint_marker;
 }
 
+
+
 void GameBoard::build_map(QGraphicsScene *skene)
 {
     for ( QPointF keskipiste : midpoints_ ) {
-        hexagon* uus_hexagon = new hexagon;
+        new_hex* uus_hexagon = new new_hex;
+
 
         uus_hexagon->set_coords(keskipiste);
+
+        QBrush redbrush;
+        redbrush.setColor(Qt::red);
+        redbrush.setStyle(Qt::SolidPattern);
+        uus_hexagon->setBrush(redbrush);
+
         skene->addItem(uus_hexagon);
     }
 }

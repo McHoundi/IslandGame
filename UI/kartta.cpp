@@ -5,6 +5,11 @@
 #include <QGraphicsScene>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsView>
+#include <iostream>
+
+const double HEX_SIZE = 20;
+const double HEX_WIDTH = 2 * HEX_SIZE;
+const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 
 kartta::kartta()
 {
@@ -21,7 +26,7 @@ void kartta::determine_midpoints()
 
     while ( layer_counter < layer_count_ ) {
 
-        // Siirrytään loopin alussa seuraavaan layeriin.
+        // Siirrytään loopin alussa seuraavaan layeriin, eli ylöspäin, ja aloitetaan piirtäminen siitä.
         layer_counter++;
         midpoint_marker = move_midpoint(midpoint_marker, "N");
 
@@ -60,7 +65,11 @@ void kartta::determine_midpoints()
 
         for ( i = side_hops; i != 0; i-- ) {
             midpoint_marker = move_midpoint(midpoint_marker, "NW");
-            midpoints_.push_back(midpoint_marker);
+            //Tarkistetaan, että olemmeko yhden kuvion päässä layerin ylimmästä hexagonista, josta aloitettiin piirtäminen
+            if ( i != 1 ) {
+                midpoints_.push_back(midpoint_marker);
+            }
+
         }
     }
 }
@@ -91,11 +100,17 @@ QPointF kartta::move_midpoint(QPointF midpoint_marker, std::string direction)
 
 void kartta::build_map(QGraphicsScene* skene)
 {
-
+    int debugger = 0;
     for ( QPointF keskipiste : midpoints_ ) {
-        hexagon* uus_hexagon = new hexagon;
+        std::cout << "Hexagon: " << debugger << "coords: " << keskipiste.x() << "," << keskipiste.y() << std::endl;
+        debugger++;
+
+
+        hexagon *uus_hexagon = new hexagon;
+        uus_hexagon->setFlag(QGraphicsItem::ItemIsMovable);
 
         uus_hexagon->set_coords(keskipiste);
+
         skene->addItem(uus_hexagon);
 
     }

@@ -1,6 +1,8 @@
-#ifndef HEXAGON_HH
-#define HEXAGON_HH
+#ifndef NEW_HEX_HH
+#define NEW_HEX_HH
 
+
+//HEXAGONIN TESTAUS
 #include "hex.hh"
 #include <QObject>
 #include <QGraphicsItem>
@@ -17,14 +19,12 @@
 #include "transport.hh"
 #include "pawn.hh"
 
-class hexagon : public QGraphicsItem, public Common::Hex
+class new_hex : public QGraphicsPolygonItem, public Common::Hex
 {
 public:
-    hexagon();
-    QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget) override; // Piirtää yksittäisen hexagonin kartalle
+    new_hex();
     void set_coords(QPointF coordinates);
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -34,13 +34,11 @@ private:
     QPointF xycoords_;        // Keskipisteen koordinaatit (muodossa x,y)
     std::string type_;      // Karttapalan tyyppi
     std::string hidden_;    // Karttapalan "pohjassa" oleva toimija
-    std::vector<Common::Actor> actors_;         // Karttapalassa olevat NPC:t
-    std::vector<Common::Transport> transports_; // Karttapalassa olevat transport toimijat
-    std::vector<Common::Pawn> pawns_;           // Karttapalassa olevat pelinappulat
 
     const double HEX_SIZE = 20;
     const double HEX_WIDTH = 2 * HEX_SIZE;
     const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
+
 };
 
 

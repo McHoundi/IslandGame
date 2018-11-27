@@ -6,6 +6,8 @@
 #include <QPointF>
 #include <QObject>
 #include <QGraphicsItem>
+#include <QGraphicsPolygonItem>
+#include <QGraphicsScene>
 #include <QPainter>
 #include <QPointF>
 #include <QBrush>
@@ -13,9 +15,7 @@
 #include "math.h"
 
 
-const double HEX_SIZE = 20;
-const double HEX_WIDTH = 2 * HEX_SIZE;
-const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
+
 
 class kartta
 {
@@ -33,7 +33,7 @@ public:
 private:
     std::vector<QPointF> midpoints_;    //Karttapalojen keskipisteet
     //std::vector<hexagon> hexagons_;     //Karttapalat
-    int layer_count_ = 11;              //Hexagoni-layerien määrä kartassa.
+    int layer_count_ = 3;              //Hexagoni-layerien määrä kartassa.
 
 
 };

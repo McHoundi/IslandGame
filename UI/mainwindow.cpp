@@ -22,8 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene* scene = new QGraphicsScene;
 
     GameBoard* meidan_kartta = new GameBoard;
-
-
+    meidan_kartta->determine_midpoints();
+    new_hex* uus_hex = new new_hex;
+    //scene->addItem(uus_hex);
     meidan_kartta->build_map(scene);
 
     //Hexagon* hexagoni = new Hexagon;

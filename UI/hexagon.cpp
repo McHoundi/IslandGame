@@ -79,7 +79,6 @@ void hexagon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene *current_scene = this->scene();
     current_scene->update();
 
-    std::cout << "Custom item clicked, coords: " << xycoords_.x() << ", " << xycoords_.y() << std::endl;
 
 
 }

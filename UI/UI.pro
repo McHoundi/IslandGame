@@ -19,7 +19,8 @@ SOURCES += main.cc \
     hexagon2.cpp \
     hexagon.cpp \
     gameboard.cpp \
-    new_hex.cpp
+    new_hex.cpp \
+    hex_storage.cpp
 
 HEADERS  += \
     gameboard.hh \
@@ -29,7 +30,8 @@ HEADERS  += \
     kartta.hh \
     hexagon2.hh \
     hexagon.hh \
-    new_hex.hh
+    new_hex.hh \
+    hex_storage.hh
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
 DEPENDPATH += $$PWD/../GameLogic/Engine

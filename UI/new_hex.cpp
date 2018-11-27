@@ -7,14 +7,6 @@
 new_hex::new_hex()
 {
 
-
-
-
-
-
-
-
-
 }
 
 
@@ -67,8 +59,21 @@ void new_hex::mousePressEvent(QGraphicsSceneMouseEvent *event)
     this->setBrush(greenbrush);
     //QGraphicsScene *current_scene = this->scene();
     //current_scene->update();
+    Common::CubeCoordinate cube_coords = this->getCoordinates();
 
-    std::cout << "Custom item clicked, coords: " << xycoords_.x() << ", " << xycoords_.y() << std::endl;
 
+
+    std::cout << "Custom item clicked, coords: " << xycoords_.x() << ", "
+              << xycoords_.y() << "cube : " << cube_coords.x << ", " << cube_coords.y
+              << ", " << cube_coords.z << std::endl;
 
 }
+
+/*
+
+An interface is a programming structure/syntax that allows the computer to enforce certain properties on an object (class). For example, say we have a car class and a scooter class and a truck class. Each of these three classes should have a start_engine() action. How the "engine is started" for each vehicle is left to each particular class, but the fact that they must have a start_engine action is the domain of the interface.
+
+
+shared_ptr<Common::Hex> -> piirrä tän avulla
+ *
+ * /

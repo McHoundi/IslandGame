@@ -1,9 +1,4 @@
-#include "gameboard.hh"
-#include "gamestate.hh"
-#include "player.hh"
 #include "mainwindow.hh"
-#include "iostream"
-
 
 #include <memory>
 #include <QApplication>

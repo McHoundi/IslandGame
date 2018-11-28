@@ -1,30 +1,27 @@
 #include "gameboard.hh"
 #include "iostream"
+
+namespace Student {
+
 GameBoard::GameBoard()
 {
+    determine_midpoints();
+
+    //seuraava for-loop alustaa hexPointers-mapin, johon asetetaan addHexin yhteydessä pointereita.
+    for ( auto const& it : midpoints_ ) {
+        hexPointers_.insert(std::pair<Common::CubeCoordinate, std::shared_ptr<Common::Hex>>(it.first, nullptr) );
+    }
 
 }
 
 GameBoard::~GameBoard()
 {
-}
-/*
-virtual void GameBoard::removeTransport(int id) {
 
 }
 
-virtual int GameBoard::checkTileOccupation(Common::CubeCoordinate tileCoord) const{
-
-}
-*/
 
 // Luo uuden hexagon olion, laittaa sen kartan sisällä olevaan listaan.
-void GameBoard::create_hex(QPointF midpoint, Common::CubeCoordinate cubepoint) {
-    new_hex* uus_hex = new new_hex;
-    uus_hex->set_coords(midpoint);
-    uus_hex->setCoordinates(cubepoint);
-    hexes_.push_back(uus_hex);
-}
+
 
 void GameBoard::determine_midpoints()
 {
@@ -34,7 +31,7 @@ void GameBoard::determine_midpoints()
     Common::CubeCoordinate cube_coords;
     Common::CubeCoordinate(0, 0, 0) = cube_coords;
 
-    create_hex(midpoint_marker, cube_coords);
+    midpoints_[cube_coords] = midpoint_marker;
 
 
     int layer_counter = 1;
@@ -47,8 +44,7 @@ void GameBoard::determine_midpoints()
         midpoint_marker = move_midpoint(midpoint_marker, "N");
         cube_coords.y += 1;
         cube_coords.z -= 1;
-
-        create_hex(midpoint_marker, cube_coords);
+        midpoints_[cube_coords] = midpoint_marker;
 
         // side_hops on hyppyjen (tai askelten) määrä, mitä tarvitaan päästäksemme jonkin layerin "sivun" päästä päähän.
         // Koska layerin numero on sama kuin sivujen määrä, side_hops on yksi vähemmän kuin layerin numero.
@@ -60,36 +56,35 @@ void GameBoard::determine_midpoints()
             midpoint_marker = move_midpoint(midpoint_marker, "SW");
             cube_coords.x -= 1;
             cube_coords.z += 1;
-            create_hex(midpoint_marker, cube_coords);
+            midpoints_[cube_coords] = midpoint_marker;
         }
 
         for ( i = side_hops; i != 0; i-- ) {
             midpoint_marker = move_midpoint(midpoint_marker, "S");
             cube_coords.y -= 1;
             cube_coords.z += 1;
-            create_hex(midpoint_marker, cube_coords);
+            midpoints_[cube_coords] = midpoint_marker;
         }
 
         for ( i = side_hops; i != 0; i-- ) {
             midpoint_marker = move_midpoint(midpoint_marker, "SE");
-            create_hex(midpoint_marker, cube_coords);
             cube_coords.x += 1;
             cube_coords.y -= 1;
+            midpoints_[cube_coords] = midpoint_marker;
         }
 
         for ( i = side_hops; i != 0; i-- ) {
             midpoint_marker = move_midpoint(midpoint_marker, "NE");
-            create_hex(midpoint_marker, cube_coords);
             cube_coords.x += 1;
             cube_coords.z -= 1;
-
+            midpoints_[cube_coords] = midpoint_marker;
         }
 
         for ( i = side_hops; i != 0; i-- ) {
             midpoint_marker = move_midpoint(midpoint_marker, "N");
-            create_hex(midpoint_marker, cube_coords);
             cube_coords.y += 1;
             cube_coords.z -= 1;
+            midpoints_[cube_coords] = midpoint_marker;
         }
 
         for ( i = side_hops; i != 0; i-- ) {
@@ -98,13 +93,15 @@ void GameBoard::determine_midpoints()
             cube_coords.x -= 1;
             //Tarkistetaan, että olemmeko yhden kuvion päässä layerin ylimmästä hexagonista, josta aloitettiin piirtäminen
             if ( i != 1 ) {
-
-                create_hex(midpoint_marker, cube_coords);
-
+                midpoints_[cube_coords] = midpoint_marker;
             }
-
         }
     }
+
+
+
+
+
 }
 
 QPointF GameBoard::move_midpoint(QPointF midpoint_marker, std::string direction)
@@ -131,6 +128,7 @@ QPointF GameBoard::move_midpoint(QPointF midpoint_marker, std::string direction)
     return midpoint_marker;
 }
 
+/*
 void GameBoard::addHex(new_hex* newHex) {
     QBrush redbrush;
     redbrush.setColor(Qt::red);
@@ -138,6 +136,7 @@ void GameBoard::addHex(new_hex* newHex) {
     newHex->setBrush(redbrush);
     newHex->scene()->addItem(newHex);
 }
+*/
 
 void GameBoard::build_map(QGraphicsScene *skene)
 {
@@ -158,9 +157,103 @@ void GameBoard::build_map(QGraphicsScene *skene)
 
     }
     */
+}
 
-
-    for ( new_hex* hexi : hexes_ ) {
-        addHex(hexi);
+QPointF GameBoard::cube_to_square(Common::CubeCoordinate cubecoords)
+{
+    for (auto const& it : midpoints_ ) {
+        if ( it.first == cubecoords ){
+            return it.second;
+        }
     }
+}
+
+std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex> > GameBoard::get_hexPointers()
+{
+    return hexPointers_;
+}
+
+
+
+
+void GameBoard::removeTransport(int id)
+{
+
+}
+
+void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
+{
+
+}
+
+void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Common::CubeCoordinate coord)
+{
+
+}
+
+void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
+{
+
+    Common::CubeCoordinate cubecoords = newHex->getCoordinates();
+    std::cout << newHex->getPieceType() << std::endl;
+    hexPointers_[cubecoords] = newHex;
+
+
+}
+
+void GameBoard::removeActor(int actorId)
+{
+
+}
+
+void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
+{
+
+}
+
+void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoordinate actorCoord)
+{
+
+}
+
+void GameBoard::removePawn(int pawnId)
+{
+
+}
+
+void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
+{
+
+}
+
+void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
+{
+
+}
+
+void GameBoard::addPawn(int playerId, int pawnId)
+{
+
+}
+
+std::shared_ptr<Common::Hex> GameBoard::getHex(Common::CubeCoordinate hexCoord) const
+{
+
+    if ( hexPointers_.find(hexCoord) == hexPointers_.end()) {
+        return nullptr;
+    }
+    return hexPointers_.at(hexCoord);
+
+}
+
+bool GameBoard::isWaterTile(Common::CubeCoordinate tileCoord) const
+{
+
+}
+
+int GameBoard::checkTileOccupation(Common::CubeCoordinate tileCoord) const
+{
+
+}
+
 }

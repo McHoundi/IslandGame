@@ -3,6 +3,7 @@
 #include "iostream"
 #include "QGraphicsScene"
 #include "QVector"
+#include "memory"
 
 new_hex::new_hex()
 {
@@ -12,6 +13,8 @@ new_hex::new_hex()
 
 void new_hex::set_coords(QPointF coordinates)
 {
+    std::cout << "COORDS: " << std::endl;
+    std::cout << coordinates.x() << "," << coordinates.y() << std::endl;
     xycoords_ = coordinates;
 
     QPointF point1;
@@ -47,9 +50,26 @@ void new_hex::set_coords(QPointF coordinates)
     vektori.append(point6);
 
     QPolygonF hexi(vektori);
-    this->setPolygon(hexi);
+    setPolygon(hexi);
 
 }
+
+void new_hex::set_hexptr_coords(Common::CubeCoordinate cubecoords)
+{
+    hexptr.get()->setCoordinates(cubecoords);
+}
+
+std::shared_ptr<Common::Hex> new_hex::get_hexptr()
+{
+    return hexptr;
+}
+
+void new_hex::set_hexptr(std::shared_ptr<Common::Hex> kuusikulmio_ptr)
+{
+    hexptr = kuusikulmio_ptr;
+}
+
+
 
 void new_hex::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -57,8 +77,8 @@ void new_hex::mousePressEvent(QGraphicsSceneMouseEvent *event)
     greenbrush.setColor(Qt::green);
     greenbrush.setStyle(Qt::SolidPattern);
     this->setBrush(greenbrush);
-    //QGraphicsScene *current_scene = this->scene();
-    //current_scene->update();
+
+    /*
     Common::CubeCoordinate cube_coords = this->getCoordinates();
 
 
@@ -66,14 +86,17 @@ void new_hex::mousePressEvent(QGraphicsSceneMouseEvent *event)
     std::cout << "Custom item clicked, coords: " << xycoords_.x() << ", "
               << xycoords_.y() << "cube : " << cube_coords.x << ", " << cube_coords.y
               << ", " << cube_coords.z << std::endl;
-
+    */
 }
+
+
+
 
 /*
 
-An interface is a programming structure/syntax that allows the computer to enforce certain properties on an object (class). For example, say we have a car class and a scooter class and a truck class. Each of these three classes should have a start_engine() action. How the "engine is started" for each vehicle is left to each particular class, but the fact that they must have a start_engine action is the domain of the interface.
 
 
 shared_ptr<Common::Hex> -> piirrä tän avulla
  *
- * /
+ *
+*/

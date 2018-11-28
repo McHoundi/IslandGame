@@ -1,7 +1,11 @@
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
 
+#include "player.hh"
+#include "gameengine.hh"
 #include "gameboard.hh"
+#include "gamestate.hh"
+#include "vector"
 #include <QDebug>
 #include <QLayout>
 #include <QWidget>
@@ -9,9 +13,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsView>
-#include "hexagon2.hh"
-#include "hexagon.hh"
-#include "kartta.hh"
+#include "iostream"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,22 +24,66 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QGraphicsScene* scene = new QGraphicsScene;
 
-    GameBoard* meidan_kartta = new GameBoard;
-    meidan_kartta->determine_midpoints();
-    new_hex* uus_hex = new new_hex;
-    //scene->addItem(uus_hex);
-    meidan_kartta->build_map(scene);
 
-    //Hexagon* hexagoni = new Hexagon;
-    //scene->addItem(hexagoni);
+    std::shared_ptr<Student::GameBoard> boardPtr(new Student::GameBoard);
+    std::shared_ptr<Common::IGameState> statePtr;
+    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat;
+
+
+    Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
+    draw_map(boardPtr, scene);
+
 
     ui->graphicsView->setScene(scene);
 
-    /*
-    QGraphicsView* view_ = new QGraphicsView(this);
-    view_->setScene(scene);
-    scene->setSceneRect(0, 0, 200, 200);
-    */
+
+}
+
+void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphicsScene* scene)
+{
+
+    std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPtrs;
+    hexPtrs = boardPtr->get_hexPointers();
+
+    std::string type;
+    QBrush brush;
+    Common::CubeCoordinate cubecoords;
+    std::shared_ptr<Common::Hex> hex_pointer;
+
+    for (auto const& it : hexPtrs ) {
+            hex_pointer = it.second;
+            cubecoords = it.first;
+            type = hex_pointer->getPieceType();
+            if (type == "Peak") {
+                brush.setColor(Qt::darkGray);
+            } else if (type == "Mountain") {
+                brush.setColor(Qt::lightGray);
+            } else if (type == "Forest") {
+                brush.setColor(Qt::green);
+            } else if (type == "Beach") {
+                brush.setColor(Qt::yellow);
+            } else if (type == "Coral") {
+                brush.setColor(Qt::magenta);
+            } else if (type == "Water") {
+                brush.setColor(Qt::cyan);
+            } else {
+                std::cout << "Unrecognized type!" << std::endl;
+            }
+
+
+
+            new_hex* HexItem = new new_hex;
+            HexItem->set_hexptr(hex_pointer);
+            HexItem->set_coords(boardPtr->cube_to_square(cubecoords));
+
+            brush.setStyle(Qt::SolidPattern);
+            HexItem->setBrush(brush);
+            scene->addItem(HexItem);
+
+        }
+
+
+
 }
 
 MainWindow::~MainWindow()

@@ -14,7 +14,7 @@
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsView>
 #include "iostream"
-
+#include "QDebug"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene* scene = new QGraphicsScene;
 
 
-    std::shared_ptr<Student::GameBoard> boardPtr(new Student::GameBoard);
+    std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
     std::shared_ptr<Common::IGameState> statePtr;
     std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat;
 
@@ -49,8 +49,12 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
     QBrush brush;
     Common::CubeCoordinate cubecoords;
     std::shared_ptr<Common::Hex> hex_pointer;
+    int counter = 0;
+    //std::cout << hexPtrs.size() << std::endl;
 
     for (auto const& it : hexPtrs ) {
+            //std::cout << counter << std::endl;
+            counter++;
             hex_pointer = it.second;
             cubecoords = it.first;
             type = hex_pointer->getPieceType();

@@ -12,8 +12,8 @@ hexgraphics::hexgraphics()
 
 void hexgraphics::set_coords(QPointF coordinates)
 {
-    std::cout << "COORDS: " << std::endl;
-    std::cout << coordinates.x() << "," << coordinates.y() << std::endl;
+    //std::cout << "COORDS: " << std::endl;
+    //std::cout << coordinates.x() << "," << coordinates.y() << std::endl;
     xycoords_ = coordinates;
 
     QPointF point1;

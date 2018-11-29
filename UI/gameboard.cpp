@@ -176,7 +176,7 @@ void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
 {
 
     Common::CubeCoordinate cubecoords = newHex->getCoordinates();
-    std::cout << newHex->getPieceType() << std::endl;
+    //std::cout << newHex->getPieceType() << std::endl;
     hexPointers_[cubecoords] = newHex;
 
 

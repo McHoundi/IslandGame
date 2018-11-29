@@ -15,6 +15,12 @@ public:
     explicit StartDialog(QWidget *parent = 0);
     ~StartDialog();
 
+public slots:
+    virtual void accept();
+
+signals:
+    void runClicked(int playerCount);
+
 private:
     Ui::StartDialog *ui;
 };

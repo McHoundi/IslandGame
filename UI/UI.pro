@@ -18,14 +18,16 @@ SOURCES += main.cc \
     gameboard.cpp \
     player.cpp \
     hexgraphics.cpp \
-    gamestate.cpp
+    gamestate.cpp \
+    startdialog.cpp
 
 HEADERS  += \
     gameboard.hh \
     player.hh \
     gamestate.hh \
     mainwindow.hh \
-    hexgraphics.hh
+    hexgraphics.hh \
+    startdialog.hh
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
 DEPENDPATH += $$PWD/../GameLogic/Engine
@@ -63,4 +65,5 @@ QMAKE_EXTRA_TARGETS += copyfiles
 POST_TARGETDEPS += copyfiles
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    startdialog.ui

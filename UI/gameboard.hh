@@ -34,6 +34,8 @@ public:
 
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> get_hexPointers();
 
+
+
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
     virtual bool isWaterTile(Common::CubeCoordinate tileCoord) const;
     virtual std::shared_ptr<Common::Hex> getHex(Common::CubeCoordinate hexCoord) const;
@@ -51,7 +53,7 @@ public:
 
 
 private:
-    int layer_count_ = 11;              //Hexagoni-layerien määrä kartassa.
+    int layerCount_ = 20;              //Hexagoni-layerien määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;
     std::vector<hexgraphics*> hexes_;

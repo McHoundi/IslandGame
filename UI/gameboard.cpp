@@ -37,7 +37,7 @@ void GameBoard::determine_midpoints()
     int layer_counter = 1;
 
 
-    while ( layer_counter < layer_count_ ) {
+    while ( layer_counter < layerCount_ ) {
 
         // Siirrytään loopin alussa seuraavaan layeriin, eli ylöspäin, ja aloitetaan piirtäminen siitä.
         layer_counter++;
@@ -153,6 +153,8 @@ std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex> > GameBoard::get_h
 {
     return hexPointers_;
 }
+
+
 
 
 

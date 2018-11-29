@@ -1,5 +1,5 @@
-#ifndef NEW_HEX_HH
-#define NEW_HEX_HH
+#ifndef hexgraphics_HH
+#define hexgraphics_HH
 
 
 //HEXAGONIN TESTAUS
@@ -19,27 +19,25 @@
 #include "transport.hh"
 #include "pawn.hh"
 
-class new_hex : public QGraphicsPolygonItem
+const double HEX_SIZE = 20;
+const double HEX_WIDTH = 2 * HEX_SIZE;
+const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
+
+class hexgraphics : public QGraphicsPolygonItem
 {
 public:
-    new_hex();
+    hexgraphics();
     void set_coords(QPointF coordinates);
     void set_hexptr_coords(Common::CubeCoordinate cubecoords);
     std::shared_ptr<Common::Hex> get_hexptr();
     void set_hexptr(std::shared_ptr<Common::Hex> kuusikulmio_ptr);
 
-
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
 
 private:
     std::shared_ptr<Common::Hex> hexptr = nullptr;    //Osoitin tämän Polygonitemin esittämään hexiin.
     QPointF xycoords_;        // Keskipisteen koordinaatit (muodossa x,y)
-
-    const double HEX_SIZE = 20;
-    const double HEX_WIDTH = 2 * HEX_SIZE;
-    const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 
 };
 

@@ -1,17 +1,16 @@
-#include "new_hex.hh"
-#include "hexagon.hh"
+#include "hexgraphics.hh"
 #include "iostream"
 #include "QGraphicsScene"
 #include "QVector"
 #include "memory"
 
-new_hex::new_hex()
+hexgraphics::hexgraphics()
 {
 
 }
 
 
-void new_hex::set_coords(QPointF coordinates)
+void hexgraphics::set_coords(QPointF coordinates)
 {
     std::cout << "COORDS: " << std::endl;
     std::cout << coordinates.x() << "," << coordinates.y() << std::endl;
@@ -54,29 +53,30 @@ void new_hex::set_coords(QPointF coordinates)
 
 }
 
-void new_hex::set_hexptr_coords(Common::CubeCoordinate cubecoords)
+void hexgraphics::set_hexptr_coords(Common::CubeCoordinate cubecoords)
 {
     hexptr.get()->setCoordinates(cubecoords);
 }
 
-std::shared_ptr<Common::Hex> new_hex::get_hexptr()
+std::shared_ptr<Common::Hex> hexgraphics::get_hexptr()
 {
     return hexptr;
 }
 
-void new_hex::set_hexptr(std::shared_ptr<Common::Hex> kuusikulmio_ptr)
+void hexgraphics::set_hexptr(std::shared_ptr<Common::Hex> kuusikulmio_ptr)
 {
     hexptr = kuusikulmio_ptr;
 }
 
 
 
-void new_hex::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void hexgraphics::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     QBrush greenbrush;
     greenbrush.setColor(Qt::green);
     greenbrush.setStyle(Qt::SolidPattern);
-    this->setBrush(greenbrush);
+    setBrush(greenbrush);
+
 
     /*
     Common::CubeCoordinate cube_coords = this->getCoordinates();

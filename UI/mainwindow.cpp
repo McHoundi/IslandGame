@@ -72,7 +72,7 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
 
 
 
-            new_hex* HexItem = new new_hex;
+            hexgraphics* HexItem = new hexgraphics;
             HexItem->set_hexptr(hex_pointer);
             HexItem->set_coords(boardPtr->cube_to_square(cubecoords));
 

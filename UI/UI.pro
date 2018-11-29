@@ -15,19 +15,17 @@ CONFIG += c++14
 
 SOURCES += main.cc \
     mainwindow.cpp \
-    hexagon2.cpp \
-    hexagon.cpp \
     gameboard.cpp \
-    new_hex.cpp
+    player.cpp \
+    hexgraphics.cpp \
+    gamestate.cpp
 
 HEADERS  += \
     gameboard.hh \
     player.hh \
     gamestate.hh \
     mainwindow.hh \
-    hexagon2.hh \
-    hexagon.hh \
-    new_hex.hh
+    hexgraphics.hh
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
 DEPENDPATH += $$PWD/../GameLogic/Engine

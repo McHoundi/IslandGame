@@ -129,7 +129,7 @@ QPointF GameBoard::move_midpoint(QPointF midpoint_marker, std::string direction)
 }
 
 /*
-void GameBoard::addHex(new_hex* newHex) {
+void GameBoard::addHex(hexgraphics* newHex) {
     QBrush redbrush;
     redbrush.setColor(Qt::red);
     redbrush.setStyle(Qt::SolidPattern);
@@ -138,26 +138,7 @@ void GameBoard::addHex(new_hex* newHex) {
 }
 */
 
-void GameBoard::build_map(QGraphicsScene *skene)
-{
-    /*
-    for ( QPointF keskipiste : midpoints_ ) {
-        new_hex* uus_hexagon = new new_hex;
 
-
-        uus_hexagon->set_coords(keskipiste);
-
-        QBrush redbrush;
-        redbrush.setColor(Qt::red);
-        redbrush.setStyle(Qt::SolidPattern);
-        uus_hexagon->setBrush(redbrush);
-
-        skene->addItem(uus_hexagon);
-
-
-    }
-    */
-}
 
 QPointF GameBoard::cube_to_square(Common::CubeCoordinate cubecoords)
 {
@@ -248,12 +229,20 @@ std::shared_ptr<Common::Hex> GameBoard::getHex(Common::CubeCoordinate hexCoord) 
 
 bool GameBoard::isWaterTile(Common::CubeCoordinate tileCoord) const
 {
-
+    if ( hexPointers_.at(tileCoord)->getPieceType() == "Water" ) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 int GameBoard::checkTileOccupation(Common::CubeCoordinate tileCoord) const
 {
-
+    if ( hexPointers_.find(tileCoord) == hexPointers_.end()) {
+        return -1;
+    } else {
+        return hexPointers_.at(tileCoord)->getPawnAmount();
+    }
 }
 
 }

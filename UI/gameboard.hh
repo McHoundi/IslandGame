@@ -4,9 +4,8 @@
 #include <map>
 #include <unordered_map>
 
-#include "new_hex.hh"
+#include "hexgraphics.hh"
 #include "igameboard.hh"
-#include "hexagon.hh"
 #include "vector"
 #include <QPointF>
 #include <QObject>
@@ -15,10 +14,8 @@
 #include <QPointF>
 #include <QBrush>
 #include "math.h"
+#include "player.hh"
 
-const double HEX_SIZE = 20;
-const double HEX_WIDTH = 2 * HEX_SIZE;
-const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 
 namespace Student {
 
@@ -33,11 +30,7 @@ public:
     //determine midpoints()-funktion käyttämä funktio, liikuttelee keskipistettä tarpeen mukaan
     QPointF move_midpoint(QPointF midpoint_marker, std::string direction);
 
-    //Alustaa ja piirtää kartan
-    void build_map(QGraphicsScene* skene);
-
     QPointF cube_to_square(Common::CubeCoordinate cubecoords);
-
 
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> get_hexPointers();
 
@@ -61,7 +54,7 @@ private:
     int layer_count_ = 11;              //Hexagoni-layerien määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;
-    std::vector<new_hex*> hexes_;
+    std::vector<hexgraphics*> hexes_;
 };
 
 }

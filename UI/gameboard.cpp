@@ -107,6 +107,12 @@ void GameBoard::determine_midpoints()
 QPointF GameBoard::move_midpoint(QPointF midpoint_marker, std::string direction)
 {
     //Directionit merkataan ilmansuunnilla: North, South, Northwest, jne.
+	/* Keskipisteiden siirto laskettu niin, että ylä- ja alapuolella sijaitseviin keskipisteisiin on 
+	 * matkaa kuusikulmion korkeuden (HEX_HEIGHT) verran, ja sivulla sijaitseviin
+	 * keskipisteisiin 3/4 kuusikulmion leveydestä (HEX_WIDTH) sivusuuntaan, ja 
+	 * puoli korkeutta pystysuoraan suuntaan.
+	 */
+	
     if (direction == "N") {
         //Tässä miinustetaan, koska y on negatiivinen ylöspäin.
         midpoint_marker.setY( midpoint_marker.y() - HEX_HEIGHT );

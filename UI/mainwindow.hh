@@ -8,6 +8,7 @@
 #include "player.hh"
 #include "igameboard.hh"
 #include "gameengine.hh"
+#include "vector"
 
 namespace Ui {
 class MainWindow;
@@ -19,14 +20,22 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+	
+	//draw_map piirtää kartan, ajetaan kun ollaan alustettu lauta.
     void draw_map(std::shared_ptr<Student::GameBoard> lautaptr, QGraphicsScene *scene);
+	
+	// get_inputs Tallettaa aloitusikkunassa määritettyjä arvoja.
     void get_inputs(int playerCount);
+	
+	//Initialize_players luo aloitusikkunassa määritetyn määrän pelaajia.
+	std::vector<std::shared_ptr<Player> > initialize_players();
+	
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
     QGraphicsView* view_;
-    int playerCount_;
+    int playerCount_; //aloitusikkunassa määritetty pelaajien määrä.
 };
 
 #endif // MAINWINDOW_HH

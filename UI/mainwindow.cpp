@@ -25,15 +25,13 @@ MainWindow::MainWindow(QWidget *parent) :
     StartDialog dialogi;
     QGraphicsScene* scene = new QGraphicsScene;
 
+	// Aloitusikkunan OK-nappi on kytketty tähän.
+	connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs); 
+	
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
-    std::shared_ptr<Common::IGameState> statePtr;
-    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat;
-
-    connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
-
-
-
-
+    std::shared_ptr<GameState> statePtr;
+    std::vector<std::shared_ptr<Common::Player> > pelaajat = initialize_players();
+	
     Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
 
     draw_map(boardPtr, scene);
@@ -97,13 +95,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+std::vector<std::shared_ptr<Player> > initialize_players() 
+{
+	int PlayerID = 1001
+	std::vector<std::shared_ptr<Player> > playerVector;
+	for ( i = playerCount_; i != 0; i-- ) {
+		playerVector.push_back(std::make_shared<Player>(PlayerID));
+		PlayerID++;
+	}
+	return playerVector;
 
-//void MainWindow::spawnObjects() {
-
-    //auto pObj = std::make_shared<FastBall>();
-    //engine_->registerObject(pObj);
-    //auto pGraph = new PiirtoTesti(pObj);
-    //graphics_.push_back(pGraph);
-    //view_->scene()->addItem(pGraph);
-
-//}
+}

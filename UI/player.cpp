@@ -1,9 +1,11 @@
 #include "player.hh"
 
 
-Player::Player()
+Player::Player(int PlayerID)
 {
-
+	id_ = PlayerID;
+	BASEpawnID = ( PlayerID - 1000 ) * 10;
+	
 }
 
 Player::~Player()

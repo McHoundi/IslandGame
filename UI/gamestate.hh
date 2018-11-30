@@ -15,7 +15,7 @@ public:
     virtual void changePlayerTurn(int nextPlayer);
 
 private:
-    Common::GamePhase phase_; //current GamePhase
+    Common::GamePhase phase_ = Common::GamePhase::MOVEMENT; //current GamePhase
     int player_; //Current player's ID
 
 };

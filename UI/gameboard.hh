@@ -34,7 +34,8 @@ public:
 
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> get_hexPointers();
 
-
+    // Valitsee satunnaisen naapurihexin, käytetään jos pawneja on liikaa.
+    std::shared_ptr<Common::Hex> pick_random_neighbour(std::shared_ptr<Common::Hex> hexi);
 
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
     virtual bool isWaterTile(Common::CubeCoordinate tileCoord) const;
@@ -50,6 +51,7 @@ public:
     virtual void addTransport(std::shared_ptr<Common::Transport> transport, Common::CubeCoordinate coord);
     virtual void moveTransport(int id, Common::CubeCoordinate coord);
     virtual void removeTransport(int id);
+
 
 
 private:

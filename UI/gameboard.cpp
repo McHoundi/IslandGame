@@ -1,5 +1,9 @@
 #include "gameboard.hh"
 #include "iostream"
+#include  <random>
+#include  <iterator>
+
+
 
 namespace Student {
 
@@ -19,8 +23,19 @@ GameBoard::~GameBoard()
 
 }
 
+template<typename Iter, typename RandomGenerator>
+Iter select_randomly(Iter start, Iter end, RandomGenerator& g) {
+    std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
+    std::advance(start, dis(g));
+    return start;
+}
 
-// Luo uuden hexagon olion, laittaa sen kartan sisällä olevaan listaan.
+template<typename Iter>
+Iter select_randomly(Iter start, Iter end) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    return select_randomly(start, end, gen);
+}
 
 
 void GameBoard::determine_midpoints()
@@ -216,6 +231,12 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 
 void GameBoard::addPawn(int playerId, int pawnId)
 {
+    std::shared_ptr<Common::Hex> hexi = hexPointers_.at(Common::CubeCoordinate(0,0,0));
+    if ( hexi->getPawnAmount() < 3 ) {
+        Common::Pawn(pawnId, playerId, Common::CubeCoordinate(0,0,0));
+    } else {
+
+    }
 
 }
 

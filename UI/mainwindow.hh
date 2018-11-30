@@ -21,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void draw_map(std::shared_ptr<Student::GameBoard> lautaptr, QGraphicsScene *scene);
     void get_inputs(int playerCount);
+    std::vector<std::shared_ptr<Common::IPlayer>> initialize_players();
     ~MainWindow();
 
 private:

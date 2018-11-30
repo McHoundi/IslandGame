@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene* scene = new QGraphicsScene;
 
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
-    std::shared_ptr<Common::IGameState> statePtr;
-    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat;
+    std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
+    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
 
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
 
@@ -45,6 +45,21 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::get_inputs(int playerCount){
     std::cout << playerCount << std::endl;
     playerCount_ = playerCount;
+}
+
+std::vector<std::shared_ptr<Common::IPlayer>> MainWindow::initialize_players()
+{
+
+    int PlayerID = 1001;
+    int i;
+    std::vector<std::shared_ptr<Common::IPlayer> > playerVector;
+    for ( i = playerCount_ ; i != 0; i-- ) {
+        std::shared_ptr<Common::IPlayer> ipelaaja = std::make_shared<Player>(PlayerID);
+        playerVector.push_back(ipelaaja);
+        PlayerID++;
+    }
+    return playerVector;
+
 }
 
 void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphicsScene* scene)

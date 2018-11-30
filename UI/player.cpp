@@ -1,8 +1,9 @@
 #include "player.hh"
 
 
-Player::Player()
+Player::Player(int PlayerID)
 {
+    id_ = PlayerID;
 
 }
 

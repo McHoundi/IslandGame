@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>dolphin.png</file>
+        <file>kraken.png</file>
+        <file>shark.png</file>
+        <file>seamonster.png</file>
+        <file>boat.png</file>
+        <file>vortex.png</file>
+        <file>kdolph1.png</file>
+        <file>kdolph2.png</file>
+        <file>kdolph3.png</file>
+        <file>kdolphD.png</file>
+        <file>kkraken1.png</file>
+        <file>kkraken2.png</file>
+        <file>kkraken3.png</file>
+        <file>kkrakenD.png</file>
+        <file>kseamonster1.png</file>
+        <file>kseamonster2.png</file>
+        <file>kseamonster3.png</file>
+        <file>kseamonsterD.png</file>
+        <file>kshark1.png</file>
+        <file>kshark2.png</file>
+        <file>kshark3.png</file>
+        <file>ksharkD.png</file>
+    </qresource>
+</RCC>

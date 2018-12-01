@@ -13,13 +13,14 @@ TEMPLATE = app
 CONFIG += c++14
 
 
-SOURCES += main.cc \
+SOURCES += \
     mainwindow.cpp \
     gameboard.cpp \
     player.cpp \
     hexgraphics.cpp \
     gamestate.cpp \
-    startdialog.cpp
+    startdialog.cpp \
+    main.cc
 
 HEADERS  += \
     gameboard.hh \
@@ -67,3 +68,6 @@ POST_TARGETDEPS += copyfiles
 FORMS += \
     mainwindow.ui \
     startdialog.ui
+
+RESOURCES += \
+    images.qrc

@@ -78,15 +78,9 @@ void hexgraphics::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setBrush(greenbrush);
 
 
-    /*
-    Common::CubeCoordinate cube_coords = this->getCoordinates();
 
 
 
-    std::cout << "Custom item clicked, coords: " << xycoords_.x() << ", "
-              << xycoords_.y() << "cube : " << cube_coords.x << ", " << cube_coords.y
-              << ", " << cube_coords.z << std::endl;
-    */
 }
 
 

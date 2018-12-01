@@ -16,6 +16,7 @@
 #include "iostream"
 #include "QDebug"
 #include "startdialog.hh"
+#include "QGraphicsPixmapItem"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -88,9 +89,22 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 brush.setStyle(Qt::SolidPattern);
                 HexItem->setBrush(brush);
                 scene->addItem(HexItem);
+
+                QPixmap pixmap(":/images/vortex.png");
+                pixmap = pixmap.scaled(QSize(25,25));
+                QGraphicsPixmapItem* kuva = new QGraphicsPixmapItem(pixmap);
+                QPointF offset = boardPtr->cube_to_square(cubecoords);
+                offset.operator -=(QPointF(12, 12));
+                kuva->setOffset(offset);
+                scene->addItem(kuva);
+
+
             }
         }
+
+
 }
+
 
 MainWindow::~MainWindow()
 {

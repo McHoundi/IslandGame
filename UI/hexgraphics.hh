@@ -19,7 +19,7 @@
 #include "transport.hh"
 #include "pawn.hh"
 
-const double HEX_SIZE = 30;
+const double HEX_SIZE = 20;
 const double HEX_WIDTH = 2 * HEX_SIZE;
 const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 

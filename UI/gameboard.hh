@@ -37,6 +37,8 @@ public:
     // Valitsee satunnaisen naapurihexin, käytetään jos pawneja on liikaa.
     Common::CubeCoordinate pick_random_available_neighbour(std::shared_ptr<Common::Hex> hexi);
 
+    void add_player(int PlayerID, std::shared_ptr<Common::IPlayer>);
+
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
     virtual bool isWaterTile(Common::CubeCoordinate tileCoord) const;
     virtual std::shared_ptr<Common::Hex> getHex(Common::CubeCoordinate hexCoord) const;
@@ -54,13 +56,14 @@ public:
 
 
 
+
 private:
     int layerCount_ = 20;              //Hexagoni-layerien määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;
     std::vector<hexgraphics*> hexes_;
-    std::map<int, std::shared_ptr<Common::Pawn>> pawns_;
-    std::vector<Player> players_;
+    std::map<int, std::shared_ptr<Common::Pawn>> pawns_; //pawn pointers, searchable by pawnID
+    std::map<int, std::vector<int> > playerPawns_; // pawns, by ID, owned by each player, searchable by playerID
 };
 
 }

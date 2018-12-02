@@ -2,6 +2,9 @@
 #define PLAYER_HH
 
 #include "iplayer.hh"
+#include "memory"
+#include "vector"
+#include "pawn.hh"
 
 
 class Player : public Common::IPlayer
@@ -16,6 +19,7 @@ public:
 private:
     int actions_; //Actions left
     int id_;    //Player ID
+    std::vector<std::shared_ptr<Common::Pawn>> pawns_; //The pawns owned by player
 };
 
 #endif // PLAYER_HH

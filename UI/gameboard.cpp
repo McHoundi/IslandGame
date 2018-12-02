@@ -157,16 +157,27 @@ void GameBoard::addHex(hexgraphics* newHex) {
 
 QPointF GameBoard::cube_to_square(Common::CubeCoordinate cubecoords)
 {
-    for (auto const& it : midpoints_ ) {
-        if ( it.first == cubecoords ){
-            return it.second;
-        }
-    }
+    return midpoints_.at(cubecoords);
 }
 
 std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex> > GameBoard::get_hexPointers()
 {
     return hexPointers_;
+}
+
+Common::CubeCoordinate GameBoard::pick_random_available_neighbour(std::shared_ptr<Common::Hex> full_hex)
+{
+   Common::CubeCoordinate random_neighbour;
+
+    //kerätään naapurilaatoista ei-täydet laatat, ja valitaan niistä satunnainen ja sen koordinaatit.
+    std::vector<Common::CubeCoordinate> available_neighbours;
+    for ( Common::CubeCoordinate cubecoords : full_hex->getNeighbourVector() ) {
+        if ( hexPointers_.at(cubecoords)->getPawnAmount() < 3 ) {
+            available_neighbours.push_back(cubecoords);
+           }
+    }
+    random_neighbour = *select_randomly(available_neighbours.begin(), available_neighbours.end());
+    return random_neighbour;
 }
 
 
@@ -191,12 +202,8 @@ void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Commo
 
 void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
 {
-
     Common::CubeCoordinate cubecoords = newHex->getCoordinates();
-    //std::cout << newHex->getPieceType() << std::endl;
     hexPointers_[cubecoords] = newHex;
-
-
 }
 
 void GameBoard::removeActor(int actorId)
@@ -216,16 +223,48 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
 
 void GameBoard::removePawn(int pawnId)
 {
+    std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnId);
+    Common::CubeCoordinate pawnCoord = pawn->getCoordinates();
+    hexPointers_.at(pawnCoord)->removePawn(pawn);
+    pawns_.erase(pawnId);
 
 }
 
 void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 {
+    std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnId);
+    std::shared_ptr<Common::Hex> current_hex = hexPointers_.at(pawn->getCoordinates());
+    std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(pawnCoord);
+    std::vector<Common::CubeCoordinate> neighbour_tiles = current_hex->getNeighbourVector();
+    //A few checks about integrity of this movement before moving
+    if ( pawn->getCoordinates() == pawnCoord ) {
+        std::cout << "You're already on this tile!" << std::endl;
+
+    } else if ( std::find(neighbour_tiles.begin(), neighbour_tiles.end(), pawnCoord) != neighbour_tiles.end()  ) {
+        std::cout << "You're not next to this tile!" << std::endl;
+    }
+    // checks done: can move pawn
+    else {
+        current_hex->removePawn(pawn);
+        target_hex->addPawn(pawn);
+    }
 
 }
 
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 {
+    std::shared_ptr<Common::Hex> hexi = hexPointers_.at(coord);
+
+    if ( hexi->getPawnAmount() < 3 ) {
+        std::shared_ptr<Common::Pawn> new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, coord);
+        hexi->addPawn(new_pawn);
+        pawns_[pawnId] = new_pawn;
+    } else {
+        Common::CubeCoordinate free_tile = pick_random_available_neighbour(hexi);
+        std::shared_ptr<Common::Pawn> new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, free_tile);
+        hexi->addPawn(new_pawn);
+        pawns_[pawnId] = new_pawn;
+    }
 
 }
 
@@ -233,9 +272,14 @@ void GameBoard::addPawn(int playerId, int pawnId)
 {
     std::shared_ptr<Common::Hex> hexi = hexPointers_.at(Common::CubeCoordinate(0,0,0));
     if ( hexi->getPawnAmount() < 3 ) {
-        Common::Pawn(pawnId, playerId, Common::CubeCoordinate(0,0,0));
+        std::shared_ptr<Common::Pawn> new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, Common::CubeCoordinate(0,0,0));
+        hexi->addPawn(new_pawn);
+        pawns_[pawnId] = new_pawn;
     } else {
-
+        Common::CubeCoordinate free_tile = pick_random_available_neighbour(hexi);
+        std::shared_ptr<Common::Pawn> new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, free_tile);
+        hexi->addPawn(new_pawn);
+        pawns_[pawnId] = new_pawn;
     }
 
 }

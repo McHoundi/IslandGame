@@ -5,6 +5,7 @@
 #include "gameengine.hh"
 #include "gameboard.hh"
 #include "gamestate.hh"
+#include "pawngraphics.hh"
 #include "vector"
 #include <QDebug>
 #include <QLayout>
@@ -17,6 +18,8 @@
 #include "QDebug"
 #include "startdialog.hh"
 #include "QGraphicsPixmapItem"
+#include "QGraphicsEllipseItem"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -90,13 +93,45 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 HexItem->setBrush(brush);
                 scene->addItem(HexItem);
 
-                QPixmap pixmap(":/images/vortex.png");
-                pixmap = pixmap.scaled(QSize(25,25));
-                QGraphicsPixmapItem* kuva = new QGraphicsPixmapItem(pixmap);
+                QPixmap actor(":/images/shark.png");
+                actor = actor.scaled(QSize(15,15));
+                QGraphicsPixmapItem* kuva = new QGraphicsPixmapItem(actor);
                 QPointF offset = boardPtr->cube_to_square(cubecoords);
                 offset.operator -=(QPointF(12, 12));
                 kuva->setOffset(offset);
                 scene->addItem(kuva);
+
+
+                QPixmap kiekkoPix(":/images/kdolph1.png");
+                kiekkoPix = kiekkoPix.scaled(QSize(250,250));
+                QGraphicsPixmapItem* kiekko = new QGraphicsPixmapItem(kiekkoPix);
+                kiekko->setOffset(QPointF(350, 0));
+                scene->addItem(kiekko);
+
+                QGraphicsEllipseItem* pawni1 = new QGraphicsEllipseItem;
+
+                pawni1->setRect(4,4,8,8);
+                brush.setStyle(Qt::SolidPattern);
+                brush.setColor(Qt::red);
+                pawni1->setBrush(brush);
+                scene->addItem(pawni1);
+
+                QGraphicsEllipseItem* pawni2 = new QGraphicsEllipseItem;
+
+                pawni2->setRect(4,-6,8,8);
+                brush.setStyle(Qt::SolidPattern);
+                brush.setColor(Qt::blue);
+                pawni2->setBrush(brush);
+                scene->addItem(pawni2);
+
+                QGraphicsEllipseItem* pawni3 = new QGraphicsEllipseItem;
+
+                pawni3->setRect(-6,4,8,8);
+                brush.setStyle(Qt::SolidPattern);
+                brush.setColor(Qt::white);
+                pawni3->setBrush(brush);
+                scene->addItem(pawni3);
+                
 
 
             }

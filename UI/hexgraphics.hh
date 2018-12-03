@@ -3,6 +3,7 @@
 
 
 //HEXAGONIN TESTAUS
+
 #include "hex.hh"
 #include <QObject>
 #include <QGraphicsItem>
@@ -18,6 +19,7 @@
 #include "actor.hh"
 #include "transport.hh"
 #include "pawn.hh"
+
 
 const double HEX_SIZE = 30;
 const double HEX_WIDTH = 2 * HEX_SIZE;
@@ -35,9 +37,13 @@ public:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
+signals:
+    void hexClicked(std::shared_ptr<Common::Hex> pointeri);
+
 private:
     std::shared_ptr<Common::Hex> hexptr = nullptr;    //Osoitin tämän Polygonitemin esittämään hexiin.
     QPointF xycoords_;        // Keskipisteen koordinaatit (muodossa x,y)
+
 
 };
 

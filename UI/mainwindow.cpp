@@ -34,9 +34,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
     Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
+
+
+    statePtr->set_boardPTR(boardPtr);
+
     boardPtr->set_scene(scene);
 
     draw_map(boardPtr, scene);
+
+
+
 
 
     // ** addPawn TESTAUS
@@ -44,15 +51,11 @@ MainWindow::MainWindow(QWidget *parent) :
     boardPtr->addPawn(1002,21,Common::CubeCoordinate(0,0,0));
     boardPtr->addPawn(1003,31,Common::CubeCoordinate(0,0,0));
     boardPtr->addPawn(1004,41,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1006,61,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1007,71,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1008,81,Common::CubeCoordinate(0,0,0));
 
-    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
-
-    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
-
-    boardPtr->addPawn(1006,61,Common::CubeCoordinate(0,-2,2));
-    boardPtr->addPawn(1007,71,Common::CubeCoordinate(0,2,-2));
 
      // ** addPawn TESTAUS
 

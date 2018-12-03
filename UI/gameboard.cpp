@@ -3,9 +3,13 @@
 #include  <random>
 #include  <iterator>
 #include <player.hh>
-
+#include <QObject>
 
 namespace Student {
+
+
+
+
 
 GameBoard::GameBoard()
 {
@@ -22,6 +26,9 @@ GameBoard::~GameBoard()
 {
 
 }
+
+//seuraavat 2 blokkia alustavat randomgeneraattorin satunnaisen naapurilaatan valitsemiselle
+
 
 template<typename Iter, typename RandomGenerator>
 Iter select_randomly(Iter start, Iter end, RandomGenerator& g) {
@@ -41,8 +48,8 @@ Iter select_randomly(Iter start, Iter end) {
 void GameBoard::determine_midpoints()
 {
     //Lisätään aluksi origo, eli ensimmäinen layeri
-
-    QPointF midpoint_marker(0,0);
+    double nollakohta = 0;
+    QPointF midpoint_marker(nollakohta,nollakohta);
     Common::CubeCoordinate cube_coords;
     Common::CubeCoordinate(0, 0, 0) = cube_coords;
 
@@ -214,7 +221,6 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
 {
     std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(actorCoord);
     // TODO: GRAAFINEN SETTI!
-
 }
 
 void GameBoard::removePawn(int pawnId)
@@ -239,6 +245,8 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 
     } else if ( std::find(neighbour_tiles.begin(), neighbour_tiles.end(), pawnCoord) != neighbour_tiles.end()  ) {
         std::cout << "You're not next to this tile!" << std::endl;
+    } else if ( hexPointers_.at(pawnCoord)->getPawnAmount() >= 3 ) {
+        std::cout << "Tile full!" << std::endl;
     }
     // checks done: can move pawn
     else {
@@ -256,6 +264,7 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     std::shared_ptr<Common::Hex> hexi = hexPointers_.at(coord);
     std::shared_ptr<Common::Pawn> new_pawn;
 
+
     if ( hexi->getPawnAmount() < 3 ) {
         new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, coord);
     } else {
@@ -264,18 +273,19 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
         hexi = hexPointers_.at(free_tile_coord);
         coord = free_tile_coord;
     }
+    int pawnAmount = hexi->getPawnAmount();
     hexi->addPawn(new_pawn);
     pawns_[pawnId] = new_pawn;
     // playerPawns_.at(playerId).push_back(pawnId); LISÄÄ TÄHÄN FIND()-checkki!!
 
     QGraphicsEllipseItem* uusi_nappula = new QGraphicsEllipseItem;
     QPointF XYCOORDS = cube_to_square(coord);
-    if ( hexi->getPawnAmount() == 0 ) {
-        uusi_nappula->setRect(XYCOORDS.x()+4, XYCOORDS.y()-6,8,8);
-    } else if (hexi->getPawnAmount() == 1) {
-        uusi_nappula->setRect(XYCOORDS.x()-4, XYCOORDS.y()+6,8,8);
-    } else if (hexi->getPawnAmount() == 2) {
-        uusi_nappula->setRect(XYCOORDS.x()+4, XYCOORDS.y()+4,8,8);
+    if ( pawnAmount == 0 ) {
+        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+    } else if (pawnAmount == 1) {
+        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+    } else if (pawnAmount == 2) {
+        uusi_nappula->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
     }
     QBrush brush;
 
@@ -303,7 +313,7 @@ void GameBoard::addPawn(int playerId, int pawnId)
     }
     hexi->addPawn(new_pawn);
     pawns_[pawnId] = new_pawn;
-    playerPawns_.at(playerId).push_back(pawnId);
+    //playerPawns_.at(playerId).push_back(pawnId);
 
 }
 

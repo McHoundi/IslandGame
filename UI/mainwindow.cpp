@@ -89,6 +89,8 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 HexItem->set_hexptr(hex_pointer);
                 HexItem->set_coords(boardPtr->cube_to_square(cubecoords));
 
+                QPointF XYCOORDS = boardPtr->cube_to_square(cubecoords);
+
                 brush.setStyle(Qt::SolidPattern);
                 HexItem->setBrush(brush);
                 scene->addItem(HexItem);
@@ -108,32 +110,29 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 kiekko->setOffset(QPointF(350, 0));
                 scene->addItem(kiekko);
 
-                QGraphicsEllipseItem* pawni1 = new QGraphicsEllipseItem;
+                pawngraphics* pawni1 = new pawngraphics;
 
-                pawni1->setRect(4,4,8,8);
+                pawni1->setRect(XYCOORDS.x()+4,XYCOORDS.y()+4,8,8);
                 brush.setStyle(Qt::SolidPattern);
                 brush.setColor(Qt::red);
                 pawni1->setBrush(brush);
                 scene->addItem(pawni1);
 
-                QGraphicsEllipseItem* pawni2 = new QGraphicsEllipseItem;
+                pawngraphics* pawni2 = new pawngraphics;
 
-                pawni2->setRect(4,-6,8,8);
+                pawni2->setRect(XYCOORDS.x()+4,XYCOORDS.y()-6,8,8);
                 brush.setStyle(Qt::SolidPattern);
                 brush.setColor(Qt::blue);
                 pawni2->setBrush(brush);
                 scene->addItem(pawni2);
 
-                QGraphicsEllipseItem* pawni3 = new QGraphicsEllipseItem;
+                pawngraphics* pawni3 = new pawngraphics;
 
-                pawni3->setRect(-6,4,8,8);
+                pawni3->setRect(XYCOORDS.x()-6,XYCOORDS.y()+4,8,8);
                 brush.setStyle(Qt::SolidPattern);
                 brush.setColor(Qt::white);
                 pawni3->setBrush(brush);
                 scene->addItem(pawni3);
-                
-
-
             }
         }
 

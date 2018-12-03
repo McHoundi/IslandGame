@@ -5,9 +5,7 @@
 #include <QObject>
 #include <QGraphicsItem>
 #include <QGraphicsPolygonItem>
-#include <QPainter>
 #include <QPointF>
-#include <QBrush>
 #include "string"
 #include "vector"
 #include "math.h"

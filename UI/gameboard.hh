@@ -4,11 +4,13 @@
 #include <map>
 #include <unordered_map>
 
+#include "pawngraphics.hh"
 #include "hexgraphics.hh"
 #include "igameboard.hh"
 #include "vector"
 #include <QPointF>
 #include <QObject>
+#include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QPointF>
@@ -39,6 +41,8 @@ public:
 
     void add_player(int PlayerID, std::shared_ptr<Common::IPlayer>);
 
+    void set_scene(QGraphicsScene* scene);
+
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
     virtual bool isWaterTile(Common::CubeCoordinate tileCoord) const;
     virtual std::shared_ptr<Common::Hex> getHex(Common::CubeCoordinate hexCoord) const;
@@ -64,6 +68,7 @@ private:
     std::vector<hexgraphics*> hexes_;
     std::map<int, std::shared_ptr<Common::Pawn>> pawns_; //pawn pointers, searchable by pawnID
     std::map<int, std::vector<int> > playerPawns_; // pawns, by ID, owned by each player, searchable by playerID
+    QGraphicsScene* scene_;
 };
 
 }

@@ -169,6 +169,11 @@ Common::CubeCoordinate GameBoard::pick_random_available_neighbour(std::shared_pt
     return random_neighbour;
 }
 
+void GameBoard::set_scene(QGraphicsScene *scene)
+{
+    scene_ = scene;
+}
+
 
 
 
@@ -247,24 +252,39 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 // FIX: UNDEFINED REFERENCE TO PLAYER::add_pawn() KUN KUTSUTAAN add_pawn
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 {
+    std::cout << pawnId << std::endl;
     std::shared_ptr<Common::Hex> hexi = hexPointers_.at(coord);
     std::shared_ptr<Common::Pawn> new_pawn;
 
     if ( hexi->getPawnAmount() < 3 ) {
         new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, coord);
     } else {
-        Common::CubeCoordinate free_tile = pick_random_available_neighbour(hexi);
-        new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, free_tile);
-        hexi = hexPointers_.at(free_tile);
+        Common::CubeCoordinate free_tile_coord = pick_random_available_neighbour(hexi);
+        new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, free_tile_coord);
+        hexi = hexPointers_.at(free_tile_coord);
+        coord = free_tile_coord;
     }
     hexi->addPawn(new_pawn);
     pawns_[pawnId] = new_pawn;
-    playerPawns_.at(playerId).push_back(pawnId);
+    // playerPawns_.at(playerId).push_back(pawnId); LISÄÄ TÄHÄN FIND()-checkki!!
 
-    if ( hexi->getPawnAmount() == 1 ) {
-
+    QGraphicsEllipseItem* uusi_nappula = new QGraphicsEllipseItem;
+    QPointF XYCOORDS = cube_to_square(coord);
+    if ( hexi->getPawnAmount() == 0 ) {
+        uusi_nappula->setRect(XYCOORDS.x()+4, XYCOORDS.y()-6,8,8);
+    } else if (hexi->getPawnAmount() == 1) {
+        uusi_nappula->setRect(XYCOORDS.x()-4, XYCOORDS.y()+6,8,8);
+    } else if (hexi->getPawnAmount() == 2) {
+        uusi_nappula->setRect(XYCOORDS.x()+4, XYCOORDS.y()+4,8,8);
     }
+    QBrush brush;
 
+    //TODO: PELAAJAN VÄRIN HAKU
+
+    brush.setStyle(Qt::SolidPattern);
+    brush.setColor(Qt::blue);
+    uusi_nappula->setBrush(brush);
+    scene_->addItem(uusi_nappula);
     //players_.at(playerId)->add_pawn(pawnId);
 
 }

@@ -27,20 +27,41 @@ MainWindow::MainWindow(QWidget *parent) :
 
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
     std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
-    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
+
 
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
+    dialogi.exec();
 
+    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
     Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
+    boardPtr->set_scene(scene);
 
     draw_map(boardPtr, scene);
+
+
+    // ** addPawn TESTAUS
+    boardPtr->addPawn(1001,11,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1002,21,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1003,31,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1004,41,Common::CubeCoordinate(0,0,0));
+
+    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
+
+    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
+    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
+
+    boardPtr->addPawn(1006,61,Common::CubeCoordinate(0,-2,2));
+    boardPtr->addPawn(1007,71,Common::CubeCoordinate(0,2,-2));
+
+     // ** addPawn TESTAUS
+
     ui->graphicsView->setScene(scene);
 
-    dialogi.exec();
+
 }
 
 void MainWindow::get_inputs(int playerCount){
-    std::cout << playerCount << std::endl;
     playerCount_ = playerCount;
 }
 

@@ -31,9 +31,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
 
-
-
-
     Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
 
     draw_map(boardPtr, scene);
@@ -72,7 +69,6 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
     QBrush brush;
     Common::CubeCoordinate cubecoords;
     std::shared_ptr<Common::Hex> hex_pointer;
-    int counter = 0;
 
     for (auto const& it : hexPtrs ) {
 
@@ -113,12 +109,3 @@ MainWindow::~MainWindow()
 }
 
 
-//void MainWindow::spawnObjects() {
-
-    //auto pObj = std::make_shared<FastBall>();
-    //engine_->registerObject(pObj);
-    //auto pGraph = new PiirtoTesti(pObj);
-    //graphics_.push_back(pGraph);
-    //view_->scene()->addItem(pGraph);
-
-//}

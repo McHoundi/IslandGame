@@ -143,17 +143,6 @@ QPointF GameBoard::move_midpoint(QPointF midpoint_marker, std::string direction)
     return midpoint_marker;
 }
 
-/*
-void GameBoard::addHex(hexgraphics* newHex) {
-    QBrush redbrush;
-    redbrush.setColor(Qt::red);
-    redbrush.setStyle(Qt::SolidPattern);
-    newHex->setBrush(redbrush);
-    newHex->scene()->addItem(newHex);
-}
-*/
-
-
 
 QPointF GameBoard::cube_to_square(Common::CubeCoordinate cubecoords)
 {
@@ -266,10 +255,15 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     } else {
         Common::CubeCoordinate free_tile = pick_random_available_neighbour(hexi);
         new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, free_tile);
+        hexi = hexPointers_.at(free_tile);
     }
     hexi->addPawn(new_pawn);
     pawns_[pawnId] = new_pawn;
     playerPawns_.at(playerId).push_back(pawnId);
+
+    if ( hexi->getPawnAmount() == 1 ) {
+
+    }
 
     //players_.at(playerId)->add_pawn(pawnId);
 

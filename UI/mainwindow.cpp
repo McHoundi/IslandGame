@@ -16,6 +16,7 @@
 #include "iostream"
 #include "QDebug"
 #include "startdialog.hh"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -34,9 +35,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
     Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
+    statePTR_ = statePtr;
+    boardPTR_ = boardPtr;
 
-
-    statePtr->set_boardPTR(boardPtr);
+    //statePtr->set_boardPTR(boardPtr);
+    statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
 
     boardPtr->set_scene(scene);
 
@@ -48,13 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // ** addPawn TESTAUS
     boardPtr->addPawn(1001,11,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1002,21,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1003,31,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1004,41,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1005,51,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1006,61,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1007,71,Common::CubeCoordinate(0,0,0));
-    boardPtr->addPawn(1008,81,Common::CubeCoordinate(0,0,0));
+
 
 
      // ** addPawn TESTAUS
@@ -117,8 +114,10 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 }
 
                 hexgraphics* HexItem = new hexgraphics;
+                connect(HexItem, &hexgraphics::hexClicked, this, &MainWindow::hex_chosen);
                 HexItem->set_hexptr(hex_pointer);
                 HexItem->set_coords(boardPtr->cube_to_square(cubecoords));
+                hexes_[cubecoords] = HexItem;
 
                 brush.setStyle(Qt::SolidPattern);
                 HexItem->setBrush(brush);
@@ -130,6 +129,29 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
+{
+    std::cout << hexIsHighlighted_ << std::endl;
+    if ( statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT ) {
+
+        if ( hexi->getPawnAmount() > 0 && hexIsHighlighted_ == false) {
+             hexIsHighlighted_ = true;
+             highlightedHex_ = hexi;
+
+        } else if ( hexIsHighlighted_ == true ) {
+            boardPTR_->movePawn(11, hexi->getCoordinates() );
+            hexIsHighlighted_ = false;
+
+        }
+
+
+    } else if ( statePTR_->currentGamePhase() == Common::GamePhase::SINKING ) {
+
+    } else {
+
+    }
 }
 
 

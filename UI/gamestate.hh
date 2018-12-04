@@ -3,9 +3,11 @@
 
 #include "igamestate.hh"
 #include "gameboard.hh"
+#include "QObject"
 
-class GameState : public Common::IGameState
+class GameState :  public QObject, public Common::IGameState
 {
+    Q_OBJECT
 public:
     GameState();
     ~GameState();

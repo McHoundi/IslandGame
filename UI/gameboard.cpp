@@ -181,6 +181,11 @@ void GameBoard::set_scene(QGraphicsScene *scene)
     scene_ = scene;
 }
 
+QGraphicsScene *GameBoard::get_scene()
+{
+    return scene_;
+}
+
 
 
 
@@ -243,8 +248,12 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     if ( pawn->getCoordinates() == pawnCoord ) {
         std::cout << "You're already on this tile!" << std::endl;
 
-    } else if ( std::find(neighbour_tiles.begin(), neighbour_tiles.end(), pawnCoord) != neighbour_tiles.end()  ) {
+    } else if ( std::find(neighbour_tiles.begin(), neighbour_tiles.end(), pawnCoord) == neighbour_tiles.end()  ) {
         std::cout << "You're not next to this tile!" << std::endl;
+        for ( auto i : neighbour_tiles ) {
+            std:: cout << i.x << i.y << i.z << std::endl;
+        }
+        std::cout << "your coords: " << pawn->getCoordinates().x << pawn->getCoordinates().y << pawn->getCoordinates().z << std::endl;
     } else if ( hexPointers_.at(pawnCoord)->getPawnAmount() >= 3 ) {
         std::cout << "Tile full!" << std::endl;
     }
@@ -252,10 +261,25 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     else {
         current_hex->removePawn(pawn);
         target_hex->addPawn(pawn);
+        pawn->setCoordinates(pawnCoord);
+
+        QPointF XYCOORDS = cube_to_square(pawnCoord);
+        if ( pawnItems_.find(pawnId) == pawnItems_.end() ) {
+            std::cout << "Tätä erroria ei pitäisi tulla" << std::endl;
+        } else {
+            std::cout << "pawnamount: " << target_hex->getPawnAmount() << std::endl;
+            if (target_hex->getPawnAmount() == 1 ) {
+                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+            } else if (target_hex->getPawnAmount() == 2 ) {
+                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+            } else if (target_hex->getPawnAmount() == 3 ) {
+                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+        }
+
     }
 
 }
-
+}
 //HUOM! STILL NEEDS GRAPHICAL IMPLEMENTATION!
 // FIX: UNDEFINED REFERENCE TO PLAYER::add_pawn() KUN KUTSUTAAN add_pawn
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
@@ -278,7 +302,8 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     pawns_[pawnId] = new_pawn;
     // playerPawns_.at(playerId).push_back(pawnId); LISÄÄ TÄHÄN FIND()-checkki!!
 
-    QGraphicsEllipseItem* uusi_nappula = new QGraphicsEllipseItem;
+    pawngraphics* uusi_nappula = new pawngraphics;
+    //Player player(123);
     QPointF XYCOORDS = cube_to_square(coord);
     if ( pawnAmount == 0 ) {
         uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
@@ -295,6 +320,7 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     brush.setColor(Qt::blue);
     uusi_nappula->setBrush(brush);
     scene_->addItem(uusi_nappula);
+    pawnItems_[pawnId] = uusi_nappula;
     //players_.at(playerId)->add_pawn(pawnId);
 
 }

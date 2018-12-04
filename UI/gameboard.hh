@@ -21,7 +21,7 @@
 
 namespace Student {
 
-class GameBoard : public Common::IGameBoard
+class GameBoard : public QObject, public Common::IGameBoard
 {
 public:
     GameBoard();
@@ -43,6 +43,8 @@ public:
 
     void set_scene(QGraphicsScene* scene);
 
+    QGraphicsScene* get_scene();
+
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
     virtual bool isWaterTile(Common::CubeCoordinate tileCoord) const;
     virtual std::shared_ptr<Common::Hex> getHex(Common::CubeCoordinate hexCoord) const;
@@ -58,6 +60,7 @@ public:
     virtual void moveTransport(int id, Common::CubeCoordinate coord);
     virtual void removeTransport(int id);
 
+public slots:
 
 
 
@@ -65,8 +68,8 @@ private:
     int layerCount_ = 20;              //Hexagoni-layerien määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;
-    std::vector<hexgraphics*> hexes_;
     std::map<int, std::shared_ptr<Common::Pawn>> pawns_; //pawn pointers, searchable by pawnID
+    std::map<int, pawngraphics*> pawnItems_;
     std::map<int, std::vector<int> > playerPawns_; // pawns, by ID, owned by each player, searchable by playerID
     QGraphicsScene* scene_;
 };

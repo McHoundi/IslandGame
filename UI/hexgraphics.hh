@@ -19,14 +19,17 @@
 #include "actor.hh"
 #include "transport.hh"
 #include "pawn.hh"
+#include "QObject"
 
 
 const double HEX_SIZE = 30;
 const double HEX_WIDTH = 2 * HEX_SIZE;
 const double HEX_HEIGHT = sqrt(3) * HEX_SIZE;
 
-class hexgraphics : public QGraphicsPolygonItem
+class hexgraphics :   public QObject, public QGraphicsPolygonItem
 {
+    Q_OBJECT
+
 public:
     hexgraphics();
     void set_coords(QPointF coordinates);

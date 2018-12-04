@@ -12,14 +12,6 @@
 #include <QLayout>
 #include <QWidget>
 
-#include <QGraphicsScene>
-#include <QGraphicsSimpleTextItem>
-#include <QGraphicsView>
-#include "iostream"
-#include "QDebug"
-#include "startdialog.hh"
-#include "QGraphicsPixmapItem"
-#include "QGraphicsEllipseItem"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -96,19 +88,15 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 HexItem->setBrush(brush);
                 scene->addItem(HexItem);
 
-                QPixmap actor(":/images/shark.png");
-                actor = actor.scaled(QSize(15,15));
-                QGraphicsPixmapItem* kuva = new QGraphicsPixmapItem(actor);
-                QPointF offset = boardPtr->cube_to_square(cubecoords);
-                offset.operator -=(QPointF(12, 12));
-                kuva->setOffset(offset);
+                pixmapgraphics* kuva = new pixmapgraphics;
+                kuva->setPicture("kraken");
+                QPointF coords = boardPtr->cube_to_square(cubecoords);
+                kuva->movePicture(coords);
                 scene->addItem(kuva);
 
 
-                wheel* kiekko = new wheel;
-                kiekko->setPicture();
-                kiekko->setOffset(QPointF(350, 0));
-                scene->addItem(kiekko);
+
+
 
                 pawngraphics* pawni1 = new pawngraphics;
 
@@ -135,6 +123,11 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 scene->addItem(pawni3);
             }
         }
+
+    wheel* kiekko = new wheel;
+    kiekko->setPicture();
+    kiekko->setOffset(QPointF(350, 0));
+    scene->addItem(kiekko);
 
 
 }

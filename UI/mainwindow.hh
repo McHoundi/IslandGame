@@ -8,6 +8,15 @@
 #include "player.hh"
 #include "igameboard.hh"
 #include "gameengine.hh"
+#include <QGraphicsScene>
+#include <QGraphicsSimpleTextItem>
+#include <QGraphicsView>
+#include "iostream"
+#include "QDebug"
+#include "startdialog.hh"
+#include "QGraphicsPixmapItem"
+#include "QGraphicsEllipseItem"
+#include "pixmapgraphics.hh"
 
 namespace Ui {
 class MainWindow;

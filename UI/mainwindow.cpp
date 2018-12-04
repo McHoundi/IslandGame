@@ -6,6 +6,7 @@
 #include "gameboard.hh"
 #include "gamestate.hh"
 #include "pawngraphics.hh"
+#include "wheel.hh"
 #include "vector"
 #include <QDebug>
 #include <QLayout>
@@ -104,9 +105,8 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 scene->addItem(kuva);
 
 
-                QPixmap kiekkoPix(":/images/kdolph1.png");
-                kiekkoPix = kiekkoPix.scaled(QSize(250,250));
-                QGraphicsPixmapItem* kiekko = new QGraphicsPixmapItem(kiekkoPix);
+                wheel* kiekko = new wheel;
+                kiekko->setPicture();
                 kiekko->setOffset(QPointF(350, 0));
                 scene->addItem(kiekko);
 

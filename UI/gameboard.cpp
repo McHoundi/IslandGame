@@ -4,6 +4,7 @@
 #include  <iterator>
 #include <player.hh>
 #include <QObject>
+#
 
 namespace Student {
 
@@ -176,6 +177,10 @@ Common::CubeCoordinate GameBoard::pick_random_available_neighbour(std::shared_pt
     return random_neighbour;
 }
 
+
+
+
+
 void GameBoard::set_scene(QGraphicsScene *scene)
 {
     scene_ = scene;
@@ -184,6 +189,11 @@ void GameBoard::set_scene(QGraphicsScene *scene)
 QGraphicsScene *GameBoard::get_scene()
 {
     return scene_;
+}
+
+void GameBoard::insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics* hex)
+{
+    hexItems_[cubecoords] = hex;
 }
 
 
@@ -235,6 +245,10 @@ void GameBoard::removePawn(int pawnId)
     hexPointers_.at(pawnCoord)->removePawn(pawn);
     pawns_.erase(pawnId);
 
+    //Poistetaan pawnin graafinen puoli
+    delete pawnItems_.at(pawnId);
+    pawnItems_.erase(pawnId);
+
 }
 
 void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
@@ -245,15 +259,13 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     std::vector<Common::CubeCoordinate> neighbour_tiles = current_hex->getNeighbourVector();
 
     //A few checks about integrity of this movement before moving
+
     if ( pawn->getCoordinates() == pawnCoord ) {
         std::cout << "You're already on this tile!" << std::endl;
 
     } else if ( std::find(neighbour_tiles.begin(), neighbour_tiles.end(), pawnCoord) == neighbour_tiles.end()  ) {
         std::cout << "You're not next to this tile!" << std::endl;
-        for ( auto i : neighbour_tiles ) {
-            std:: cout << i.x << i.y << i.z << std::endl;
-        }
-        std::cout << "your coords: " << pawn->getCoordinates().x << pawn->getCoordinates().y << pawn->getCoordinates().z << std::endl;
+        std::cout << "Your coords: " << pawn->getCoordinates().x << pawn->getCoordinates().y << pawn->getCoordinates().z << std::endl;
     } else if ( hexPointers_.at(pawnCoord)->getPawnAmount() >= 3 ) {
         std::cout << "Tile full!" << std::endl;
     }
@@ -284,9 +296,10 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 // FIX: UNDEFINED REFERENCE TO PLAYER::add_pawn() KUN KUTSUTAAN add_pawn
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 {
-    std::cout << pawnId << std::endl;
+
     std::shared_ptr<Common::Hex> hexi = hexPointers_.at(coord);
     std::shared_ptr<Common::Pawn> new_pawn;
+
 
 
     if ( hexi->getPawnAmount() < 3 ) {
@@ -300,7 +313,66 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     int pawnAmount = hexi->getPawnAmount();
     hexi->addPawn(new_pawn);
     pawns_[pawnId] = new_pawn;
-    // playerPawns_.at(playerId).push_back(pawnId); LISÄÄ TÄHÄN FIND()-checkki!!
+
+
+
+
+    // Creating A graphical pawn.
+
+    pawngraphics* uusi_nappula = new pawngraphics;
+    //Player player(123);
+    QPointF XYCOORDS = cube_to_square(coord);
+    if ( pawnAmount == 0 ) {
+        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+    } else if (pawnAmount == 1) {
+        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+    } else if (pawnAmount == 2) {
+        uusi_nappula->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+    }
+    QBrush brush;
+
+    //PELAAJAN VÄRIN HAKU
+
+    brush.setStyle(Qt::SolidPattern);
+    if ( new_pawn->getPlayerId() == 1001 ) {
+        brush.setColor(Qt::blue);
+    } else if ( new_pawn->getPlayerId() == 1002 ) {
+        brush.setColor(Qt::red);
+    } else if ( new_pawn->getPlayerId() == 1003 ) {
+        brush.setColor(Qt::white);
+    } else if ( new_pawn->getPlayerId() == 1004 ) {
+        brush.setColor(Qt::red);
+    }
+
+    uusi_nappula->setBrush(brush);
+    scene_->addItem(uusi_nappula);
+    pawnItems_[pawnId] = uusi_nappula;
+    std::cout << "Pawn added: " << pawnId << " Player ID: " << new_pawn->getPlayerId() << std::endl;
+
+}
+
+//Lähes sama kuin yllä, mutta lisää pawnin aloitusruutuun.
+void GameBoard::addPawn(int playerId, int pawnId)
+{
+    GameBoard::addPawn(playerId, pawnId, Common::CubeCoordinate(0,0,0));
+
+
+    /*
+    std::shared_ptr<Common::Hex> hexi = hexPointers_.at(Common::CubeCoordinate(0,0,0));
+    std::shared_ptr<Common::Pawn> new_pawn;
+
+    if ( hexi->getPawnAmount() < 3 ) {
+        new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, Common::CubeCoordinate(0,0,0));
+    } else {
+        Common::CubeCoordinate free_tile = pick_random_available_neighbour(hexi);
+        new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, free_tile);
+
+    }
+
+    playerPawns_.at(playerId).push_back(pawnId);// LISÄÄ TÄHÄN FIND()-checkki!!
+
+
+    // Creating A graphical pawn.
 
     pawngraphics* uusi_nappula = new pawngraphics;
     //Player player(123);
@@ -321,25 +393,9 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     uusi_nappula->setBrush(brush);
     scene_->addItem(uusi_nappula);
     pawnItems_[pawnId] = uusi_nappula;
-    //players_.at(playerId)->add_pawn(pawnId);
-
-}
-
-void GameBoard::addPawn(int playerId, int pawnId)
-{
-    std::shared_ptr<Common::Hex> hexi = hexPointers_.at(Common::CubeCoordinate(0,0,0));
-    std::shared_ptr<Common::Pawn> new_pawn;
-
-    if ( hexi->getPawnAmount() < 3 ) {
-        new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, Common::CubeCoordinate(0,0,0));
-    } else {
-        Common::CubeCoordinate free_tile = pick_random_available_neighbour(hexi);
-        new_pawn = std::make_shared<Common::Pawn>(pawnId, playerId, free_tile);
-
-    }
     hexi->addPawn(new_pawn);
     pawns_[pawnId] = new_pawn;
-    //playerPawns_.at(playerId).push_back(pawnId);
+    */
 
 }
 

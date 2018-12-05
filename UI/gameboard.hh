@@ -39,11 +39,10 @@ public:
     // Valitsee satunnaisen naapurihexin, käytetään jos pawneja on liikaa.
     Common::CubeCoordinate pick_random_available_neighbour(std::shared_ptr<Common::Hex> hexi);
 
-    void add_player(int PlayerID, std::shared_ptr<Common::IPlayer>);
-
     void set_scene(QGraphicsScene* scene);
 
     QGraphicsScene* get_scene();
+    void insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics *hex);
 
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
     virtual bool isWaterTile(Common::CubeCoordinate tileCoord) const;
@@ -60,17 +59,17 @@ public:
     virtual void moveTransport(int id, Common::CubeCoordinate coord);
     virtual void removeTransport(int id);
 
-public slots:
+
 
 
 
 private:
-    int layerCount_ = 20;              //Hexagoni-layerien määrä kartassa.
+    int layerCount_ = 20;              //Hexagoni-layerien max määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;
     std::map<int, std::shared_ptr<Common::Pawn>> pawns_; //pawn pointers, searchable by pawnID
-    std::map<int, pawngraphics*> pawnItems_;
-    std::map<int, std::vector<int> > playerPawns_; // pawns, by ID, owned by each player, searchable by playerID
+    std::map<int, pawngraphics*> pawnItems_; //pawngraphics-items, searchable by pawnID
+    std::map<Common::CubeCoordinate, hexgraphics*> hexItems_;
     QGraphicsScene* scene_;
 };
 

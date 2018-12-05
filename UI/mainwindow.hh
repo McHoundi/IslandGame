@@ -23,6 +23,7 @@ public:
     void draw_map(std::shared_ptr<Student::GameBoard> lautaptr, QGraphicsScene *scene);
     void get_inputs(int playerCount);
     std::vector<std::shared_ptr<Common::IPlayer>> initialize_players();
+    void initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja);
     ~MainWindow();
 
 public slots:
@@ -30,12 +31,14 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    QGraphicsView* view_;
+    QGraphicsView* view1_;
+    QGraphicsScene* scene1_;
     int playerCount_;
-    std::shared_ptr<Student::GameBoard> boardPTR_;
+    std::shared_ptr<Student::GameBoard> boardPTR_; //sharedptr to the gameboard, saved here for convenience purposes
     std::shared_ptr<GameState> statePTR_;
     bool hexIsHighlighted_ = false;
-    std::shared_ptr<Common::Hex> highlightedHex_;
+    std::shared_ptr<Common::Hex> highlightedHex_ = nullptr;
+    std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr;
     std::map<Common::CubeCoordinate, hexgraphics*> hexes_;
 };
 

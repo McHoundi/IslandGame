@@ -25,6 +25,7 @@ SOURCES += \
     wheel.cpp \
     pixmapgraphics.cpp
 
+
 HEADERS  += \
     gameboard.hh \
     player.hh \
@@ -35,6 +36,7 @@ HEADERS  += \
     pawngraphics.hh \
     wheel.hh \
     pixmapgraphics.hh
+
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
 DEPENDPATH += $$PWD/../GameLogic/Engine

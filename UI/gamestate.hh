@@ -2,10 +2,12 @@
 #define GAMESTATE_HH
 
 #include "igamestate.hh"
+#include "gameboard.hh"
+#include "QObject"
 
-
-class GameState : public Common::IGameState
+class GameState :  public Common::IGameState
 {
+
 public:
     GameState();
     ~GameState();
@@ -14,9 +16,13 @@ public:
     virtual void changeGamePhase(Common::GamePhase nextPhase);
     virtual void changePlayerTurn(int nextPlayer);
 
+
+
+
+
 private:
     Common::GamePhase phase_ = Common::GamePhase::MOVEMENT; //current GamePhase
-    int player_; //Current player's ID
+    int player_ ; //Current player's ID
 
 };
 

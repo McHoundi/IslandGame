@@ -13,6 +13,15 @@
 #include <QWidget>
 
 
+#include <QGraphicsScene>
+#include <QGraphicsSimpleTextItem>
+#include <QGraphicsView>
+#include "iostream"
+#include "QDebug"
+#include "startdialog.hh"
+#include "igamerunner.hh"
+#include "initialize.hh"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -22,25 +31,51 @@ MainWindow::MainWindow(QWidget *parent) :
     StartDialog dialogi;
     QGraphicsScene* scene = new QGraphicsScene;
 
+	// Aloitusikkunan OK-nappi on kytketty tähän.
+	connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs); 
+	
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
+
     std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
-    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
+
 
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
+    dialogi.exec();
+
+    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
+
+    runner_ = Common::Initialization::getGameRunner(boardPtr, statePtr, pelaajat);
+
+    statePTR_ = statePtr;
+    boardPTR_ = boardPtr;
+
+    //statePtr->set_boardPTR(boardPtr);
+    statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
 
 
+    boardPtr->set_scene(scene);
 
-
-    Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
 
     draw_map(boardPtr, scene);
+
+
+    for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
+        initialize_pawns(pelaaja);
+    }
+
+
+
+
+    // ** addPawn TESTAUS
+    //boardPtr->addPawn(1001,11,Common::CubeCoordinate(0,0,0));
+     // ** addPawn TESTAUS
+
     ui->graphicsView->setScene(scene);
 
-    dialogi.exec();
+
 }
 
 void MainWindow::get_inputs(int playerCount){
-    std::cout << playerCount << std::endl;
     playerCount_ = playerCount;
 }
 
@@ -49,15 +84,43 @@ std::vector<std::shared_ptr<Common::IPlayer>> MainWindow::initialize_players()
 
     int PlayerID = 1001;
     int i;
+    std::vector<std::string> playerColors{};
+
+
     std::vector<std::shared_ptr<Common::IPlayer> > playerVector;
+    std::shared_ptr<Common::IPlayer> IPelaaja;
     for ( i = playerCount_ ; i != 0; i-- ) {
-        std::shared_ptr<Common::IPlayer> ipelaaja = std::make_shared<Player>(PlayerID);
-        playerVector.push_back(ipelaaja);
+        IPelaaja = std::make_shared<Player>(PlayerID);
+        playerVector.push_back(IPelaaja);
         PlayerID++;
     }
+    ;
+
     return playerVector;
 
 }
+
+void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
+{
+    // The mountainpeak has been made unvailable for players to enter,
+    // so at the start of the game, we're choosing the spawn tile for each pawn from a random neighbouring tile.
+
+
+
+    int GamerID = pelaaja->getPlayerId();
+    std::cout << "GamerID: " << GamerID << std::endl;
+    int basePawnID = GamerID - 1000;
+    int Pawnid = basePawnID * 10 + 1; // For 1st player, of playerid 1001, this equates to 11 (FOR SOME REASON, WHEN WE MULTIPLY BY ONE, IT MULTPLIES BY 10)
+
+    //We create 3 pawns for each player.
+    int i = 0;
+    for ( ; i < 3; i++ ) {
+        boardPTR_->addPawn(GamerID,Pawnid,Common::CubeCoordinate(0,0,0));
+        Pawnid++;
+    }
+
+}
+
 
 void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphicsScene* scene)
 {
@@ -69,7 +132,6 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
     QBrush brush;
     Common::CubeCoordinate cubecoords;
     std::shared_ptr<Common::Hex> hex_pointer;
-    int counter = 0;
 
     for (auto const& it : hexPtrs ) {
 
@@ -94,6 +156,7 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 }
 
                 hexgraphics* HexItem = new hexgraphics;
+                connect(HexItem, &hexgraphics::hexClicked, this, &MainWindow::hex_chosen);
                 HexItem->set_hexptr(hex_pointer);
                 HexItem->set_coords(boardPtr->cube_to_square(cubecoords));
 
@@ -103,39 +166,9 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 HexItem->setBrush(brush);
                 scene->addItem(HexItem);
 
-                pixmapgraphics* kuva = new pixmapgraphics;
-                kuva->setPicture("kraken");
-                QPointF coords = boardPtr->cube_to_square(cubecoords);
-                kuva->movePicture(coords);
-                scene->addItem(kuva);
 
+                boardPTR_->insert_hexItems(cubecoords, HexItem);
 
-
-
-
-                pawngraphics* pawni1 = new pawngraphics;
-
-                pawni1->setRect(XYCOORDS.x()+4,XYCOORDS.y()+4,8,8);
-                brush.setStyle(Qt::SolidPattern);
-                brush.setColor(Qt::red);
-                pawni1->setBrush(brush);
-                scene->addItem(pawni1);
-
-                pawngraphics* pawni2 = new pawngraphics;
-
-                pawni2->setRect(XYCOORDS.x()+4,XYCOORDS.y()-6,8,8);
-                brush.setStyle(Qt::SolidPattern);
-                brush.setColor(Qt::blue);
-                pawni2->setBrush(brush);
-                scene->addItem(pawni2);
-
-                pawngraphics* pawni3 = new pawngraphics;
-
-                pawni3->setRect(XYCOORDS.x()-6,XYCOORDS.y()+4,8,8);
-                brush.setStyle(Qt::SolidPattern);
-                brush.setColor(Qt::white);
-                pawni3->setBrush(brush);
-                scene->addItem(pawni3);
             }
         }
 
@@ -154,12 +187,50 @@ MainWindow::~MainWindow()
 }
 
 
-//void MainWindow::spawnObjects() {
+void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
+{
+    if ( statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT ) {
 
-    //auto pObj = std::make_shared<FastBall>();
-    //engine_->registerObject(pObj);
-    //auto pGraph = new PiirtoTesti(pObj);
-    //graphics_.push_back(pGraph);
-    //view_->scene()->addItem(pGraph);
+        if ( hexi->getPawnAmount() > 0 && highlightedPawn_ == nullptr ) {
+             int current_player = statePTR_->currentPlayer();
+             std::vector<std::shared_ptr<Common::Pawn>> pawnlist = hexi->getPawns();
+             for ( auto pawn : pawnlist ) {
+                 if ( current_player == pawn->getPlayerId() ) {
+                     highlightedPawn_ = pawn;
+                     highlightedHex_ = hexi;
+                     break;
+                 }
+             if ( highlightedPawn_ != nullptr ) {
+                 std::cout << "Player " << current_player << " has no pawns in this tile!" << std::endl;
+             } else {
+                 //Hex&Pawn highlighted!!
+             }
 
-//}
+            }
+        } else if ( highlightedPawn_ != nullptr) {
+
+            //boardPTR_->movePawn(highlightedPawn_->getId(), hexi->getCoordinates());
+            runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
+
+            //check if movement went through, clear highlights if it did, otherwise do nothing
+            if ( highlightedPawn_->getCoordinates() == hexi->getCoordinates() ) {
+                std::cout << "Pawn Moved! " << std::endl;
+                std::cout << "Player: " << highlightedPawn_->getPlayerId() << " Pawn: " << highlightedPawn_->getId() << std::endl;
+                highlightedPawn_ = nullptr;
+                highlightedHex_ = nullptr;
+            } else {
+                //Do nothing;
+            }
+
+
+        }
+
+
+    } else if ( statePTR_->currentGamePhase() == Common::GamePhase::SINKING ) {
+
+    } else {
+
+    }
+}
+
+

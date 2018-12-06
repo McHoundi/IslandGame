@@ -3,6 +3,7 @@
 
 Player::Player(int PlayerID)
 {
+
     id_ = PlayerID;
 
 }
@@ -25,4 +26,9 @@ void Player::setActionsLeft(unsigned int actionsLeft)
 unsigned int Player::getActionsLeft() const
 {
     return actions_;
+}
+
+void Player::add_pawn(int pawnID)
+{
+    myPawns_.push_back(pawnID);
 }

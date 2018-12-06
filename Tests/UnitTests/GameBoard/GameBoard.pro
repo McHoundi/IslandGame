@@ -47,8 +47,9 @@ SOURCES += \
     ../../../GameLogic/Engine/kraken.cpp \
     ../../../GameLogic/Engine/seamunster.cpp \
     ../../../GameLogic/Engine/shark.cpp \
-    ../../../GameLogic/Engine/vortex.cpp
-
+    ../../../GameLogic/Engine/vortex.cpp \
+    ../../../UI/player.cpp \
+    ../../../UI/pawngraphics.cpp
 
 
 
@@ -69,7 +70,9 @@ HEADERS += \
     ../../../GameLogic/Engine/kraken.hh \
     ../../../GameLogic/Engine/seamunster.hh \
     ../../../GameLogic/Engine/shark.hh \
-    ../../../GameLogic/Engine/vortex.hh
+    ../../../GameLogic/Engine/vortex.hh \
+    ../../../UI/player.hh \
+    ../../../UI/pawngraphics.hh
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 

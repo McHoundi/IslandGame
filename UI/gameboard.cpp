@@ -175,8 +175,12 @@ Common::CubeCoordinate GameBoard::pick_random_available_neighbour(std::shared_pt
     //kerätään naapurilaatoista ei-täydet laatat, ja valitaan niistä satunnainen ja sen koordinaatit.
     std::vector<Common::CubeCoordinate> available_neighbours;
     for ( Common::CubeCoordinate cubecoords : full_hex->getNeighbourVector() ) {
-        if ( hexPointers_.at(cubecoords)->getPawnAmount() < 3 ) {
-            available_neighbours.push_back(cubecoords);
+        if ( hexPointers_.at(cubecoords)->getPawnAmount() < 3) {
+            if ( cubecoords.x == 0 && cubecoords.y == 0 && cubecoords.z == 0 ) {
+                // Do nothing
+            } else {
+                available_neighbours.push_back(cubecoords);
+            }
            }
     }
     random_neighbour = *select_randomly(available_neighbours.begin(), available_neighbours.end());
@@ -330,8 +334,15 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 {
+    std::shared_ptr<Common::Hex> hexi;
+    if ( coord.x == 0 && coord.y == 0 && coord.z == 0 ) {
+        Common::CubeCoordinate coords_outside_center = pick_random_available_neighbour(hexPointers_.at(Common::CubeCoordinate(0,0,0)));
+        hexi = hexPointers_.at(coords_outside_center);
+        coord = coords_outside_center;
+    } else {
+        hexi = hexPointers_.at(coord);
+    }
 
-    std::shared_ptr<Common::Hex> hexi = hexPointers_.at(coord);
     std::shared_ptr<Common::Pawn> new_pawn;
 
 

@@ -63,15 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
         initialize_pawns(pelaaja);
     }
 
-
-
-
-    // ** addPawn TESTAUS
-    //boardPtr->addPawn(1001,11,Common::CubeCoordinate(0,0,0));
-     // ** addPawn TESTAUS
-
     ui->graphicsView->setScene(scene);
-
 
 }
 

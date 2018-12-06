@@ -12,32 +12,30 @@ hexgraphics::hexgraphics()
 
 void hexgraphics::set_coords(QPointF coordinates)
 {
-    //std::cout << "COORDS: " << std::endl;
-    //std::cout << coordinates.x() << "," << coordinates.y() << std::endl;
     xycoords_ = coordinates;
 
     QPointF point1;
-    point1.setX( xycoords_.x() + HEX_WIDTH / 4 );
-    point1.setY( xycoords_.y() - HEX_HEIGHT / 2 );
+    point1.setX( xycoords_.x() + HEX_WIDTH * 0.25 );
+    point1.setY( xycoords_.y() - HEX_HEIGHT * 0.5 );
 
     QPointF point2;
-    point2.setX( xycoords_.x() - HEX_WIDTH / 4 );
-    point2.setY( xycoords_.y() - HEX_HEIGHT / 2);
+    point2.setX( xycoords_.x() - HEX_WIDTH * 0.25 );
+    point2.setY( xycoords_.y() - HEX_HEIGHT * 0.5 );
 
     QPointF point3;
-    point3.setX( xycoords_.x() - HEX_WIDTH / 2 );
+    point3.setX( xycoords_.x() - HEX_WIDTH * 0.5 );
     point3.setY( xycoords_.y() );
 
     QPointF point4;
-    point4.setX( xycoords_.x() - HEX_WIDTH / 4 );
-    point4.setY( xycoords_.y() + HEX_HEIGHT / 2 );
+    point4.setX( xycoords_.x() - HEX_WIDTH * 0.25 );
+    point4.setY( xycoords_.y() + HEX_HEIGHT * 0.5  );
 
     QPointF point5;
-    point5.setX( xycoords_.x() + HEX_WIDTH / 4 );
-    point5.setY( xycoords_.y() + HEX_HEIGHT / 2 );
+    point5.setX( xycoords_.x() + HEX_WIDTH * 0.25 );
+    point5.setY( xycoords_.y() + HEX_HEIGHT * 0.5 );
 
     QPointF point6;
-    point6.setX( xycoords_.x() + HEX_WIDTH / 2 );
+    point6.setX( xycoords_.x() + HEX_WIDTH * 0.5 );
     point6.setY( xycoords_.y() );
 
     QVector<QPointF> vektori;
@@ -72,10 +70,13 @@ void hexgraphics::set_hexptr(std::shared_ptr<Common::Hex> kuusikulmio_ptr)
 
 void hexgraphics::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+
     QBrush greenbrush;
     greenbrush.setColor(Qt::green);
     greenbrush.setStyle(Qt::SolidPattern);
     setBrush(greenbrush);
+
+    emit hexClicked(hexptr);
 
 
     /*

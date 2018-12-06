@@ -19,7 +19,8 @@ SOURCES += main.cc \
     player.cpp \
     hexgraphics.cpp \
     gamestate.cpp \
-    startdialog.cpp
+    startdialog.cpp \
+    pawngraphics.cpp
 
 HEADERS  += \
     gameboard.hh \
@@ -27,7 +28,8 @@ HEADERS  += \
     gamestate.hh \
     mainwindow.hh \
     hexgraphics.hh \
-    startdialog.hh
+    startdialog.hh \
+    pawngraphics.hh
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
 DEPENDPATH += $$PWD/../GameLogic/Engine

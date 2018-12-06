@@ -4,11 +4,13 @@
 #include <map>
 #include <unordered_map>
 
+#include "pawngraphics.hh"
 #include "hexgraphics.hh"
 #include "igameboard.hh"
 #include "vector"
 #include <QPointF>
 #include <QObject>
+#include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QPointF>
@@ -19,7 +21,7 @@
 
 namespace Student {
 
-class GameBoard : public Common::IGameBoard
+class GameBoard : public QObject, public Common::IGameBoard
 {
 public:
     GameBoard();
@@ -34,6 +36,13 @@ public:
 
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> get_hexPointers();
 
+    // Valitsee satunnaisen naapurihexin, käytetään jos pawneja on liikaa.
+    Common::CubeCoordinate pick_random_available_neighbour(std::shared_ptr<Common::Hex> hexi);
+
+    void set_scene(QGraphicsScene* scene);
+
+    QGraphicsScene* get_scene();
+    void insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics *hex);
 
 
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
@@ -52,11 +61,18 @@ public:
     virtual void removeTransport(int id);
 
 
+
+
+
 private:
-    int layerCount_ = 20;              //Hexagoni-layerien määrä kartassa.
+    int layerCount_ = 20;              //Hexagoni-layerien max määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;
-    std::vector<hexgraphics*> hexes_;
+    std::map<int, std::shared_ptr<Common::Pawn>> pawns_; //pawn pointers, searchable by pawnID
+    std::map<int, pawngraphics*> pawnItems_; //pawngraphics-items, searchable by pawnID
+    std::map<Common::CubeCoordinate, hexgraphics*> hexItems_;
+    std::map<Common::CubeCoordinate, std::vector<bool>> pawnSlots_;
+    QGraphicsScene* scene_;
 };
 
 }

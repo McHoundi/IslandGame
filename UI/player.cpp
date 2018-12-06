@@ -3,9 +3,9 @@
 
 Player::Player(int PlayerID)
 {
-	id_ = PlayerID;
-	BASEpawnID = ( PlayerID - 1000 ) * 10;
-	
+
+    id_ = PlayerID;
+
 }
 
 Player::~Player()
@@ -26,4 +26,9 @@ void Player::setActionsLeft(unsigned int actionsLeft)
 unsigned int Player::getActionsLeft() const
 {
     return actions_;
+}
+
+void Player::add_pawn(int pawnID)
+{
+    myPawns_.push_back(pawnID);
 }

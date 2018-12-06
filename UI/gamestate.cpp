@@ -1,8 +1,9 @@
 #include "gamestate.hh"
+#include "iostream"
 
 GameState::GameState()
 {
-
+    player_ = 1001; //Player 1 always starts
 }
 
 GameState::~GameState()
@@ -24,6 +25,7 @@ void GameState::changePlayerTurn(int nextPlayer)
 {
     player_ = nextPlayer;
 }
+
 
 void GameState::changeGamePhase(Common::GamePhase nextPhase)
 {

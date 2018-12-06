@@ -16,6 +16,8 @@
 #include "iostream"
 #include "QDebug"
 #include "startdialog.hh"
+#include "igamerunner.hh"
+#include "initialize.hh"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -35,7 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
 
-    Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
+    runner_ = Common::Initialization::getGameRunner(boardPtr, statePtr, pelaajat);
+
     statePTR_ = statePtr;
     boardPTR_ = boardPtr;
 
@@ -185,7 +188,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             }
         } else if ( highlightedPawn_ != nullptr) {
 
-            boardPTR_->movePawn(highlightedPawn_->getId(), hexi->getCoordinates());
+            //boardPTR_->movePawn(highlightedPawn_->getId(), hexi->getCoordinates());
+            runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
 
             //check if movement went through, clear highlights if it did, otherwise do nothing
             if ( highlightedPawn_->getCoordinates() == hexi->getCoordinates() ) {

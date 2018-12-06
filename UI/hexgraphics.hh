@@ -48,6 +48,8 @@ private:
     QPointF xycoords_;        // Keskipisteen koordinaatit (muodossa x,y)
 
 
+
+
 };
 
 

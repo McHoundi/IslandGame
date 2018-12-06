@@ -194,6 +194,10 @@ QGraphicsScene *GameBoard::get_scene()
 void GameBoard::insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics* hex)
 {
     hexItems_[cubecoords] = hex;
+
+    //alustetaan samalla pawnSlots map
+    std::vector<bool> dummy {false, false, false};
+    pawnSlots_[cubecoords] = dummy;
 }
 
 
@@ -273,12 +277,18 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     else {
         current_hex->removePawn(pawn);
         target_hex->addPawn(pawn);
+
+        int pawnslot = pawnItems_.at(pawnId)->get_pawnSlot();
+        pawnSlots_.at(pawn->getCoordinates()).at(pawnslot-1) = false;
+
         pawn->setCoordinates(pawnCoord);
 
         QPointF XYCOORDS = cube_to_square(pawnCoord);
         if ( pawnItems_.find(pawnId) == pawnItems_.end() ) {
             std::cout << "Tätä erroria ei pitäisi tulla" << std::endl;
         } else {
+            /* VANHAA MUTTA TOIMIVAA KOODIA
+             *
             std::cout << "pawnamount: " << target_hex->getPawnAmount() << std::endl;
             if (target_hex->getPawnAmount() == 1 ) {
                 pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
@@ -287,13 +297,31 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
             } else if (target_hex->getPawnAmount() == 3 ) {
                 pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
         }
+            */
+
+            if ( target_hex->getPawnAmount() == 0 ) {
+                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                pawnSlots_.at(pawnCoord).at(0) = true;
+                pawnItems_.at(pawnId)->set_pawnSlot(1);
+            } else if ( pawnSlots_.at(pawnCoord).at(0) == false) {
+                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                pawnSlots_.at(pawnCoord).at(0) = true;
+                pawnItems_.at(pawnId)->set_pawnSlot(1);
+            } else if ( pawnSlots_.at(pawnCoord).at(1) == false ) {
+                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+                pawnSlots_.at(pawnCoord).at(1) = true;
+                pawnItems_.at(pawnId)->set_pawnSlot(2);
+            } else if ( pawnSlots_.at(pawnCoord).at(2) == false ) {
+                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                pawnSlots_.at(pawnCoord).at(2) = true;
+                pawnItems_.at(pawnId)->set_pawnSlot(3);
+            }
 
     }
 
 }
 }
-//HUOM! STILL NEEDS GRAPHICAL IMPLEMENTATION!
-// FIX: UNDEFINED REFERENCE TO PLAYER::add_pawn() KUN KUTSUTAAN add_pawn
+
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 {
 
@@ -310,24 +338,33 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
         hexi = hexPointers_.at(free_tile_coord);
         coord = free_tile_coord;
     }
-    int pawnAmount = hexi->getPawnAmount();
+
     hexi->addPawn(new_pawn);
     pawns_[pawnId] = new_pawn;
-
-
-
 
     // Creating A graphical pawn.
 
     pawngraphics* uusi_nappula = new pawngraphics;
     //Player player(123);
     QPointF XYCOORDS = cube_to_square(coord);
+    int pawnAmount = hexi->getPawnAmount();
+
     if ( pawnAmount == 0 ) {
         uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-    } else if (pawnAmount == 1) {
+        pawnSlots_.at(coord).at(0) = true;
+        uusi_nappula->set_pawnSlot(1);
+    } else if ( pawnSlots_.at(coord).at(0) == false ) {
+        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+        pawnSlots_.at(coord).at(0) = true;
+        uusi_nappula->set_pawnSlot(1);
+    } else if ( pawnSlots_.at(coord).at(1) == false ) {
         uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
-    } else if (pawnAmount == 2) {
+        pawnSlots_.at(coord).at(1) = true;
+        uusi_nappula->set_pawnSlot(2);
+    } else if ( pawnSlots_.at(coord).at(2) == false ) {
         uusi_nappula->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+        pawnSlots_.at(coord).at(2) = true;
+        uusi_nappula->set_pawnSlot(3);
     }
     QBrush brush;
 

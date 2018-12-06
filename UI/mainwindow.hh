@@ -39,7 +39,7 @@ private:
     bool hexIsHighlighted_ = false;
     std::shared_ptr<Common::Hex> highlightedHex_ = nullptr;
     std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr;
-    std::map<Common::CubeCoordinate, hexgraphics*> hexes_;
+    std::shared_ptr<Common::IGameRunner> runner_;
 };
 
 #endif // MAINWINDOW_HH

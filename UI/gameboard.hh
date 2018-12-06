@@ -44,6 +44,7 @@ public:
     QGraphicsScene* get_scene();
     void insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics *hex);
 
+
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;
     virtual bool isWaterTile(Common::CubeCoordinate tileCoord) const;
     virtual std::shared_ptr<Common::Hex> getHex(Common::CubeCoordinate hexCoord) const;
@@ -70,6 +71,7 @@ private:
     std::map<int, std::shared_ptr<Common::Pawn>> pawns_; //pawn pointers, searchable by pawnID
     std::map<int, pawngraphics*> pawnItems_; //pawngraphics-items, searchable by pawnID
     std::map<Common::CubeCoordinate, hexgraphics*> hexItems_;
+    std::map<Common::CubeCoordinate, std::vector<bool>> pawnSlots_;
     QGraphicsScene* scene_;
 };
 

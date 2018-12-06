@@ -5,10 +5,13 @@
 #include "gameengine.hh"
 #include "gameboard.hh"
 #include "gamestate.hh"
+#include "pawngraphics.hh"
+#include "wheel.hh"
 #include "vector"
 #include <QDebug>
 #include <QLayout>
 #include <QWidget>
+
 
 #include <QGraphicsScene>
 #include <QGraphicsSimpleTextItem>
@@ -32,12 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs); 
 	
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
-<<<<<<< HEAD
-    std::shared_ptr<GameState> statePtr;
-    std::vector<std::shared_ptr<Common::Player> > pelaajat = initialize_players();
-	
-    Logic::GameEngine Moottori(boardPtr, statePtr, pelaajat);
-=======
+
     std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
 
 
@@ -56,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     boardPtr->set_scene(scene);
->>>>>>> 44d12d7dd9a83f971f012f3787ba0351c34d9db1
+
 
     draw_map(boardPtr, scene);
 
@@ -162,14 +160,26 @@ void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphic
                 HexItem->set_hexptr(hex_pointer);
                 HexItem->set_coords(boardPtr->cube_to_square(cubecoords));
 
+                QPointF XYCOORDS = boardPtr->cube_to_square(cubecoords);
+
                 brush.setStyle(Qt::SolidPattern);
                 HexItem->setBrush(brush);
                 scene->addItem(HexItem);
 
+
                 boardPTR_->insert_hexItems(cubecoords, HexItem);
+
             }
         }
+
+    wheel* kiekko = new wheel;
+    kiekko->setPicture();
+    kiekko->setOffset(QPointF(350, 0));
+    scene->addItem(kiekko);
+
+
 }
+
 
 MainWindow::~MainWindow()
 {

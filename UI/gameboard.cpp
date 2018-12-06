@@ -70,7 +70,7 @@ void GameBoard::determine_midpoints()
         midpoints_[cube_coords] = midpoint_marker;
 
         // side_hops on hyppyjen (tai askelten) määrä, mitä tarvitaan päästäksemme jonkin layerin "sivun" päästä päähän.
-        // Koska layerin numero on sama kuin sivujen määrä, side_hops on yksi vähemmän kuin layerin numero.
+        // Koska layerin numero on sama kuin yhdellä sivulla olevien laattojen määrä, side_hops on yksi vähemmän kuin layerin numero.
         int side_hops = layer_counter - 1;
         int i;
 

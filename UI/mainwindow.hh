@@ -8,6 +8,15 @@
 #include "player.hh"
 #include "igameboard.hh"
 #include "gameengine.hh"
+#include <QGraphicsScene>
+#include <QGraphicsSimpleTextItem>
+#include <QGraphicsView>
+#include "iostream"
+#include "QDebug"
+#include "startdialog.hh"
+#include "QGraphicsPixmapItem"
+#include "QGraphicsEllipseItem"
+#include "pixmapgraphics.hh"
 
 #include "vector"
 
@@ -44,13 +53,10 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-
-    QGraphicsView* view_;
     int playerCount_; //aloitusikkunassa määritetty pelaajien määrä.
 
     QGraphicsView* view1_;
     QGraphicsScene* scene1_;
-    int playerCount_;
     std::shared_ptr<Student::GameBoard> boardPTR_; //sharedptr to the gameboard, saved here for convenience purposes
     std::shared_ptr<GameState> statePTR_;
     bool hexIsHighlighted_ = false;

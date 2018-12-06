@@ -13,14 +13,18 @@ TEMPLATE = app
 CONFIG += c++14
 
 
-SOURCES += main.cc \
+SOURCES += \
     mainwindow.cpp \
     gameboard.cpp \
     player.cpp \
     hexgraphics.cpp \
     gamestate.cpp \
     startdialog.cpp \
-    pawngraphics.cpp
+    main.cc \
+    pawngraphics.cpp \
+    wheel.cpp \
+    pixmapgraphics.cpp
+
 
 HEADERS  += \
     gameboard.hh \
@@ -29,7 +33,10 @@ HEADERS  += \
     mainwindow.hh \
     hexgraphics.hh \
     startdialog.hh \
-    pawngraphics.hh
+    pawngraphics.hh \
+    wheel.hh \
+    pixmapgraphics.hh
+
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
 DEPENDPATH += $$PWD/../GameLogic/Engine
@@ -69,3 +76,6 @@ POST_TARGETDEPS += copyfiles
 FORMS += \
     mainwindow.ui \
     startdialog.ui
+
+RESOURCES += \
+    images.qrc

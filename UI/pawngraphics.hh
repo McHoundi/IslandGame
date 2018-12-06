@@ -20,12 +20,16 @@ class pawngraphics : public QGraphicsEllipseItem
 public:
     pawngraphics();
     void set_coords(QPointF coordinates);
+
     void set_pawnSlot(int slot);
     int get_pawnSlot();
 
 private:
     QPointF xycoords_;
     int pawnSlot_; //pawnSlot pitää kirjaa siitä, missä kolmesta yksittäisen hexin sisällä graafisesta "slotissa" eli sijainnissa pawni sijaitsee.
+
+
+
 };
 
 #endif // PAWNGRAPHICS_HH

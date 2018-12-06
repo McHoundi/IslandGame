@@ -49,7 +49,8 @@ SOURCES += \
     ../../../GameLogic/Engine/shark.cpp \
     ../../../GameLogic/Engine/vortex.cpp \
     ../../../UI/player.cpp \
-    ../../../UI/pawngraphics.cpp
+    ../../../UI/pawngraphics.cpp \
+    ../../../UI/hexgraphics.cpp
 
 
 
@@ -72,7 +73,9 @@ HEADERS += \
     ../../../GameLogic/Engine/shark.hh \
     ../../../GameLogic/Engine/vortex.hh \
     ../../../UI/player.hh \
-    ../../../UI/pawngraphics.hh
+    ../../../UI/pawngraphics.hh \
+    ../../../UI/hexgraphics.hh
+
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 

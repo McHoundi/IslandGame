@@ -210,6 +210,11 @@ void GameBoard::insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics* 
     pawnSlots_[cubecoords] = dummy;
 }
 
+std::map<Common::CubeCoordinate, hexgraphics *> GameBoard::get_hexItems()
+{
+    return hexItems_;
+}
+
 
 
 
@@ -234,6 +239,38 @@ void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
 {
     Common::CubeCoordinate cubecoords = newHex->getCoordinates();
     hexPointers_[cubecoords] = newHex;
+
+    //Graafinen puoli
+    QBrush brush;
+    std::string type = newHex->getPieceType();
+    if (type == "Peak") {
+
+        brush.setColor(Qt::darkGray);
+    } else if (type == "Mountain") {
+        brush.setColor(Qt::lightGray);
+    } else if (type == "Forest") {
+        brush.setColor(Qt::green);
+    } else if (type == "Beach") {
+        brush.setColor(Qt::yellow);
+    } else if (type == "Coral") {
+        brush.setColor(Qt::magenta);
+    } else if (type == "Water") {
+        brush.setColor(Qt::cyan);
+    } else {
+        std::cout << "Unrecognized type!" << std::endl;
+    }
+
+    hexgraphics* HexItem = new hexgraphics;
+    brush.setStyle(Qt::SolidPattern);
+
+    HexItem->set_hexptr(newHex);
+    HexItem->set_coords(cube_to_square(cubecoords));
+    HexItem->setBrush(brush);
+    scene_->addItem(HexItem);
+
+    insert_hexItems(cubecoords, HexItem);
+
+
 }
 
 void GameBoard::removeActor(int actorId)

@@ -17,7 +17,7 @@
 #include <QBrush>
 #include "math.h"
 #include "player.hh"
-
+#include "pixmapgraphics.hh"
 
 namespace Student {
 
@@ -43,6 +43,7 @@ public:
 
     QGraphicsScene* get_scene();
     void insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics *hex);
+    std::map<Common::CubeCoordinate, hexgraphics *> get_hexItems();
 
 
     virtual int checkTileOccupation(Common::CubeCoordinate tileCoord) const;

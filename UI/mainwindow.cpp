@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dialogi.exec();
 
     std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
-
+    boardPtr->set_scene(scene);
     runner_ = Common::Initialization::getGameRunner(boardPtr, statePtr, pelaajat);
 
     statePTR_ = statePtr;
@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
 
 
-    boardPtr->set_scene(scene);
+
 
 
     draw_map(boardPtr, scene);
@@ -117,60 +117,22 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
 void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphicsScene* scene)
 {
 
-    std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPtrs;
-    hexPtrs = boardPtr->get_hexPointers();
-
-    std::string type;
-    QBrush brush;
-    Common::CubeCoordinate cubecoords;
-    std::shared_ptr<Common::Hex> hex_pointer;
-
-    for (auto const& it : hexPtrs ) {
-
-            hex_pointer = it.second;
-            cubecoords = it.first;
-            if( hex_pointer != nullptr ) {
-                type = hex_pointer->getPieceType();
-                if (type == "Peak") {
-                    brush.setColor(Qt::darkGray);
-                } else if (type == "Mountain") {
-                    brush.setColor(Qt::lightGray);
-                } else if (type == "Forest") {
-                    brush.setColor(Qt::green);
-                } else if (type == "Beach") {
-                    brush.setColor(Qt::yellow);
-                } else if (type == "Coral") {
-                    brush.setColor(Qt::magenta);
-                } else if (type == "Water") {
-                    brush.setColor(Qt::cyan);
-                } else {
-                    std::cout << "Unrecognized type!" << std::endl;
-                }
-
-                hexgraphics* HexItem = new hexgraphics;
-                connect(HexItem, &hexgraphics::hexClicked, this, &MainWindow::hex_chosen);
-                HexItem->set_hexptr(hex_pointer);
-                HexItem->set_coords(boardPtr->cube_to_square(cubecoords));
-
-                QPointF XYCOORDS = boardPtr->cube_to_square(cubecoords);
-
-                brush.setStyle(Qt::SolidPattern);
-                HexItem->setBrush(brush);
-                scene->addItem(HexItem);
-
-
-                boardPTR_->insert_hexItems(cubecoords, HexItem);
-
-            }
-        }
-
     wheel* kiekko = new wheel;
     kiekko->setPicture();
     kiekko->setOffset(QPointF(350, 0));
     scene->addItem(kiekko);
 
+    for (auto const& it : boardPTR_->get_hexItems() ) {
+              hexgraphics* HexItem = it.second;
+                connect(HexItem, &hexgraphics::hexClicked, this, &MainWindow::hex_chosen);
 
-}
+
+
+
+            }
+     }
+
+
 
 
 MainWindow::~MainWindow()

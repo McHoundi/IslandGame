@@ -11,27 +11,27 @@ void pixmapgraphics::setPicture(std::string type)
     if (type == "dolphin") {
         QPixmap pixi(":/images/dolphin.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
-        this->setPixmap(pixi);
+        setPixmap(pixi);
     } else if (type == "shark") {
         QPixmap pixi(":/images/shark.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
-        this->setPixmap(pixi);
+        setPixmap(pixi);
     } else if (type == "kraken") {
         QPixmap pixi(":/images/kraken.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
-        this->setPixmap(pixi);
+        setPixmap(pixi);
     } else if (type == "seamonster") {
         QPixmap pixi(":/images/seamonster.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
-        this->setPixmap(pixi);
+        setPixmap(pixi);
     } else if (type == "vortex") {
         QPixmap pixi(":/images/vortex.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
-        this->setPixmap(pixi);
+        setPixmap(pixi);
     } else if (type == "boat") {
         QPixmap pixi(":/images/boat.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
-        this->setPixmap(pixi);
+        setPixmap(pixi);
     }
 }
 

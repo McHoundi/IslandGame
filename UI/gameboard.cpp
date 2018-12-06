@@ -233,6 +233,16 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Common::CubeCoordinate coord)
 {
 
+    std::shared_ptr<Common::Hex> hexi = hexPointers_.at(coord);
+    hexi->addTransport(transport);
+
+    pixmapgraphics* uusi_transport = new pixmapgraphics;
+    QPointF XYCOORDS = cube_to_square(coord);
+    std::string tyyppi = transport->getTransportType();
+    uusi_transport->setPicture(tyyppi);
+    uusi_transport->movePicture(XYCOORDS);
+    scene_->addItem(uusi_transport);
+
 }
 
 void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)

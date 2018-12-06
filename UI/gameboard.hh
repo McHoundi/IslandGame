@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "pawngraphics.hh"
+#include "pixmapgraphics.hh"
 #include "hexgraphics.hh"
 #include "igameboard.hh"
 #include "vector"

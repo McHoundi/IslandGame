@@ -71,10 +71,6 @@ void hexgraphics::set_hexptr(std::shared_ptr<Common::Hex> kuusikulmio_ptr)
 void hexgraphics::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    QBrush greenbrush;
-    greenbrush.setColor(Qt::green);
-    greenbrush.setStyle(Qt::SolidPattern);
-    setBrush(greenbrush);
 
     emit hexClicked(hexptr);
 

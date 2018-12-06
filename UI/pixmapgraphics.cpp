@@ -20,7 +20,7 @@ void pixmapgraphics::setPicture(std::string type)
         QPixmap pixi(":/images/kraken.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
         setPixmap(pixi);
-    } else if (type == "seamonster") {
+    } else if (type == "seamunster") {
         QPixmap pixi(":/images/seamonster.png");
         pixi = pixi.scaled(0.75*HEX_SIZE, 0.75*HEX_SIZE);
         setPixmap(pixi);

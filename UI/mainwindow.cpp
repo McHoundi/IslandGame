@@ -46,11 +46,13 @@ MainWindow::MainWindow(QWidget *parent) :
     boardPtr->set_scene(scene);
     runner_ = Common::Initialization::getGameRunner(boardPtr, statePtr, pelaajat);
 
+
     statePTR_ = statePtr;
     boardPTR_ = boardPtr;
 
     //statePtr->set_boardPTR(boardPtr);
-    statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
+    statePtr->changeGamePhase(Common::GamePhase::SINKING);
+
 
 
 
@@ -59,9 +61,15 @@ MainWindow::MainWindow(QWidget *parent) :
     draw_map(boardPtr, scene);
 
 
+
+
     for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
         initialize_pawns(pelaaja);
     }
+    boardPTR_->addPawn(1001, 15, Common::CubeCoordinate(1,0,-1));
+    boardPTR_->addPawn(1001, 16, Common::CubeCoordinate(1,0,-1));
+
+    boardPTR_->get_hexPointers().at(Common::CubeCoordinate(1,0,-1))->clearAllFromNeightbours();
 
     ui->graphicsView->setScene(scene);
 
@@ -181,7 +189,14 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
 
     } else if ( statePTR_->currentGamePhase() == Common::GamePhase::SINKING ) {
-
+            Common::CubeCoordinate coords = hexi->getCoordinates();
+            runner_->flipTile(coords);
+            hexgraphics* hexItem;
+            hexItem = boardPTR_->get_hexItems().at(coords);
+            QBrush waterbrush;
+            waterbrush.setColor(Qt::cyan);
+            waterbrush.setStyle(Qt::SolidPattern);
+            hexItem->setBrush(waterbrush);
     } else {
 
     }

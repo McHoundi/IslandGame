@@ -295,8 +295,17 @@ void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
 
 void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoordinate actorCoord)
 {
-    std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(actorCoord);
-    // TODO: GRAAFINEN SETTI!
+
+    std::shared_ptr<Common::Hex> hexi = hexPointers_.at(actorCoord);
+    hexi->addActor(actor);
+
+    pixmapgraphics* uusi_actor = new pixmapgraphics;
+    QPointF XYCOORDS = cube_to_square(actorCoord);
+    std::string tyyppi = actor->getActorType();
+    uusi_actor->setPicture(tyyppi);
+    uusi_actor->movePicture(XYCOORDS);
+    scene_->addItem(uusi_actor);
+    //actor->doAction();
 }
 
 void GameBoard::removePawn(int pawnId)
@@ -306,7 +315,7 @@ void GameBoard::removePawn(int pawnId)
     hexPointers_.at(pawnCoord)->removePawn(pawn);
     pawns_.erase(pawnId);
 
-    //Poistetaan pawnin graafinen puoli
+    //Poistetaan vielä pawnin graafinen puoli
     delete pawnItems_.at(pawnId);
     pawnItems_.erase(pawnId);
 

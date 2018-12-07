@@ -2,7 +2,7 @@
 
 wheel::wheel()
 {
-    /*
+
     QPixmap Dolph1Pix(":/images/kdolph1.png");
     Dolph1Pix = Dolph1Pix.scaled(QSize(250,250));
     pixmaps_.push_back(Dolph1Pix);
@@ -60,16 +60,52 @@ wheel::wheel()
     pixmaps_.push_back(Seamonster2Pix);
 
     QPixmap Seamonster3Pix(":/images/kseamonster3.png");
-    Seamonster1Pix = Seamonster3Pix.scaled(QSize(250,250));
+    Seamonster3Pix = Seamonster3Pix.scaled(QSize(250,250));
     pixmaps_.push_back(Seamonster3Pix);
 
     QPixmap SeamonsterDPix(":/images/kseamonsterD.png");
-    Seamonster1Pix = SeamonsterDPix.scaled(QSize(250,250));
+    SeamonsterDPix = SeamonsterDPix.scaled(QSize(250,250));
     pixmaps_.push_back(SeamonsterDPix);
-    */
+
 }
 
-void wheel::setPicture()
+void wheel::setPicture( std::pair<std::string,std::string> pari)
 {
-    this->setPixmap(QPixmap(":/images/kseamonsterD"));
+    if (pari.first == "dolphin") {
+        if (pari.second == "1") {
+            setPixmap(pixmaps_.at(0));
+        } else if (pari.second == "2") {
+            setPixmap(pixmaps_.at(1));
+        } else if (pari.second == "3") {
+            setPixmap(pixmaps_.at(2));
+        } else if (pari.second == "D")
+            setPixmap(pixmaps_.at(3));
+    } else if (pari.first == "shark") {
+        if (pari.second == "1") {
+            setPixmap(pixmaps_.at(4));
+        } else if (pari.second == "2") {
+            setPixmap(pixmaps_.at(5));
+        } else if (pari.second == "3") {
+            setPixmap(pixmaps_.at(6));
+        } else if (pari.second == "D")
+            setPixmap(pixmaps_.at(7));
+    } else if (pari.first == "kraken") {
+        if (pari.second == "1") {
+            setPixmap(pixmaps_.at(8));
+        } else if (pari.second == "2") {
+            setPixmap(pixmaps_.at(9));
+        } else if (pari.second == "3") {
+            setPixmap(pixmaps_.at(10));
+        } else if (pari.second == "D")
+            setPixmap(pixmaps_.at(11));
+    } else if (pari.first == "seamunster") {
+        if (pari.second == "1") {
+            setPixmap(pixmaps_.at(12));
+        } else if (pari.second == "2") {
+            setPixmap(pixmaps_.at(13));
+        } else if (pari.second == "3") {
+            setPixmap(pixmaps_.at(14));
+        } else if (pari.second == "D")
+            setPixmap(pixmaps_.at(15));
+    }
 }

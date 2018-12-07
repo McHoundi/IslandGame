@@ -6,12 +6,12 @@
 #include "gameboard.hh"
 #include "gamestate.hh"
 #include "pawngraphics.hh"
-#include "wheel.hh"
 #include "vector"
 #include <QDebug>
 #include <QLayout>
 #include <QWidget>
 #include <QPushButton>
+
 
 
 
@@ -59,14 +59,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     draw_map();
 
-    //Setting required variables for the game to start:
-    statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-    statePTR_->changePlayerTurn(1001);
-    players_.at(1001)->setActionsLeft(3);
+
+
+//lisäillään nappuloita
+    spinButton_ = new QPushButton;
+    connect(spinButton_, &QPushButton::clicked, this, &MainWindow::handle_spinButton);
+    spinButton_->setGeometry(QRect(-10, 350, 250, 50));
+    spinButton_->setText("SPIN!!");
+    scene1_->addWidget(spinButton_);
 
     aloitusnappi_ = new QPushButton;
     connect(aloitusnappi_, &QPushButton::clicked,this, &MainWindow::handle_startButton);
-
     aloitusnappi_->setGeometry(QRect(300, -300, 200, 50));
     aloitusnappi_->setText("Start Game");
     scene1_->addWidget(aloitusnappi_);
@@ -138,10 +141,10 @@ void MainWindow::run_movement_phase(std::shared_ptr<Common::IPlayer>)
 void MainWindow::draw_map()
 {
 
-    wheel* kiekko = new wheel;
-    kiekko->setPicture();
-    kiekko->setOffset(QPointF(350, 0));
-    scene1_->addItem(kiekko);
+    wheel_ = new wheel;
+    wheel_->setPicture(std::make_pair("dolphin", "1"));
+    wheel_->setOffset(QPointF(350, 0));
+    scene1_->addItem(wheel_);
 
     for (auto const& it : boardPTR_->get_hexItems() ) {
               hexgraphics* HexItem = it.second;
@@ -185,6 +188,9 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 if (players_.at(statePTR_->currentPlayer())->getActionsLeft() <= 0) {
                     statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                     std::cout << "Changed gamephase to SINKING" << std::endl;
+                } else {
+                    //DEBUG VETEEN LIIKKUMINEN
+                   // players_.at(statePTR_->currentPlayer())->setActionsLeft(players_.at(statePTR_->currentPlayer())->getActionsLeft()-1);
                 }
             } catch (Common::IllegalMoveException errori ) {
                 std::cout << errori.msg() << std::endl;
@@ -216,6 +222,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             waterbrush.setStyle(Qt::SolidPattern);
             hexItem->setBrush(waterbrush);
 
+
             int current_player = statePTR_->currentPlayer();
 
             if (players_.find(current_player+1) == players_.end()) {
@@ -235,8 +242,35 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
         }
 
 
-    } else {
 
+    } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ ) {
+        Common::CubeCoordinate coords = hexi->getCoordinates();
+        std::pair<std::string,std::string> pari = runner_->spinWheel();
+        std::cout << pari.first << std::endl;
+        if ( highlightedActor_ != nullptr) {
+            runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), "1");
+            highlightedHex_ = nullptr;
+            highlightedActor_ = nullptr;
+        } else if (highlightedTransport_ != nullptr) {
+            runner_->moveTransportWithSpinner(highlightedHex_->getCoordinates(), coords, highlightedTransport_->getId(), "1");
+            highlightedHex_ = nullptr;
+            highlightedTransport_ = nullptr;
+        } else if ( hexi->getActors().size() != 0) {
+            highlightedActor_ = (hexi->getActors()).at(0);
+            highlightedHex_ = hexi;
+        } else if (hexi->getTransports().size() != 0)  {
+            highlightedTransport_ = (hexi->getTransports()).at(0);
+            highlightedHex_ = hexi;
+        }
+
+    }
+}
+
+void MainWindow::handle_spinButton()
+{
+    if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING) {
+        std::pair<std::string,std::string> tulos = runner_->spinWheel();
+        wheel_->setPicture(tulos);
     }
 }
 
@@ -246,15 +280,7 @@ void MainWindow::handle_startButton()
     std::cout << "aloitusnappia painettu" << std::endl;
     statePTR_->changePlayerTurn(1001);
     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+    players_.at(1001)->setActionsLeft(3);
 }
 
-void MainWindow::showEvent(QShowEvent *ev)
-{
-    QMainWindow::showEvent(ev);
-    showEventHelper();
-}
-
-void MainWindow::showEventHelper() {
-    std::cout << "AFTER MAP IS SHOWN" << std::endl;
-}
 

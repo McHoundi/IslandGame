@@ -311,6 +311,8 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
     scene_->addItem(uusi_actor);
     actor->doAction();
 
+    //TODO: doActionin tapahtumien graafinen puoli.
+
     actors_[actor->getId()] = actor;
 }
 

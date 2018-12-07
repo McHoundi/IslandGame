@@ -50,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     boardPTR_ = boardPtr;
     playerVector_ = pelaajat;
 
-    statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
 
 
     for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
@@ -61,8 +60,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ui->graphicsView->setScene(scene1_);
-
-    //run_movement_phase();
 
 }
 
@@ -99,7 +96,6 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
 
 
     int GamerID = pelaaja->getPlayerId();
-    std::cout << "GamerID: " << GamerID << std::endl;
     int basePawnID = GamerID - 1000;
     int Pawnid = basePawnID * 10 + 1; // For 1st player, of playerid 1001, this equates to 11 (FOR SOME REASON, WHEN WE MULTIPLY BY ONE, IT MULTPLIES BY 10)
 
@@ -114,18 +110,19 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
 
 void MainWindow::run_game()
 {
-    while ( true ) {
-
-    }
+    run_movement_phase();
 }
 
 void MainWindow::run_movement_phase()
 {
     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
     int i = 0;
+    std::cout << "TASDAKJSDHKAJH" << std::endl;
 
     for ( std::shared_ptr<Common::IPlayer> pelaaja : playerVector_) {
+        std::cout << pelaaja->getPlayerId() << std::endl;
         while ( pelaaja->getActionsLeft() > 0 ) {
+
             //Tässä pitäisi vain odottaa että actionit loppuvat
         }
         std::cout << "WHILE LOOPPI LOPPU" << std::endl;

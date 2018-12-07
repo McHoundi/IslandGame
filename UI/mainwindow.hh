@@ -62,6 +62,7 @@ private:
     std::shared_ptr<Student::GameBoard> boardPTR_; //sharedptr to the gameboard, saved here for convenience purposes
     std::shared_ptr<GameState> statePTR_;
     std::vector<std::shared_ptr<Common::IPlayer> > playerVector_;
+    std::map<int,std::shared_ptr<Common::IPlayer> > players_; // map of players, searchable by playerID
     bool hexIsHighlighted_ = false;
     std::shared_ptr<Common::Hex> highlightedHex_ = nullptr;
     std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr;

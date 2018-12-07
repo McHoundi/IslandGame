@@ -45,6 +45,8 @@ public:
 
     std::vector<std::shared_ptr<Common::IPlayer>> initialize_players();
     void initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja);
+    void run_game();
+    void run_movement_phase();
 
     ~MainWindow();
 
@@ -59,6 +61,7 @@ private:
     QGraphicsScene* scene1_;
     std::shared_ptr<Student::GameBoard> boardPTR_; //sharedptr to the gameboard, saved here for convenience purposes
     std::shared_ptr<GameState> statePTR_;
+    std::vector<std::shared_ptr<Common::IPlayer> > playerVector_;
     bool hexIsHighlighted_ = false;
     std::shared_ptr<Common::Hex> highlightedHex_ = nullptr;
     std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr;

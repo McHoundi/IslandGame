@@ -458,7 +458,7 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     } else if ( new_pawn->getPlayerId() == 1003 ) {
         brush.setColor(Qt::white);
     } else if ( new_pawn->getPlayerId() == 1004 ) {
-        brush.setColor(Qt::red);
+        brush.setColor(Qt::black);
     }
 
     uusi_nappula->setBrush(brush);
@@ -468,7 +468,7 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 
 }
 
-//Lähes sama kuin yllä, mutta lisää pawnin aloitusruutuun.
+//Kutsuu kolmen argumentin addPawnia, cubecoordinaattina keskitiili.
 void GameBoard::addPawn(int playerId, int pawnId)
 {
     GameBoard::addPawn(playerId, pawnId, Common::CubeCoordinate(0,0,0));

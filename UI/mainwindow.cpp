@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     statePTR_ = statePtr;
     boardPTR_ = boardPtr;
+    playerVector_ = pelaajat;
 
     statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
 
@@ -57,7 +58,11 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     draw_map();
 
+
+
     ui->graphicsView->setScene(scene1_);
+
+    //run_movement_phase();
 
 }
 
@@ -107,6 +112,26 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
 
 }
 
+void MainWindow::run_game()
+{
+    while ( true ) {
+
+    }
+}
+
+void MainWindow::run_movement_phase()
+{
+    statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+    int i = 0;
+
+    for ( std::shared_ptr<Common::IPlayer> pelaaja : playerVector_) {
+        while ( pelaaja->getActionsLeft() > 0 ) {
+            //Tässä pitäisi vain odottaa että actionit loppuvat
+        }
+        std::cout << "WHILE LOOPPI LOPPU" << std::endl;
+    }
+}
+
 
 void MainWindow::draw_map()
 {
@@ -119,9 +144,8 @@ void MainWindow::draw_map()
     for (auto const& it : boardPTR_->get_hexItems() ) {
               hexgraphics* HexItem = it.second;
                 connect(HexItem, &hexgraphics::hexClicked, this, &MainWindow::hex_chosen);
-
             }
-     }
+}
 
 
 

@@ -188,6 +188,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 }
             } catch (Common::IllegalMoveException errori ) {
                 std::cout << errori.msg() << std::endl;
+                highlightedPawn_ = nullptr;
+                highlightedHex_ = nullptr;
             }
             //boardPTR_->movePawn(highlightedPawn_->getId(), hexi->getCoordinates());
 
@@ -216,15 +218,20 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
             int current_player = statePTR_->currentPlayer();
 
-            statePTR_->changePlayerTurn(current_player++);
-            players_.at(current_player++)->setActionsLeft(3);
-            std::cout << "next player" << std::endl;
+            if (players_.find(current_player+1) == players_.end()) {
+                statePTR_->changePlayerTurn(1001);
+                players_.at(1001)->setActionsLeft(3);
+            } else {
+                statePTR_->changePlayerTurn(current_player+1);
+                players_.at(current_player+1)->setActionsLeft(3);
+            }
+
+
+            std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
 
         } catch (Common::IllegalMoveException errori) {
-
             std::cout << errori.msg() << std::endl;
-
         }
 
 
@@ -236,9 +243,9 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 void MainWindow::handle_startButton()
 {
     delete aloitusnappi_;
+    std::cout << "aloitusnappia painettu" << std::endl;
     statePTR_->changePlayerTurn(1001);
     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-
 }
 
 void MainWindow::showEvent(QShowEvent *ev)

@@ -205,7 +205,7 @@ void GameBoard::insert_hexItems(Common::CubeCoordinate cubecoords, hexgraphics* 
 {
     hexItems_[cubecoords] = hex;
 
-    //alustetaan samalla pawnSlots map
+    //alustetaan samalla pawnSlots_ map
     std::vector<bool> dummy {false, false, false};
     pawnSlots_[cubecoords] = dummy;
 }
@@ -235,6 +235,7 @@ void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Commo
 
     std::shared_ptr<Common::Hex> hexi = hexPointers_.at(coord);
     hexi->addTransport(transport);
+    transport->addHex(hexi);
 
     pixmapgraphics* uusi_transport = new pixmapgraphics;
     QPointF XYCOORDS = cube_to_square(coord);
@@ -242,6 +243,7 @@ void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Commo
     uusi_transport->setPicture(tyyppi);
     uusi_transport->movePicture(XYCOORDS);
     scene_->addItem(uusi_transport);
+    transports_[transport->getId()] = transport;
 
 }
 
@@ -298,6 +300,8 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
 
     std::shared_ptr<Common::Hex> hexi = hexPointers_.at(actorCoord);
     hexi->addActor(actor);
+    actor->addHex(hexi);
+    std::cout << "actor id : " << actor->getId() << std::endl;
 
     pixmapgraphics* uusi_actor = new pixmapgraphics;
     QPointF XYCOORDS = cube_to_square(actorCoord);
@@ -305,7 +309,9 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
     uusi_actor->setPicture(tyyppi);
     uusi_actor->movePicture(XYCOORDS);
     scene_->addItem(uusi_actor);
-    //actor->doAction();
+    actor->doAction();
+
+    actors_[actor->getId()] = actor;
 }
 
 void GameBoard::removePawn(int pawnId)
@@ -329,6 +335,7 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     std::vector<Common::CubeCoordinate> neighbour_tiles = current_hex->getNeighbourVector();
 
     //A few checks about integrity of this movement before moving
+    /*
 
     if ( pawn->getCoordinates() == pawnCoord ) {
         std::cout << "You're already on this tile!" << std::endl;
@@ -341,6 +348,7 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     }
     // checks done: can move pawn
     else {
+    */
         current_hex->removePawn(pawn);
         target_hex->addPawn(pawn);
 
@@ -385,7 +393,6 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 
     }
 
-}
 }
 
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)

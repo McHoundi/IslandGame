@@ -35,7 +35,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 	
 	//draw_map piirtää kartan, ajetaan kun ollaan alustettu lauta.
-    void draw_map(std::shared_ptr<Student::GameBoard> lautaptr, QGraphicsScene *scene);
+    void draw_map();
 	
 	// get_inputs Tallettaa aloitusikkunassa määritettyjä arvoja.
     void get_inputs(int playerCount);

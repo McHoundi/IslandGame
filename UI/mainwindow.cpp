@@ -29,10 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     StartDialog dialogi;
-    QGraphicsScene* scene = new QGraphicsScene;
+    scene1_ = new QGraphicsScene;
 
-	// Aloitusikkunan OK-nappi on kytketty tähän.
-	connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs); 
+
 	
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
 
@@ -43,35 +42,22 @@ MainWindow::MainWindow(QWidget *parent) :
     dialogi.exec();
 
     std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
-    boardPtr->set_scene(scene);
+    boardPtr->set_scene(scene1_);
     runner_ = Common::Initialization::getGameRunner(boardPtr, statePtr, pelaajat);
 
 
     statePTR_ = statePtr;
     boardPTR_ = boardPtr;
 
-    //statePtr->set_boardPTR(boardPtr);
-    statePtr->changeGamePhase(Common::GamePhase::SINKING);
-
-
-
-
-
-
-    draw_map(boardPtr, scene);
-
-
+    statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
 
 
     for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
         initialize_pawns(pelaaja);
     }
-    boardPTR_->addPawn(1001, 15, Common::CubeCoordinate(1,0,-1));
-    boardPTR_->addPawn(1001, 16, Common::CubeCoordinate(1,0,-1));
+    draw_map();
 
-    boardPTR_->get_hexPointers().at(Common::CubeCoordinate(1,0,-1))->clearAllFromNeightbours();
-
-    ui->graphicsView->setScene(scene);
+    ui->graphicsView->setScene(scene1_);
 
 }
 
@@ -122,20 +108,17 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
 }
 
 
-void MainWindow::draw_map(std::shared_ptr<Student::GameBoard> boardPtr, QGraphicsScene* scene)
+void MainWindow::draw_map()
 {
 
     wheel* kiekko = new wheel;
     kiekko->setPicture();
     kiekko->setOffset(QPointF(350, 0));
-    scene->addItem(kiekko);
+    scene1_->addItem(kiekko);
 
     for (auto const& it : boardPTR_->get_hexItems() ) {
               hexgraphics* HexItem = it.second;
                 connect(HexItem, &hexgraphics::hexClicked, this, &MainWindow::hex_chosen);
-
-
-
 
             }
      }

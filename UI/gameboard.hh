@@ -70,6 +70,8 @@ private:
     int layerCount_ = 20;              //Hexagoni-layerien max määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;
+    std::map<int, std::shared_ptr<Common::Actor>> actors_;
+    std::map<int, std::shared_ptr<Common::Transport>> transports_;
     std::map<int, std::shared_ptr<Common::Pawn>> pawns_; //pawn pointers, searchable by pawnID
     std::map<int, pawngraphics*> pawnItems_; //pawngraphics-items, searchable by pawnID
     std::map<Common::CubeCoordinate, hexgraphics*> hexItems_;

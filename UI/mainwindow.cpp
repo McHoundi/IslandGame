@@ -11,6 +11,8 @@
 #include <QDebug>
 #include <QLayout>
 #include <QWidget>
+#include <QPushButton>
+
 
 
 #include <QGraphicsScene>
@@ -20,6 +22,7 @@
 #include "QDebug"
 #include "startdialog.hh"
 #include "igamerunner.hh"
+#include "illegalmoveexception.hh"
 #include "initialize.hh"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     StartDialog dialogi;
     scene1_ = new QGraphicsScene;
 
-
-	
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
 
     std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
@@ -55,9 +56,20 @@ MainWindow::MainWindow(QWidget *parent) :
     for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
         initialize_pawns(pelaaja);
     }
+
     draw_map();
 
+    //Setting required variables for the game to start:
+    statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+    statePTR_->changePlayerTurn(1001);
+    players_.at(1001)->setActionsLeft(3);
 
+    aloitusnappi_ = new QPushButton;
+    connect(aloitusnappi_, &QPushButton::clicked,this, &MainWindow::handle_startButton);
+
+    aloitusnappi_->setGeometry(QRect(300, -300, 200, 50));
+    aloitusnappi_->setText("Start Game");
+    scene1_->addWidget(aloitusnappi_);
 
     ui->graphicsView->setScene(scene1_);
 
@@ -80,9 +92,10 @@ std::vector<std::shared_ptr<Common::IPlayer>> MainWindow::initialize_players()
     for ( i = playerCount_ ; i != 0; i-- ) {
         IPelaaja = std::make_shared<Player>(PlayerID);
         playerVector.push_back(IPelaaja);
+        players_[PlayerID] = IPelaaja;
         PlayerID++;
     }
-    ;
+
 
     return playerVector;
 
@@ -110,23 +123,15 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
 
 void MainWindow::run_game()
 {
-    run_movement_phase();
+    //set to first player's turn
+
+
 }
 
-void MainWindow::run_movement_phase()
+void MainWindow::run_movement_phase(std::shared_ptr<Common::IPlayer>)
 {
-    statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-    int i = 0;
-    std::cout << "TASDAKJSDHKAJH" << std::endl;
 
-    for ( std::shared_ptr<Common::IPlayer> pelaaja : playerVector_) {
-        std::cout << pelaaja->getPlayerId() << std::endl;
-        while ( pelaaja->getActionsLeft() > 0 ) {
 
-            //Tässä pitäisi vain odottaa että actionit loppuvat
-        }
-        std::cout << "WHILE LOOPPI LOPPU" << std::endl;
-    }
 }
 
 
@@ -143,9 +148,6 @@ void MainWindow::draw_map()
                 connect(HexItem, &hexgraphics::hexClicked, this, &MainWindow::hex_chosen);
             }
 }
-
-
-
 
 MainWindow::~MainWindow()
 {
@@ -166,7 +168,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                      highlightedHex_ = hexi;
                      break;
                  }
-             if ( highlightedPawn_ != nullptr ) {
+             if ( highlightedPawn_ == nullptr ) {
                  std::cout << "Player " << current_player << " has no pawns in this tile!" << std::endl;
              } else {
                  //Hex&Pawn highlighted!!
@@ -174,25 +176,35 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
             }
         } else if ( highlightedPawn_ != nullptr) {
-
-            //boardPTR_->movePawn(highlightedPawn_->getId(), hexi->getCoordinates());
-            runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
-
-            //check if movement went through, clear highlights if it did, otherwise do nothing
-            if ( highlightedPawn_->getCoordinates() == hexi->getCoordinates() ) {
+            try {
+                runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
                 std::cout << "Pawn Moved! " << std::endl;
                 std::cout << "Player: " << highlightedPawn_->getPlayerId() << " Pawn: " << highlightedPawn_->getId() << std::endl;
                 highlightedPawn_ = nullptr;
                 highlightedHex_ = nullptr;
-            } else {
-                //Do nothing;
+                if (players_.at(statePTR_->currentPlayer())->getActionsLeft() <= 0) {
+                    statePTR_->changeGamePhase(Common::GamePhase::SINKING);
+                    std::cout << "Changed gamephase to SINKING" << std::endl;
+                }
+            } catch (Common::IllegalMoveException errori ) {
+                std::cout << errori.msg() << std::endl;
             }
+            //boardPTR_->movePawn(highlightedPawn_->getId(), hexi->getCoordinates());
+
+
+            //check if movement went through, clear highlights if it did, otherwise do nothing
+            //if ( highlightedPawn_->getCoordinates() == hexi->getCoordinates() ) {
+
+            //} else {
+                //Do nothing;
+            //}
 
 
         }
 
 
     } else if ( statePTR_->currentGamePhase() == Common::GamePhase::SINKING ) {
+        try{
             Common::CubeCoordinate coords = hexi->getCoordinates();
             runner_->flipTile(coords);
             hexgraphics* hexItem;
@@ -201,9 +213,41 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             waterbrush.setColor(Qt::cyan);
             waterbrush.setStyle(Qt::SolidPattern);
             hexItem->setBrush(waterbrush);
+
+            int current_player = statePTR_->currentPlayer();
+
+            statePTR_->changePlayerTurn(current_player++);
+            players_.at(current_player++)->setActionsLeft(3);
+            std::cout << "next player" << std::endl;
+            statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+
+        } catch (Common::IllegalMoveException errori) {
+
+            std::cout << errori.msg() << std::endl;
+
+        }
+
+
     } else {
 
     }
 }
 
+void MainWindow::handle_startButton()
+{
+    delete aloitusnappi_;
+    statePTR_->changePlayerTurn(1001);
+    statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+
+}
+
+void MainWindow::showEvent(QShowEvent *ev)
+{
+    QMainWindow::showEvent(ev);
+    showEventHelper();
+}
+
+void MainWindow::showEventHelper() {
+    std::cout << "AFTER MAP IS SHOWN" << std::endl;
+}
 

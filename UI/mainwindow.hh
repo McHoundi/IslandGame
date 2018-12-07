@@ -11,6 +11,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsView>
+#include <QShowEvent>
 #include "iostream"
 #include "QDebug"
 #include "startdialog.hh"
@@ -45,20 +46,29 @@ public:
 
     std::vector<std::shared_ptr<Common::IPlayer>> initialize_players();
     void initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja);
+    void run_movement_phase(std::shared_ptr<Common::IPlayer>);
     void run_game();
-    void run_movement_phase();
+
+
 
     ~MainWindow();
 
 public slots:
     void hex_chosen(std::shared_ptr<Common::Hex> hexi);
+    void handle_startButton();
+
+protected:
+    void showEvent(QShowEvent *ev);
 
 private:
+    void showEventHelper();
+
     Ui::MainWindow *ui;
     int playerCount_; //aloitusikkunassa määritetty pelaajien määrä.
 
     QGraphicsView* view1_;
     QGraphicsScene* scene1_;
+    QPushButton* aloitusnappi_;
     std::shared_ptr<Student::GameBoard> boardPTR_; //sharedptr to the gameboard, saved here for convenience purposes
     std::shared_ptr<GameState> statePTR_;
     std::vector<std::shared_ptr<Common::IPlayer> > playerVector_;

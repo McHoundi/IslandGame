@@ -299,7 +299,6 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
 {
 
     std::shared_ptr<Common::Hex> hexi = hexPointers_.at(actorCoord);
-    hexi->addActor(actor);
     actor->addHex(hexi);
     std::cout << "actor id : " << actor->getId() << std::endl;
 

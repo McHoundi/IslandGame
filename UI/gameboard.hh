@@ -77,6 +77,7 @@ private:
     std::map<Common::CubeCoordinate, hexgraphics*> hexItems_;
     std::map<Common::CubeCoordinate, std::vector<bool>> pawnSlots_;
     QGraphicsScene* scene_;
+
 };
 
 }

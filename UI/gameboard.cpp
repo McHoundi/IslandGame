@@ -227,7 +227,19 @@ void GameBoard::removeTransport(int id)
 
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
+    std::shared_ptr<Common::Transport> transport = transports_.at(id);
+    std::shared_ptr<Common::Hex> current_hex = transport->getHex();
+    std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(coord);
 
+    //Ylimääräinen check jolla tarkistetaan voiko transport liikkua hexiin.
+    if ((hexPointers_.at(coord)->getActors()).size() != 0 or
+            (hexPointers_.at(coord)->getTransports()).size() != 0) {
+        std::cout << "There is already another actor or transport on this tile" << std::endl;
+    } else {
+        transport->addHex(target_hex);
+        QPointF XYCOORDS = cube_to_square(coord);
+        transportItems_.at(id)->movePicture(XYCOORDS);
+    }
 }
 
 void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Common::CubeCoordinate coord)
@@ -243,6 +255,7 @@ void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Commo
     uusi_transport->setPicture(tyyppi);
     uusi_transport->movePicture(XYCOORDS);
     scene_->addItem(uusi_transport);
+    transportItems_[transport->getId()] = uusi_transport;
     transports_[transport->getId()] = transport;
 
 }
@@ -292,7 +305,19 @@ void GameBoard::removeActor(int actorId)
 
 void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
 {
+    std::shared_ptr<Common::Actor> actor = actors_.at(actorId);
+    std::shared_ptr<Common::Hex> current_hex = actor->getHex();
+    std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(actorCoord);
 
+    //Ylimääräinen check jolla tarkistetaan voiko actor liikkua hexiin.
+    if ((hexPointers_.at(actorCoord)->getActors()).size() != 0 or
+            (hexPointers_.at(actorCoord)->getTransports()).size() != 0) {
+        std::cout << "There is already another actor or transport on this tile" << std::endl;
+    } else {
+        actor->addHex(target_hex);
+        QPointF XYCOORDS = cube_to_square(actorCoord);
+        actorItems_.at(actorId)->movePicture(XYCOORDS);
+    }
 }
 
 void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoordinate actorCoord)
@@ -310,7 +335,7 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
     uusi_actor->movePicture(XYCOORDS);
     scene_->addItem(uusi_actor);
     actor->doAction();
-
+    actorItems_[actor->getId()] = uusi_actor;
     actors_[actor->getId()] = actor;
 }
 

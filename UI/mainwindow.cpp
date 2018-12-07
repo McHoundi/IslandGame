@@ -50,13 +50,17 @@ MainWindow::MainWindow(QWidget *parent) :
     boardPTR_ = boardPtr;
     playerVector_ = pelaajat;
 
-    statePtr->changeGamePhase(Common::GamePhase::MOVEMENT);
 
 
     for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
         initialize_pawns(pelaaja);
     }
     draw_map();
+
+    runner_->flipTile(Common::CubeCoordinate(0, -5, 5));
+    runner_->flipTile(Common::CubeCoordinate(1, -5, 4));
+
+    statePTR_->changeGamePhase(Common::GamePhase::SPINNING);
 
 
 
@@ -204,7 +208,26 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             waterbrush.setColor(Qt::cyan);
             waterbrush.setStyle(Qt::SolidPattern);
             hexItem->setBrush(waterbrush);
-    } else {
+
+    } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING ) {
+        Common::CubeCoordinate coords = hexi->getCoordinates();
+        if ( highlightedActor_ != nullptr) {
+            runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), "1");
+            highlightedHex_ = nullptr;
+            highlightedActor_ = nullptr;
+        } else if (highlightedTransport_ != nullptr) {
+            runner_->moveTransportWithSpinner(highlightedHex_->getCoordinates(), coords, highlightedTransport_->getId(), "1");
+            highlightedHex_ = nullptr;
+            highlightedTransport_ = nullptr;
+        } else if ( hexi->getActors().size() != 0) {
+            highlightedActor_ = (hexi->getActors()).at(0);
+            highlightedHex_ = hexi;
+        } else if (hexi->getTransports().size() != 0)  {
+            highlightedTransport_ = (hexi->getTransports()).at(0);
+            highlightedHex_ = hexi;
+        }
+
+
 
     }
 }

@@ -65,6 +65,8 @@ private:
     bool hexIsHighlighted_ = false;
     std::shared_ptr<Common::Hex> highlightedHex_ = nullptr;
     std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr;
+    std::shared_ptr<Common::Actor> highlightedActor_ = nullptr;
+    std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr;
     std::shared_ptr<Common::IGameRunner> runner_;
 
 };

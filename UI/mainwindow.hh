@@ -17,6 +17,8 @@
 #include "QGraphicsPixmapItem"
 #include "QGraphicsEllipseItem"
 #include "pixmapgraphics.hh"
+#include "wheel.hh"
+#include "QPushButton"
 
 #include "vector"
 
@@ -52,6 +54,7 @@ public:
 
 public slots:
     void hex_chosen(std::shared_ptr<Common::Hex> hexi);
+    void handle_spinButton();
 
 private:
     Ui::MainWindow *ui;
@@ -63,11 +66,14 @@ private:
     std::shared_ptr<GameState> statePTR_;
     std::vector<std::shared_ptr<Common::IPlayer> > playerVector_;
     bool hexIsHighlighted_ = false;
+    bool wheelSpinned_ = false;
     std::shared_ptr<Common::Hex> highlightedHex_ = nullptr;
     std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr;
     std::shared_ptr<Common::Actor> highlightedActor_ = nullptr;
     std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr;
     std::shared_ptr<Common::IGameRunner> runner_;
+    QPushButton* spinButton_;
+    wheel* wheel_;
 
 };
 

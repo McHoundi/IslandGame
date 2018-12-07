@@ -6,11 +6,11 @@
 #include "gameboard.hh"
 #include "gamestate.hh"
 #include "pawngraphics.hh"
-#include "wheel.hh"
 #include "vector"
 #include <QDebug>
 #include <QLayout>
 #include <QWidget>
+
 
 
 #include <QGraphicsScene>
@@ -61,6 +61,15 @@ MainWindow::MainWindow(QWidget *parent) :
     runner_->flipTile(Common::CubeCoordinate(1, -5, 4));
 
     statePTR_->changeGamePhase(Common::GamePhase::SPINNING);
+
+    spinButton_ = new QPushButton;
+    spinButton_->setGeometry(QRect(-10, 350, 250, 50));
+    spinButton_->setText("SPIN!!");
+
+    scene1_->addWidget(spinButton_);
+    connect(spinButton_, &QPushButton::clicked, this, &MainWindow::handle_spinButton);
+
+
 
 
 
@@ -140,10 +149,10 @@ void MainWindow::run_movement_phase()
 void MainWindow::draw_map()
 {
 
-    wheel* kiekko = new wheel;
-    kiekko->setPicture();
-    kiekko->setOffset(QPointF(350, 0));
-    scene1_->addItem(kiekko);
+    wheel_ = new wheel;
+    wheel_->setPicture(std::make_pair("dolphin", "1"));
+    wheel_->setOffset(QPointF(350, 0));
+    scene1_->addItem(wheel_);
 
     for (auto const& it : boardPTR_->get_hexItems() ) {
               hexgraphics* HexItem = it.second;
@@ -209,8 +218,10 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             waterbrush.setStyle(Qt::SolidPattern);
             hexItem->setBrush(waterbrush);
 
-    } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING ) {
+    } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ ) {
         Common::CubeCoordinate coords = hexi->getCoordinates();
+        std::pair<std::string,std::string> pari = runner_->spinWheel();
+        std::cout << pari.first << std::endl;
         if ( highlightedActor_ != nullptr) {
             runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), "1");
             highlightedHex_ = nullptr;
@@ -229,6 +240,14 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
 
 
+    }
+}
+
+void MainWindow::handle_spinButton()
+{
+    if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING) {
+        std::pair<std::string,std::string> tulos = runner_->spinWheel();
+        wheel_->setPicture(tulos);
     }
 }
 

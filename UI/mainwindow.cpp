@@ -366,32 +366,19 @@ void MainWindow::handle_spinButton()
 
 bool MainWindow::allPawnsInWater()
 {
-    std::vector<int> pawns;
     std::map<int,std::shared_ptr<Common::Pawn>> pawnMap = boardPTR_->get_pawns();
-
     int playerID = statePTR_->currentPlayer();
-    std::map<int, std::vector<int>> playerPawnMap = boardPTR_->get_playerPawns();
-    if (playerPawnMap.find(playerID) != playerPawnMap.end()) {
-        pawns = playerPawnMap.at(playerID);
-
-        for ( int pawnID : pawns ) {
-            if ( pawnMap.find(pawnID) == pawnMap.end() ) {
-                std::cout << "Pawn probably dead" << std::endl;
-            } else {
-                Common::CubeCoordinate pawnCoord = pawnMap.at(pawnID)->getCoordinates();
-                if ( boardPTR_->get_hexPointers().at(pawnCoord)->getPieceType() != "Water" ) {
-                    return false;
-                }
-
+    for (auto const& it : pawnMap ) {
+        std::shared_ptr<Common::Pawn> pawni = it.second;
+        if (pawni->getPlayerId() == playerID) {
+            std::shared_ptr<Common::Hex> pawnHex = boardPTR_->get_hexPointers().at(pawni->getCoordinates());
+            if ( pawnHex->getPieceType() != "Water" ) {
+                return false; // This means that at least one of player 1's pawns are on land.
             }
-
         }
+       }
         // for loop mennyt loppuun, joten kaikki pawnit vedessä
-        return true;
-    } else {
-        std::cout << "Player not found. Missing ID: " << playerID << std::endl;
-        return true;
-    }
+    return true;
 }
 
 void MainWindow::handle_startButton()

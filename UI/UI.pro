@@ -23,7 +23,8 @@ SOURCES += \
     main.cc \
     pawngraphics.cpp \
     wheel.cpp \
-    pixmapgraphics.cpp
+    pixmapgraphics.cpp \
+    gamestatetest.cpp
 
 
 HEADERS  += \

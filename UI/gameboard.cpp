@@ -225,6 +225,21 @@ void GameBoard::removeTransport(int id)
 
 }
 
+bool GameBoard::checkAnimalTypeExists(std::string type)
+{
+    for (auto const& it : actors_ ) {
+        if (it.second->getActorType() == type) {
+            return true;
+        }
+    }
+    for (auto const& it :transports_) {
+        if (it.second->getTransportType() == type) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
     std::shared_ptr<Common::Transport> transport = transports_.at(id);
@@ -310,13 +325,18 @@ void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
     std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(actorCoord);
 
     //Ylimääräinen check jolla tarkistetaan voiko actor liikkua hexiin.
-    if ((hexPointers_.at(actorCoord)->getActors()).size() != 0 or
-            (hexPointers_.at(actorCoord)->getTransports()).size() != 0) {
+    if (actor->getActorType() != "shark" && hexPointers_.at(actorCoord)->getActors().size() != 0) {
+        std::cout << "There is already another actor on this tile" << std::endl;
+    } else if(hexPointers_.at(actorCoord)->getActors().size() != 0 ||
+              hexPointers_.at(actorCoord)->getTransports().size() != 0) {
+
         std::cout << "There is already another actor or transport on this tile" << std::endl;
     } else {
         actor->addHex(target_hex);
         QPointF XYCOORDS = cube_to_square(actorCoord);
         actorItems_.at(actorId)->movePicture(XYCOORDS);
+        scene_->update();
+        actor->doAction();
     }
 }
 

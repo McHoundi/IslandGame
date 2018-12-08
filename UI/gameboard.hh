@@ -61,12 +61,14 @@ public:
     virtual void addTransport(std::shared_ptr<Common::Transport> transport, Common::CubeCoordinate coord);
     virtual void moveTransport(int id, Common::CubeCoordinate coord);
     virtual void removeTransport(int id);
+    bool checkAnimalTypeExists(std::string type);
 
 
 
 
 
 private:
+
     int layerCount_ = 20;              //Hexagoni-layerien max määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;

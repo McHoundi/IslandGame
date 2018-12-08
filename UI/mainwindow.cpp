@@ -223,6 +223,127 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             hexItem->setBrush(waterbrush);
 
 
+
+            statePTR_->changeGamePhase(Common::GamePhase::SPINNING);
+
+        } catch (Common::IllegalMoveException errori) {
+            std::cout << errori.msg() << std::endl;
+        }
+
+
+
+    } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_) {
+        Common::CubeCoordinate coords = hexi->getCoordinates();
+        if ( highlightedActor_ != nullptr) {
+            std::string moves;
+            if (animalMovesLeft_ == -99) {
+                moves = "D";
+            } else {
+                moves = std::to_string(animalMovesLeft_);
+            }
+            std::cout << moves << std::endl; // Debug
+            try {
+                runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), moves );
+                unsigned int distance = cubeCoordinateDistance(highlightedHex_->getCoordinates(), coords);
+                highlightedHex_ = boardPTR_->get_hexPointers().at(coords);
+                animalMovesLeft_ -= distance;
+                if (animalMovesLeft_ <= 0) {
+                    highlightedActor_ = nullptr;
+                    highlightedHex_ = nullptr;
+                    wheelSpinned_ = false;
+
+                    int current_player = statePTR_->currentPlayer();
+
+                    if (players_.find(current_player+1) == players_.end()) {
+                        statePTR_->changePlayerTurn(1001);
+                        players_.at(1001)->setActionsLeft(3);
+                    } else {
+                        statePTR_->changePlayerTurn(current_player+1);
+                        players_.at(current_player+1)->setActionsLeft(3);
+                    }
+
+
+                    std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
+                    statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+
+                 }
+
+
+            } catch (Common::IllegalMoveException errori) {
+                std::cout << errori.msg() << std::endl;
+            }
+
+        } else if (highlightedTransport_ != nullptr) {
+            std::string moves;
+            if (animalMovesLeft_ == -99) {
+                moves = "D";
+            } else {
+                moves = std::to_string(animalMovesLeft_);
+            }
+            std::cout << moves << std::endl; // Debug
+            try {
+                runner_->moveTransportWithSpinner(highlightedHex_->getCoordinates(), coords, highlightedTransport_->getId(), moves);
+                unsigned int distance = cubeCoordinateDistance(highlightedHex_->getCoordinates(), coords);
+                highlightedHex_ = boardPTR_->get_hexPointers().at(coords);
+                animalMovesLeft_ -= distance;
+                if (animalMovesLeft_ <= 0) {
+                    highlightedTransport_ = nullptr;
+                    highlightedHex_ = nullptr;
+                    wheelSpinned_ = false;
+
+                    int current_player = statePTR_->currentPlayer();
+
+                    if (players_.find(current_player+1) == players_.end()) {
+                        statePTR_->changePlayerTurn(1001);
+                        players_.at(1001)->setActionsLeft(3);
+                    } else {
+                        statePTR_->changePlayerTurn(current_player+1);
+                        players_.at(current_player+1)->setActionsLeft(3);
+                    }
+
+
+                    std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
+                    statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+
+                }
+            } catch (Common::IllegalMoveException errori) {
+                std::cout << errori.msg() << std::endl;
+            }
+
+        } else if ( hexi->getActors().size() != 0) {
+            if (hexi->getActors().at(0)->getActorType() == spinnerResult_.first) {
+                highlightedActor_ = (hexi->getActors()).at(0);
+                highlightedHex_ = hexi;
+            } else {
+                std::cout << "Wrong animal clicked" << std::endl;
+            }
+        } else if (hexi->getTransports().size() != 0)  {
+            if (hexi->getTransports().at(0)->getTransportType() == spinnerResult_.first) {
+                highlightedTransport_ = (hexi->getTransports()).at(0);
+                highlightedHex_ = hexi;
+            } else {
+                std::cout << "Wrong animal clicked" << std::endl;
+            }
+        }
+
+    }
+}
+
+void MainWindow::handle_spinButton()
+{
+    if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ == false) {
+        std::pair<std::string,std::string> tulos = runner_->spinWheel();
+        wheel_->setPicture(tulos);
+        spinnerResult_ = tulos;
+        if (boardPTR_->checkAnimalTypeExists(tulos.first)) {
+            if (spinnerResult_.second != "D") {
+                animalMovesLeft_ = stoi(spinnerResult_.second);
+            } else {
+                animalMovesLeft_ = -99;
+            }
+            wheelSpinned_ = true;
+        } else {
+            std::cout << "No animal of this type on board" << std::endl;
             int current_player = statePTR_->currentPlayer();
 
             if (players_.find(current_player+1) == players_.end()) {
@@ -236,41 +357,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
             std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-
-        } catch (Common::IllegalMoveException errori) {
-            std::cout << errori.msg() << std::endl;
         }
-
-
-
-    } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ ) {
-        Common::CubeCoordinate coords = hexi->getCoordinates();
-        std::pair<std::string,std::string> pari = runner_->spinWheel();
-        std::cout << pari.first << std::endl;
-        if ( highlightedActor_ != nullptr) {
-            runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), "1");
-            highlightedHex_ = nullptr;
-            highlightedActor_ = nullptr;
-        } else if (highlightedTransport_ != nullptr) {
-            runner_->moveTransportWithSpinner(highlightedHex_->getCoordinates(), coords, highlightedTransport_->getId(), "1");
-            highlightedHex_ = nullptr;
-            highlightedTransport_ = nullptr;
-        } else if ( hexi->getActors().size() != 0) {
-            highlightedActor_ = (hexi->getActors()).at(0);
-            highlightedHex_ = hexi;
-        } else if (hexi->getTransports().size() != 0)  {
-            highlightedTransport_ = (hexi->getTransports()).at(0);
-            highlightedHex_ = hexi;
-        }
-
-    }
-}
-
-void MainWindow::handle_spinButton()
-{
-    if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING) {
-        std::pair<std::string,std::string> tulos = runner_->spinWheel();
-        wheel_->setPicture(tulos);
     }
 }
 
@@ -283,4 +370,10 @@ void MainWindow::handle_startButton()
     players_.at(1001)->setActionsLeft(3);
 }
 
+unsigned int MainWindow::cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const
+{
 
+    return ((abs(source.x - target.x) + abs(source.y - target.y)
+             + abs(source.z - target.z)) / 2);
+
+}

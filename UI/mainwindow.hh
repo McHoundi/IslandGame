@@ -87,7 +87,10 @@ private:
     std::shared_ptr<Common::IGameRunner> runner_;
     QPushButton* spinButton_;
     wheel* wheel_;
+    std::pair<std::string,std::string> spinnerResult_;
+    int animalMovesLeft_;
 
+    unsigned int cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const;
 };
 
 #endif // MAINWINDOW_HH

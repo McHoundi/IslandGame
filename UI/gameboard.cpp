@@ -310,7 +310,20 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
     }
 }
 
-
+bool GameBoard::checkAnimalTypeExists(std::string type)
+{
+    for (auto const& it : actors_ ) {
+        if (it.second->getActorType() == type) {
+            return true;
+        }
+    }
+    for (auto const& it :transports_) {
+        if (it.second->getTransportType() == type) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
@@ -425,6 +438,7 @@ void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
 
 
     //Ylimääräinen check jolla tarkistetaan voiko actor liikkua hexiin.
+
     if (testing_ != true) {
         if ((hexPointers_.at(actorCoord)->getActors()).size() != 0 or
                 (hexPointers_.at(actorCoord)->getTransports()).size() != 0) {
@@ -433,6 +447,8 @@ void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
             actor->addHex(target_hex);
             QPointF XYCOORDS = cube_to_square(actorCoord);
             actorItems_.at(actorId)->movePicture(XYCOORDS);
+            scene_->update();
+            actor->doAction();
         }
     } else {
         actor->addHex(target_hex);

@@ -63,6 +63,8 @@ public:
     virtual void moveTransport(int id, Common::CubeCoordinate coord);
     virtual void removeTransport(int id);
     void set_testmode_off();
+    bool checkAnimalTypeExists(std::string type);
+
 
 
 

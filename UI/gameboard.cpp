@@ -242,7 +242,7 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
     std::shared_ptr<Common::Hex> hexDummy;
 
     if ( actorType == "vortex") {
-        //First delete everything from this tile, then from neighbouring tiles.
+        //First delete everything from this tile, then from neighbouring watertiles.
         hexDummy = hexPointers_.at(actorCoords);
         if ( hexDummy->getActors().empty() == false ) {
             for ( auto toimija : hexDummy->getActors() ) {
@@ -264,21 +264,24 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
 
         for ( Common::CubeCoordinate neighbourCoords : hexPointers_.at(actorCoords)->getNeighbourVector()) {
             hexDummy = hexPointers_.at(neighbourCoords);
-            if ( hexDummy->getActors().empty() == false ) {
-                for ( auto toimija : hexDummy->getActors() ) {
-                        delete actorItems_.at(toimija->getId());
+            if ( hexDummy->getPieceType() == "Water") {
+                if ( hexDummy->getActors().empty() == false ) {
+                    for ( auto toimija : hexDummy->getActors() ) {
+                            delete actorItems_.at(toimija->getId());
+                    }
+                }
+                if ( hexDummy->getPawns().empty() == false ) {
+                    for ( auto nappula : hexDummy->getPawns() ) {
+                        delete pawnItems_.at(nappula->getId());
+                    }
+                }
+                if (hexDummy->getTransports().empty() == false) {
+                    for ( auto kulkuneuvo : hexDummy->getTransports() ) {
+                        delete transportItems_.at(kulkuneuvo->getId());
+                    }
                 }
             }
-            if ( hexDummy->getPawns().empty() == false ) {
-                for ( auto nappula : hexDummy->getPawns() ) {
-                    delete pawnItems_.at(nappula->getId());
-                }
-            }
-            if (hexDummy->getTransports().empty() == false) {
-                for ( auto kulkuneuvo : hexDummy->getTransports() ) {
-                    delete transportItems_.at(kulkuneuvo->getId());
-                }
-            }
+
         }
     } else if ( actorType == "seamunster" ) {
         //Poistetaan kaikki nappulat ja transportit tästä tiilistä. Spawnatessa siis pelkät pawnit.

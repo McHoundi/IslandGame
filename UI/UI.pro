@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,7 +25,7 @@ SOURCES += \
     pawngraphics.cpp \
     wheel.cpp \
     pixmapgraphics.cpp \
-    gamestatetest.cpp
+    TST_gamestatetest.cpp
 
 
 HEADERS  += \

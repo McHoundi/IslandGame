@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     scene1_ = new QGraphicsScene;
 
     std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
+    boardPtr->set_testmode_off();
 
     std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
 
@@ -119,6 +120,7 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
     int i = 0;
     for ( ; i < 3; i++ ) {
         boardPTR_->addPawn(GamerID,Pawnid,Common::CubeCoordinate(0,0,0));
+        playerPawns_[GamerID].push_back(Pawnid);
         Pawnid++;
     }
 
@@ -188,9 +190,10 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 if (players_.at(statePTR_->currentPlayer())->getActionsLeft() <= 0) {
                     statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                     std::cout << "Changed gamephase to SINKING" << std::endl;
-                } else {
-                    //DEBUG VETEEN LIIKKUMINEN
-                   // players_.at(statePTR_->currentPlayer())->setActionsLeft(players_.at(statePTR_->currentPlayer())->getActionsLeft()-1);
+                } else if ( allPawnsInWater() == true ) {
+                   std::cout << "All pawns in water! Can't move anymore." << std::endl;
+                   statePTR_->changeGamePhase(Common::GamePhase::SINKING);
+                   std::cout << "Changed gamephase to SINKING" << std::endl;
                 }
             } catch (Common::IllegalMoveException errori ) {
                 std::cout << errori.msg() << std::endl;
@@ -271,6 +274,35 @@ void MainWindow::handle_spinButton()
     if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING) {
         std::pair<std::string,std::string> tulos = runner_->spinWheel();
         wheel_->setPicture(tulos);
+    }
+}
+
+bool MainWindow::allPawnsInWater()
+{
+    std::vector<int> pawns;
+    std::map<int,std::shared_ptr<Common::Pawn>> pawnMap = boardPTR_->get_pawns();
+
+    int playerID = statePTR_->currentPlayer();
+    if (playerPawns_.find(playerID) != playerPawns_.end()) {
+        pawns = playerPawns_.at(playerID);
+
+        for ( int pawnID : pawns ) {
+            if ( pawnMap.find(pawnID) == pawnMap.end() ) {
+                std::cout << "Pawn probably dead" << std::endl;
+            } else {
+                Common::CubeCoordinate pawnCoord = pawnMap.at(pawnID)->getCoordinates();
+                if ( boardPTR_->get_hexPointers().at(pawnCoord)->getPieceType() != "Water" ) {
+                    return false;
+                }
+
+            }
+
+        }
+        // for loop mennyt loppuun, joten kaikki pawnit vedessä
+        return true;
+    } else {
+        std::cout << "Player not found. ID: " << playerID << std::endl;
+        return true;
     }
 }
 

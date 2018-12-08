@@ -168,6 +168,11 @@ std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex> > GameBoard::get_h
     return hexPointers_;
 }
 
+std::map<int, std::shared_ptr<Common::Pawn> > GameBoard::get_pawns()
+{
+    return pawns_;
+}
+
 Common::CubeCoordinate GameBoard::pick_random_available_neighbour(std::shared_ptr<Common::Hex> full_hex)
 {
    Common::CubeCoordinate random_neighbour;
@@ -215,15 +220,92 @@ std::map<Common::CubeCoordinate, hexgraphics *> GameBoard::get_hexItems()
     return hexItems_;
 }
 
-
-
-
-
-
 void GameBoard::removeTransport(int id)
 {
 
 }
+
+void GameBoard::set_testmode_off()
+{
+    testing_ = false;
+}
+
+void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
+{
+    std::string actorType = actor->getActorType();
+    Common::CubeCoordinate actorCoords = actor->getHex()->getCoordinates();
+    std::shared_ptr<Common::Hex> hexDummy;
+
+    if ( actorType == "vortex") {
+        //First delete everything from this tile, then from neighbouring tiles.
+        hexDummy = hexPointers_.at(actorCoords);
+        if ( hexDummy->getActors().empty() == false ) {
+            for ( auto toimija : hexDummy->getActors() ) {
+                    delete actorItems_.at(toimija->getId());
+            }
+        }
+        if ( hexDummy->getPawns().empty() == false ) {
+            for ( auto nappula : hexDummy->getPawns() ) {
+                delete pawnItems_.at(nappula->getId());
+            }
+        }
+        if (hexDummy->getTransports().empty() == false) {
+            for ( auto kulkuneuvo : hexDummy->getTransports() ) {
+                delete transportItems_.at(kulkuneuvo->getId());
+            }
+        }
+
+
+
+        for ( Common::CubeCoordinate neighbourCoords : hexPointers_.at(actorCoords)->getNeighbourVector()) {
+            hexDummy = hexPointers_.at(neighbourCoords);
+            if ( hexDummy->getActors().empty() == false ) {
+                for ( auto toimija : hexDummy->getActors() ) {
+                        delete actorItems_.at(toimija->getId());
+                }
+            }
+            if ( hexDummy->getPawns().empty() == false ) {
+                for ( auto nappula : hexDummy->getPawns() ) {
+                    delete pawnItems_.at(nappula->getId());
+                }
+            }
+            if (hexDummy->getTransports().empty() == false) {
+                for ( auto kulkuneuvo : hexDummy->getTransports() ) {
+                    delete transportItems_.at(kulkuneuvo->getId());
+                }
+            }
+        }
+    } else if ( actorType == "seamunster" ) {
+        //Poistetaan kaikki nappulat ja transportit tästä tiilistä. Spawnatessa siis pelkät pawnit.
+        hexDummy = hexPointers_.at(actorCoords);
+        if ( hexDummy->getPawns().empty() == false ) {
+            for ( auto nappula : hexDummy->getPawns() ) {
+                delete pawnItems_.at(nappula->getId());
+            }
+        }
+        if (hexDummy->getTransports().empty() == false) {
+            for ( auto kulkuneuvo : hexDummy->getTransports() ) {
+                delete transportItems_.at(kulkuneuvo->getId());
+            }
+        }
+    } else if ( actorType == "kraken" ) {
+        hexDummy = hexPointers_.at(actorCoords);
+        if (hexDummy->getTransports().empty() == false) {
+            for ( auto kulkuneuvo : hexDummy->getTransports() ) {
+                delete transportItems_.at(kulkuneuvo->getId());
+            }
+        }
+    } else if ( actorType == "shark" ) {
+        hexDummy = hexPointers_.at(actorCoords);
+        if ( hexDummy->getPawns().empty() == false ) {
+            for ( auto nappula : hexDummy->getPawns() ) {
+                delete pawnItems_.at(nappula->getId());
+            }
+        }
+    }
+}
+
+
 
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
@@ -285,15 +367,17 @@ void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
         std::cout << "Unrecognized type!" << std::endl;
     }
 
-    hexgraphics* HexItem = new hexgraphics;
-    brush.setStyle(Qt::SolidPattern);
+    if ( testing_ != true ) {
+        hexgraphics* HexItem = new hexgraphics;
+        brush.setStyle(Qt::SolidPattern);
 
-    HexItem->set_hexptr(newHex);
-    HexItem->set_coords(cube_to_square(cubecoords));
-    HexItem->setBrush(brush);
-    scene_->addItem(HexItem);
+        HexItem->set_hexptr(newHex);
+        HexItem->set_coords(cube_to_square(cubecoords));
+        HexItem->setBrush(brush);
 
-    insert_hexItems(cubecoords, HexItem);
+        scene_->addItem(HexItem);
+        insert_hexItems(cubecoords, HexItem);
+    }
 
 
 }
@@ -327,20 +411,22 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
     actor->addHex(hexi);
     std::cout << "actor id : " << actor->getId() << std::endl;
 
-    pixmapgraphics* uusi_actor = new pixmapgraphics;
-    QPointF XYCOORDS = cube_to_square(actorCoord);
-    std::string tyyppi = actor->getActorType();
-    uusi_actor->setPicture(tyyppi);
-    uusi_actor->movePicture(XYCOORDS);
-    scene_->addItem(uusi_actor);
+    if (testing_ != true ) {
+        pixmapgraphics* uusi_actor = new pixmapgraphics;
+        QPointF XYCOORDS = cube_to_square(actorCoord);
+        std::string tyyppi = actor->getActorType();
+        uusi_actor->setPicture(tyyppi);
+        uusi_actor->movePicture(XYCOORDS);
+        scene_->addItem(uusi_actor);
+        actorItems_[actor->getId()] = uusi_actor;
+        actors_[actor->getId()] = actor;
+        doGraphicalAction(actor);
+    }
+
     actor->doAction();
 
 
-    //TODO: doActionin tapahtumien graafinen puoli.
 
-
-    actorItems_[actor->getId()] = uusi_actor;
-    actors_[actor->getId()] = actor;
 }
 
 void GameBoard::removePawn(int pawnId)
@@ -449,48 +535,51 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
     pawns_[pawnId] = new_pawn;
 
     // Creating A graphical pawn.
+    if ( testing_ != true ) {
+        pawngraphics* uusi_nappula = new pawngraphics;
+        //Player player(123);
+        QPointF XYCOORDS = cube_to_square(coord);
+        int pawnAmount = hexi->getPawnAmount();
 
-    pawngraphics* uusi_nappula = new pawngraphics;
-    //Player player(123);
-    QPointF XYCOORDS = cube_to_square(coord);
-    int pawnAmount = hexi->getPawnAmount();
+        if ( pawnAmount == 0 ) {
+            uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+            pawnSlots_.at(coord).at(0) = true;
+            uusi_nappula->set_pawnSlot(1);
+        } else if ( pawnSlots_.at(coord).at(0) == false ) {
+            uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+            pawnSlots_.at(coord).at(0) = true;
+            uusi_nappula->set_pawnSlot(1);
+        } else if ( pawnSlots_.at(coord).at(1) == false ) {
+            uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+            pawnSlots_.at(coord).at(1) = true;
+            uusi_nappula->set_pawnSlot(2);
+        } else if ( pawnSlots_.at(coord).at(2) == false ) {
+            uusi_nappula->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+            pawnSlots_.at(coord).at(2) = true;
+            uusi_nappula->set_pawnSlot(3);
+        }
+        QBrush brush;
 
-    if ( pawnAmount == 0 ) {
-        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-        pawnSlots_.at(coord).at(0) = true;
-        uusi_nappula->set_pawnSlot(1);
-    } else if ( pawnSlots_.at(coord).at(0) == false ) {
-        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-        pawnSlots_.at(coord).at(0) = true;
-        uusi_nappula->set_pawnSlot(1);
-    } else if ( pawnSlots_.at(coord).at(1) == false ) {
-        uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
-        pawnSlots_.at(coord).at(1) = true;
-        uusi_nappula->set_pawnSlot(2);
-    } else if ( pawnSlots_.at(coord).at(2) == false ) {
-        uusi_nappula->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-        pawnSlots_.at(coord).at(2) = true;
-        uusi_nappula->set_pawnSlot(3);
+        //PELAAJAN VÄRIN HAKU
+
+        brush.setStyle(Qt::SolidPattern);
+        if ( new_pawn->getPlayerId() == 1001 ) {
+            brush.setColor(Qt::blue);
+        } else if ( new_pawn->getPlayerId() == 1002 ) {
+            brush.setColor(Qt::red);
+        } else if ( new_pawn->getPlayerId() == 1003 ) {
+            brush.setColor(Qt::white);
+        } else if ( new_pawn->getPlayerId() == 1004 ) {
+            brush.setColor(Qt::black);
+        }
+
+        uusi_nappula->setBrush(brush);
+        scene_->addItem(uusi_nappula);
+        pawnItems_[pawnId] = uusi_nappula;
+        std::cout << "Pawn added: " << pawnId << " Player ID: " << new_pawn->getPlayerId() << std::endl;
     }
-    QBrush brush;
 
-    //PELAAJAN VÄRIN HAKU
 
-    brush.setStyle(Qt::SolidPattern);
-    if ( new_pawn->getPlayerId() == 1001 ) {
-        brush.setColor(Qt::blue);
-    } else if ( new_pawn->getPlayerId() == 1002 ) {
-        brush.setColor(Qt::red);
-    } else if ( new_pawn->getPlayerId() == 1003 ) {
-        brush.setColor(Qt::white);
-    } else if ( new_pawn->getPlayerId() == 1004 ) {
-        brush.setColor(Qt::black);
-    }
-
-    uusi_nappula->setBrush(brush);
-    scene_->addItem(uusi_nappula);
-    pawnItems_[pawnId] = uusi_nappula;
-    std::cout << "Pawn added: " << pawnId << " Player ID: " << new_pawn->getPlayerId() << std::endl;
 
 }
 
@@ -548,6 +637,7 @@ std::shared_ptr<Common::Hex> GameBoard::getHex(Common::CubeCoordinate hexCoord) 
     if ( hexPointers_.find(hexCoord) == hexPointers_.end()) {
         return nullptr;
     }
+
     return hexPointers_.at(hexCoord);
 
 }

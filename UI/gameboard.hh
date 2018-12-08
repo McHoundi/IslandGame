@@ -36,6 +36,7 @@ public:
     QPointF cube_to_square(Common::CubeCoordinate cubecoords);
 
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> get_hexPointers();
+    std::map<int, std::shared_ptr<Common::Pawn>> get_pawns();
 
     // Valitsee satunnaisen naapurihexin, käytetään jos pawneja on liikaa.
     Common::CubeCoordinate pick_random_available_neighbour(std::shared_ptr<Common::Hex> hexi);
@@ -61,12 +62,15 @@ public:
     virtual void addTransport(std::shared_ptr<Common::Transport> transport, Common::CubeCoordinate coord);
     virtual void moveTransport(int id, Common::CubeCoordinate coord);
     virtual void removeTransport(int id);
-
+    void set_testmode_off();
 
 
 
 
 private:
+    bool testing_ = true;
+    void doGraphicalAction(std::shared_ptr<Common::Actor> actor);
+
     int layerCount_ = 20;              //Hexagoni-layerien max määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
     std::map<Common::CubeCoordinate, std::shared_ptr<Common::Hex>> hexPointers_;

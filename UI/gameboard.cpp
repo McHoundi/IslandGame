@@ -264,7 +264,6 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
 
         for ( Common::CubeCoordinate neighbourCoords : hexPointers_.at(actorCoords)->getNeighbourVector()) {
             hexDummy = hexPointers_.at(neighbourCoords);
-            if ( hexDummy->getPieceType() == "Water") {
                 if ( hexDummy->getActors().empty() == false ) {
                     for ( auto toimija : hexDummy->getActors() ) {
                             delete actorItems_.at(toimija->getId());
@@ -280,7 +279,6 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
                         delete transportItems_.at(kulkuneuvo->getId());
                     }
                 }
-            }
 
         }
     } else if ( actorType == "seamunster" ) {
@@ -310,6 +308,17 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
                 delete pawnItems_.at(nappula->getId());
             }
         }
+    }
+}
+
+
+void GameBoard::addPoint(int playerID)
+{
+    std::cout << "point added for player " << playerID << std::endl;
+    if (playerPoints_.find(playerID) != playerPoints_.end()) {
+        playerPoints_.at(playerID) += 1;
+    } else {
+        playerPoints_[playerID] = 1;
     }
 }
 
@@ -454,15 +463,32 @@ void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
     //Ylimääräinen check jolla tarkistetaan voiko actor liikkua hexiin.
 
     if (testing_ != true) {
-        if ((hexPointers_.at(actorCoord)->getActors()).size() != 0 or
-                (hexPointers_.at(actorCoord)->getTransports()).size() != 0) {
-            std::cout << "There is already another actor or transport on this tile" << std::endl;
+        if (actor->getActorType() == "shark") {
+            if ((hexPointers_.at(actorCoord)->getActors()).size() != 0 or
+                    (hexPointers_.at(actorCoord)->getTransports()).size() != 0) {
+                std::cout << "There is already another actor or transport on this tile" << std::endl;
+            } else {
+                actor->addHex(target_hex);
+                QPointF XYCOORDS = cube_to_square(actorCoord);
+                actorItems_.at(actorId)->movePicture(XYCOORDS);
+                scene_->update();
+
+                doGraphicalAction(actor);
+                actor->doAction();
+            }
         } else {
-            actor->addHex(target_hex);
-            QPointF XYCOORDS = cube_to_square(actorCoord);
-            actorItems_.at(actorId)->movePicture(XYCOORDS);
-            scene_->update();
-            actor->doAction();
+            if ((hexPointers_.at(actorCoord)->getActors()).size() != 0) {
+                std::cout << "There is already another actor on this tile" << std::endl;
+            } else {
+                actor->addHex(target_hex);
+                QPointF XYCOORDS = cube_to_square(actorCoord);
+                actorItems_.at(actorId)->movePicture(XYCOORDS);
+                scene_->update();
+
+                doGraphicalAction(actor);
+                actor->doAction();
+
+            }
         }
     } else {
         actor->addHex(target_hex);
@@ -541,8 +567,15 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     // checks done: can move pawn
     else {
     */
+
+
         current_hex->removePawn(pawn);
-        target_hex->addPawn(pawn);
+        // jos pawn siirretään maaliruutuun sen toinnallinen puoli poistetaan pelistä
+        if (target_hex->getPieceType() != "Coral") {
+            target_hex->addPawn(pawn);
+        } else {
+            addPoint(pawn->getPlayerId());
+        }
         if (testing_ != true ) {
             int pawnslot = pawnItems_.at(pawnId)->get_pawnSlot();
             pawnSlots_.at(pawn->getCoordinates()).at(pawnslot-1) = false;

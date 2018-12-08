@@ -74,6 +74,7 @@ public:
 private:
     bool testing_ = true;
     void doGraphicalAction(std::shared_ptr<Common::Actor> actor);
+    void addPoint(int playerID);
 
     int layerCount_ = 20;              //Hexagoni-layerien max määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa
@@ -87,6 +88,7 @@ private:
     std::map<Common::CubeCoordinate, hexgraphics*> hexItems_;
     std::map<Common::CubeCoordinate, std::vector<bool>> pawnSlots_;
     std::map<int,std::vector<int>> playerPawns_; // key=playerID, value= vector of player's pawns.
+    std::map<int,int> playerPoints_; // points of each player
 
     QGraphicsScene* scene_;
 

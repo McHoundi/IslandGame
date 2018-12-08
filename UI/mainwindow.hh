@@ -89,6 +89,7 @@ private:
     std::pair<std::string,std::string> spinnerResult_;
     int animalMovesLeft_;
 
+
     unsigned int cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const;
 };
 

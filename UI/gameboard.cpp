@@ -360,6 +360,7 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
             transport->addHex(target_hex);
             QPointF XYCOORDS = cube_to_square(coord);
             transportItems_.at(id)->movePicture(XYCOORDS);
+            scene_->update();
         }
     } else {
         transport->addHex((target_hex));

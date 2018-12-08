@@ -389,7 +389,7 @@ bool MainWindow::allPawnsInWater()
         // for loop mennyt loppuun, joten kaikki pawnit vedessä
         return true;
     } else {
-        std::cout << "Player not found. ID: " << playerID << std::endl;
+        std::cout << "Player not found. Missing ID: " << playerID << std::endl;
         return true;
     }
 }

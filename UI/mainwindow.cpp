@@ -120,7 +120,7 @@ void MainWindow::initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja)
     int i = 0;
     for ( ; i < 3; i++ ) {
         boardPTR_->addPawn(GamerID,Pawnid,Common::CubeCoordinate(0,0,0));
-        playerPawns_[GamerID].push_back(Pawnid);
+        boardPTR_->add_pawn_to_player(Pawnid, GamerID);
         Pawnid++;
     }
 
@@ -370,8 +370,9 @@ bool MainWindow::allPawnsInWater()
     std::map<int,std::shared_ptr<Common::Pawn>> pawnMap = boardPTR_->get_pawns();
 
     int playerID = statePTR_->currentPlayer();
-    if (playerPawns_.find(playerID) != playerPawns_.end()) {
-        pawns = playerPawns_.at(playerID);
+    std::map<int, std::vector<int>> playerPawnMap = boardPTR_->get_playerPawns();
+    if (playerPawnMap.find(playerID) != playerPawnMap.end()) {
+        pawns = playerPawnMap.at(playerID);
 
         for ( int pawnID : pawns ) {
             if ( pawnMap.find(pawnID) == pawnMap.end() ) {

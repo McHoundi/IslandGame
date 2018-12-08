@@ -328,6 +328,17 @@ bool GameBoard::checkAnimalTypeExists(std::string type)
     return false;
 }
 
+void GameBoard::add_pawn_to_player(int pawnId, int playerId)
+{
+    playerPawns_[playerId] = std::vector<int> {};
+    playerPawns_.at(playerId).push_back(pawnId);
+}
+
+std::map<int, std::vector<int> > GameBoard::get_playerPawns()
+{
+    return playerPawns_;
+}
+
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
 
@@ -488,9 +499,14 @@ void GameBoard::removePawn(int pawnId)
 {
     std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnId);
     Common::CubeCoordinate pawnCoord = pawn->getCoordinates();
+    int playerID = pawn->getPlayerId();
     hexPointers_.at(pawnCoord)->removePawn(pawn);
+
     pawns_.erase(pawnId);
 
+
+    std::vector<int> *pawnvector = &playerPawns_.at(playerID);
+    pawnvector->erase(std::remove(pawnvector->begin(), pawnvector->end(), pawnId), pawnvector->end());
     //Poistetaan vielä pawnin graafinen puoli
     if (testing_ != true) {
         delete pawnItems_.at(pawnId);

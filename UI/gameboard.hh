@@ -64,6 +64,8 @@ public:
     virtual void removeTransport(int id);
     void set_testmode_off();
     bool checkAnimalTypeExists(std::string type);
+    void add_pawn_to_player(int pawnId, int playerId);
+    std::map<int, std::vector<int>> get_playerPawns();
 
 
 
@@ -84,6 +86,8 @@ private:
     std::map<int, pixmapgraphics*> transportItems_; // transporttien graafiset itemit
     std::map<Common::CubeCoordinate, hexgraphics*> hexItems_;
     std::map<Common::CubeCoordinate, std::vector<bool>> pawnSlots_;
+    std::map<int,std::vector<int>> playerPawns_; // key=playerID, value= vector of player's pawns.
+
     QGraphicsScene* scene_;
 
 };

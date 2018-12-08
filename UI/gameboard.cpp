@@ -222,7 +222,12 @@ std::map<Common::CubeCoordinate, hexgraphics *> GameBoard::get_hexItems()
 
 void GameBoard::removeTransport(int id)
 {
-
+    if ( transports_.find(id) != transports_.end() ) {
+        std::shared_ptr<Common::Transport> kulkuneuvo = transports_.at(id);
+        std::shared_ptr<Common::Hex> kuusikulmio = kulkuneuvo->getHex();
+        kuusikulmio->removeTransport(kulkuneuvo);
+        transports_.erase(id);
+    }
 }
 
 void GameBoard::set_testmode_off()
@@ -309,19 +314,30 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
 
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
+
     std::shared_ptr<Common::Transport> transport = transports_.at(id);
     std::shared_ptr<Common::Hex> current_hex = transport->getHex();
-    std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(coord);
+    std::shared_ptr<Common::Hex> target_hex;
+    if ( hexPointers_.find(coord) != hexPointers_.end() ) {
+        target_hex = hexPointers_.at(coord);
+    } else {
+        return;
+    }
 
     //Ylimääräinen check jolla tarkistetaan voiko transport liikkua hexiin.
-    if ((hexPointers_.at(coord)->getActors()).size() != 0 or
-            (hexPointers_.at(coord)->getTransports()).size() != 0) {
-        std::cout << "There is already another actor or transport on this tile" << std::endl;
+    if ( testing_ != true ) {
+        if ((hexPointers_.at(coord)->getActors()).size() != 0 or
+                (hexPointers_.at(coord)->getTransports()).size() != 0) {
+            std::cout << "There is already another actor or transport on this tile" << std::endl;
+        } else {
+            transport->addHex(target_hex);
+            QPointF XYCOORDS = cube_to_square(coord);
+            transportItems_.at(id)->movePicture(XYCOORDS);
+        }
     } else {
-        transport->addHex(target_hex);
-        QPointF XYCOORDS = cube_to_square(coord);
-        transportItems_.at(id)->movePicture(XYCOORDS);
+        transport->addHex((target_hex));
     }
+
 }
 
 void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Common::CubeCoordinate coord)
@@ -331,13 +347,17 @@ void GameBoard::addTransport(std::shared_ptr<Common::Transport> transport, Commo
     hexi->addTransport(transport);
     transport->addHex(hexi);
 
-    pixmapgraphics* uusi_transport = new pixmapgraphics;
-    QPointF XYCOORDS = cube_to_square(coord);
-    std::string tyyppi = transport->getTransportType();
-    uusi_transport->setPicture(tyyppi);
-    uusi_transport->movePicture(XYCOORDS);
-    scene_->addItem(uusi_transport);
-    transportItems_[transport->getId()] = uusi_transport;
+    if (testing_ != true ) {
+        pixmapgraphics* uusi_transport = new pixmapgraphics;
+        QPointF XYCOORDS = cube_to_square(coord);
+        std::string tyyppi = transport->getTransportType();
+        uusi_transport->setPicture(tyyppi);
+        uusi_transport->movePicture(XYCOORDS);
+        scene_->addItem(uusi_transport);
+        transportItems_[transport->getId()] = uusi_transport;
+    }
+
+
     transports_[transport->getId()] = transport;
 
 }
@@ -384,24 +404,40 @@ void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
 
 void GameBoard::removeActor(int actorId)
 {
-
+    if ( actors_.find(actorId) != actors_.end() ){
+        std::shared_ptr<Common::Actor> toimija = actors_.at(actorId);
+        std::shared_ptr<Common::Hex> kuusikulmio = toimija->getHex();
+        kuusikulmio->removeActor(toimija);
+        actors_.erase(actorId);
+    }
 }
 
 void GameBoard::moveActor(int actorId, Common::CubeCoordinate actorCoord)
 {
     std::shared_ptr<Common::Actor> actor = actors_.at(actorId);
     std::shared_ptr<Common::Hex> current_hex = actor->getHex();
-    std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(actorCoord);
+    std::shared_ptr<Common::Hex> target_hex;
+    if ( hexPointers_.find(actorCoord) != hexPointers_.end() ) {
+        target_hex = hexPointers_.at(actorCoord);
+    } else {
+        return;
+    }
+
 
     //Ylimääräinen check jolla tarkistetaan voiko actor liikkua hexiin.
-    if ((hexPointers_.at(actorCoord)->getActors()).size() != 0 or
-            (hexPointers_.at(actorCoord)->getTransports()).size() != 0) {
-        std::cout << "There is already another actor or transport on this tile" << std::endl;
+    if (testing_ != true) {
+        if ((hexPointers_.at(actorCoord)->getActors()).size() != 0 or
+                (hexPointers_.at(actorCoord)->getTransports()).size() != 0) {
+            std::cout << "There is already another actor or transport on this tile" << std::endl;
+        } else {
+            actor->addHex(target_hex);
+            QPointF XYCOORDS = cube_to_square(actorCoord);
+            actorItems_.at(actorId)->movePicture(XYCOORDS);
+        }
     } else {
         actor->addHex(target_hex);
-        QPointF XYCOORDS = cube_to_square(actorCoord);
-        actorItems_.at(actorId)->movePicture(XYCOORDS);
     }
+
 }
 
 void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoordinate actorCoord)
@@ -419,10 +455,10 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
         uusi_actor->movePicture(XYCOORDS);
         scene_->addItem(uusi_actor);
         actorItems_[actor->getId()] = uusi_actor;
-        actors_[actor->getId()] = actor;
+
         doGraphicalAction(actor);
     }
-
+    actors_[actor->getId()] = actor;
     actor->doAction();
 
 
@@ -437,16 +473,22 @@ void GameBoard::removePawn(int pawnId)
     pawns_.erase(pawnId);
 
     //Poistetaan vielä pawnin graafinen puoli
-    delete pawnItems_.at(pawnId);
-    pawnItems_.erase(pawnId);
-
+    if (testing_ != true) {
+        delete pawnItems_.at(pawnId);
+        pawnItems_.erase(pawnId);
+    }
 }
 
 void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 {
     std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnId);
     std::shared_ptr<Common::Hex> current_hex = hexPointers_.at(pawn->getCoordinates());
-    std::shared_ptr<Common::Hex> target_hex = hexPointers_.at(pawnCoord);
+    std::shared_ptr<Common::Hex> target_hex;
+    if (hexPointers_.find(pawnCoord) != hexPointers_.end()) {
+        target_hex = hexPointers_.at(pawnCoord);
+    } else {
+        return;
+    }
     std::vector<Common::CubeCoordinate> neighbour_tiles = current_hex->getNeighbourVector();
 
     //A few checks about integrity of this movement before moving
@@ -466,51 +508,42 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     */
         current_hex->removePawn(pawn);
         target_hex->addPawn(pawn);
+        if (testing_ != true ) {
+            int pawnslot = pawnItems_.at(pawnId)->get_pawnSlot();
+            pawnSlots_.at(pawn->getCoordinates()).at(pawnslot-1) = false;
 
-        int pawnslot = pawnItems_.at(pawnId)->get_pawnSlot();
-        pawnSlots_.at(pawn->getCoordinates()).at(pawnslot-1) = false;
+            pawn->setCoordinates(pawnCoord);
 
-        pawn->setCoordinates(pawnCoord);
+            QPointF XYCOORDS = cube_to_square(pawnCoord);
+            if ( pawnItems_.find(pawnId) == pawnItems_.end() ) {
+                std::cout << "Tätä viestiä ei pitäisi näkyä" << std::endl;
+            } else {
 
-        QPointF XYCOORDS = cube_to_square(pawnCoord);
-        if ( pawnItems_.find(pawnId) == pawnItems_.end() ) {
-            std::cout << "Tätä erroria ei pitäisi tulla" << std::endl;
-        } else {
-            /* VANHAA MUTTA TOIMIVAA KOODIA
-             *
-            std::cout << "pawnamount: " << target_hex->getPawnAmount() << std::endl;
-            if (target_hex->getPawnAmount() == 1 ) {
-                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-            } else if (target_hex->getPawnAmount() == 2 ) {
-                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
-            } else if (target_hex->getPawnAmount() == 3 ) {
-                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                if ( pawnSlots_.at(pawnCoord).at(0) == false) {
+                    pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                    pawnSlots_.at(pawnCoord).at(0) = true;
+                    pawnItems_.at(pawnId)->set_pawnSlot(1);
+                } else if ( pawnSlots_.at(pawnCoord).at(1) == false ) {
+                    pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+                    pawnSlots_.at(pawnCoord).at(1) = true;
+                    pawnItems_.at(pawnId)->set_pawnSlot(2);
+                } else if ( pawnSlots_.at(pawnCoord).at(2) == false ) {
+                    pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                    pawnSlots_.at(pawnCoord).at(2) = true;
+                    pawnItems_.at(pawnId)->set_pawnSlot(3);
+                }
+                scene_->update();
         }
-            */
+        }
 
-
-            if ( pawnSlots_.at(pawnCoord).at(0) == false) {
-                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-                pawnSlots_.at(pawnCoord).at(0) = true;
-                pawnItems_.at(pawnId)->set_pawnSlot(1);
-            } else if ( pawnSlots_.at(pawnCoord).at(1) == false ) {
-                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
-                pawnSlots_.at(pawnCoord).at(1) = true;
-                pawnItems_.at(pawnId)->set_pawnSlot(2);
-            } else if ( pawnSlots_.at(pawnCoord).at(2) == false ) {
-                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-                pawnSlots_.at(pawnCoord).at(2) = true;
-                pawnItems_.at(pawnId)->set_pawnSlot(3);
-            }
-            scene_->update();
-    }
 
 }
 
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
 {
+
     std::shared_ptr<Common::Hex> hexi;
-    if ( coord.x == 0 && coord.y == 0 && coord.z == 0 ) {
+    if ( coord.x == 0 && coord.y == 0 && coord.z == 0 && testing_ != true ) {
         Common::CubeCoordinate coords_outside_center = pick_random_available_neighbour(hexPointers_.at(Common::CubeCoordinate(0,0,0)));
         hexi = hexPointers_.at(coords_outside_center);
         coord = coords_outside_center;

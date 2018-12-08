@@ -402,11 +402,8 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
         }
             */
 
-            if ( target_hex->getPawnAmount() == 0 ) {
-                pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-                pawnSlots_.at(pawnCoord).at(0) = true;
-                pawnItems_.at(pawnId)->set_pawnSlot(1);
-            } else if ( pawnSlots_.at(pawnCoord).at(0) == false) {
+
+            if ( pawnSlots_.at(pawnCoord).at(0) == false) {
                 pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
                 pawnSlots_.at(pawnCoord).at(0) = true;
                 pawnItems_.at(pawnId)->set_pawnSlot(1);
@@ -419,7 +416,7 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
                 pawnSlots_.at(pawnCoord).at(2) = true;
                 pawnItems_.at(pawnId)->set_pawnSlot(3);
             }
-
+            scene_->update();
     }
 
 }

@@ -71,7 +71,7 @@ public slots:
 private:
     void showEventHelper();
     bool allPawnsInWater();
-    void udpateTransportInfo(std::map<std::shared_ptr<Common::Pawn> , bool> TransportInfo);
+    void updateTransportInfo();
 
     Ui::MainWindow *ui;
     int playerCount_; //aloitusikkunassa määritetty pelaajien määrä.

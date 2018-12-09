@@ -748,6 +748,9 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
                     pawnSlots_.at(pawnCoord).at(2) = true;
                     pawnItems_.at(pawnId)->set_pawnSlot(3);
                 }
+                if (target_hex->getTransports().size() != 0) {
+                    addPawnToTransport(pawnId,target_hex->getTransports().at(0)->getId());
+                }
                 scene_->update();
             }
         }

@@ -673,8 +673,6 @@ void GameBoard::removePawn(int pawnId)
 
     pawns_.erase(pawnId);
 
-
-
     //Poistetaan vielä pawnin graafinen puoli.
     if (testing_ != true) {
         delete pawnItems_.at(pawnId);

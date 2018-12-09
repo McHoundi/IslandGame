@@ -18,8 +18,10 @@ int main(int argc, char *argv[])
         w.initialize_runner();
     } catch ( Common::FormatException error ) {
        errorbox.critical(nullptr, "FormatException! Closing program.", QString::fromStdString(error.msg()));
+       return -1;
     } catch ( Common::IoException error ) {
         errorbox.critical(nullptr, "IOException! Closing program.", QString::fromStdString(error.msg()));
+        return -1;
     }
 
     w.show();

@@ -214,8 +214,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                    std::cout << "Changed gamephase to SINKING" << std::endl;
                 } else {
                     //Current player's turn not over yet, so we'll update pawns' transport info
-                    std::map<std::shared_ptr<Common::Pawn>,bool> transportInfo = boardPTR_->pawns_NearOrIn_Transport(statePTR_->currentPlayer());
-                    udpateTransportInfo(transportInfo);
+                    updateTransportInfo();
 
                 }
 
@@ -325,6 +324,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
                     std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+                    updateTransportInfo();
 
                 }
             } catch (Common::IllegalMoveException errori) {
@@ -380,6 +380,7 @@ void MainWindow::handle_spinButton()
 
             std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+            updateTransportInfo();
         }
 
     } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ == true) {
@@ -400,6 +401,7 @@ void MainWindow::handle_spinButton()
         statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
         spinButton_->setText("SPIN!");
         scene1_->update();
+        updateTransportInfo();
     }
 }
 
@@ -428,8 +430,9 @@ bool MainWindow::allPawnsInWater()
     return true;
 }
 
-void MainWindow::udpateTransportInfo(std::map<std::shared_ptr<Common::Pawn>, bool> TransportInfo)
+void MainWindow::updateTransportInfo()
 {
+    std::map<std::shared_ptr<Common::Pawn>,bool> TransportInfo = boardPTR_->pawns_NearOrIn_Transport(statePTR_->currentPlayer());
     int current_player = statePTR_->currentPlayer();
     int pawnBaseID = current_player - 1000;
     pawnBaseID *= 10;

@@ -67,6 +67,9 @@ public:
     void add_pawn_to_player(int pawnId, int playerId);
     std::map<std::shared_ptr<Common::Pawn>,bool> pawns_NearOrIn_Transport(int currentPlayer); //check if any of player's pawns in a transport or in a hex that contains one
     std::map<int, std::vector<int>> get_playerPawns();
+    void addPawnToTransport(int pawnID, int transportID);
+    void removePawnFromTransport(int pawnID, int transportID);
+    bool pawnInTransport(std::shared_ptr<Common::Pawn> pawn);
 
 
 

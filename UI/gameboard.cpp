@@ -748,9 +748,6 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
                     pawnSlots_.at(pawnCoord).at(2) = true;
                     pawnItems_.at(pawnId)->set_pawnSlot(3);
                 }
-                if (target_hex->getTransports().size() != 0) {
-                    addPawnToTransport(pawnId,target_hex->getTransports().at(0)->getId());
-                }
                 scene_->update();
             }
         }
@@ -820,7 +817,7 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
         } else if ( new_pawn->getPlayerId() == 1003 ) {
             brush.setColor(Qt::white);
         } else if ( new_pawn->getPlayerId() == 1004 ) {
-            brush.setColor(Qt::black);
+            brush.setColor(Qt::darkGreen);
         }
 
         uusi_nappula->setBrush(brush);

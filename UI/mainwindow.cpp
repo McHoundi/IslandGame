@@ -243,6 +243,9 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
             statePTR_->changeGamePhase(Common::GamePhase::SPINNING);
 
+            //Päivitetään vielä transportInfo
+            updateTransportInfo();
+
         } catch (Common::IllegalMoveException errori) {
             std::cout << errori.msg() << std::endl;
         }

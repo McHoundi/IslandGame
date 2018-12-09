@@ -1,5 +1,6 @@
 #include "gamestate.hh"
 #include "iostream"
+#include "algorithm"
 
 GameState::GameState()
 {
@@ -23,12 +24,29 @@ int GameState::currentPlayer() const
 
 void GameState::changePlayerTurn(int nextPlayer)
 {
-    player_ = nextPlayer;
+
+
+    if (std::find(availablePlayers_.begin(), availablePlayers_.end(), nextPlayer) != availablePlayers_.end() ) {
+        player_ = nextPlayer;
+    }
+
+}
+
+void GameState::addPlayer(int playerID)
+{
+    availablePlayers_.push_back(playerID);
 }
 
 
 void GameState::changeGamePhase(Common::GamePhase nextPhase)
 {
-    phase_ = nextPhase;
+    if ( currentGamePhase() == Common::GamePhase::MOVEMENT  && nextPhase == Common::GamePhase::SINKING ){
+        phase_ = nextPhase;
+    } else if ( currentGamePhase() == Common::GamePhase::SINKING && nextPhase == Common::GamePhase::SPINNING ){
+        phase_ = nextPhase;
+    } else if ( currentGamePhase() == Common::GamePhase::SPINNING && nextPhase == Common::GamePhase::MOVEMENT ) {
+        phase_ = nextPhase;
+    }
+
 }
 

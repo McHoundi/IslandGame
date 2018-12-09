@@ -369,6 +369,7 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
             transport->addHex(target_hex);
             QPointF XYCOORDS = cube_to_square(coord);
             transportItems_.at(id)->movePicture(XYCOORDS);
+            scene_->update();
         }
     } else {
         transport->addHex((target_hex));
@@ -531,12 +532,14 @@ void GameBoard::removePawn(int pawnId)
     pawns_.erase(pawnId);
 
 
-    std::vector<int> *pawnvector = &playerPawns_.at(playerID);
-    pawnvector->erase(std::remove(pawnvector->begin(), pawnvector->end(), pawnId), pawnvector->end());
-    //Poistetaan vielä pawnin graafinen puoli
+
+    //Poistetaan vielä pawnin graafinen puoli sekä pawni pelaajien pawnlistasta.
     if (testing_ != true) {
         delete pawnItems_.at(pawnId);
         pawnItems_.erase(pawnId);
+
+        std::vector<int> *pawnvector = &playerPawns_.at(playerID);
+        pawnvector->erase(std::remove(pawnvector->begin(), pawnvector->end(), pawnId), pawnvector->end());
     }
 }
 

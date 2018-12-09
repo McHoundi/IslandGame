@@ -34,31 +34,24 @@ MainWindow::MainWindow(QWidget *parent) :
     StartDialog dialogi;
     scene1_ = new QGraphicsScene;
 
-    std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
-    boardPtr->set_testmode_off();
+    boardPTR_ = std::make_shared<Student::GameBoard>();
+    boardPTR_->set_testmode_off();
 
-    std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
+    statePTR_ = std::make_shared<GameState>();
+
 
 
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
     dialogi.exec();
-
-    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
-    boardPtr->set_scene(scene1_);
-    runner_ = Common::Initialization::getGameRunner(boardPtr, statePtr, pelaajat);
-
-
-    statePTR_ = statePtr;
-    boardPTR_ = boardPtr;
-    playerVector_ = pelaajat;
+    playerVector_ = initialize_players();
+    boardPTR_->set_scene(scene1_);
 
 
 
-    for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
-        initialize_pawns(pelaaja);
-    }
 
-    draw_map();
+
+
+
 
 
 
@@ -102,6 +95,7 @@ std::vector<std::shared_ptr<Common::IPlayer>> MainWindow::initialize_players()
         IPelaaja = std::make_shared<Player>(PlayerID);
         playerVector.push_back(IPelaaja);
         players_[PlayerID] = IPelaaja;
+        statePTR_->addPlayer(PlayerID);
         PlayerID++;
     }
 
@@ -136,6 +130,15 @@ void MainWindow::run_game()
     //set to first player's turn
 
 
+}
+
+void MainWindow::initialize_runner()
+{
+    runner_ = Common::Initialization::getGameRunner(boardPTR_, statePTR_, playerVector_);
+    for ( std::shared_ptr<Common::IPlayer> pelaaja : playerVector_ ) {
+        initialize_pawns(pelaaja);
+    }
+    draw_map();
 }
 
 void MainWindow::run_movement_phase(std::shared_ptr<Common::IPlayer>)
@@ -406,32 +409,19 @@ void MainWindow::handle_boardingButton()
 
 bool MainWindow::allPawnsInWater()
 {
-    std::vector<int> pawns;
     std::map<int,std::shared_ptr<Common::Pawn>> pawnMap = boardPTR_->get_pawns();
-
     int playerID = statePTR_->currentPlayer();
-    std::map<int, std::vector<int>> playerPawnMap = boardPTR_->get_playerPawns();
-    if (playerPawnMap.find(playerID) != playerPawnMap.end()) {
-        pawns = playerPawnMap.at(playerID);
-
-        for ( int pawnID : pawns ) {
-            if ( pawnMap.find(pawnID) == pawnMap.end() ) {
-                std::cout << "Pawn probably dead" << std::endl;
-            } else {
-                Common::CubeCoordinate pawnCoord = pawnMap.at(pawnID)->getCoordinates();
-                if ( boardPTR_->get_hexPointers().at(pawnCoord)->getPieceType() != "Water" ) {
-                    return false;
-                }
-
+    for (auto const& it : pawnMap ) {
+        std::shared_ptr<Common::Pawn> pawni = it.second;
+        if (pawni->getPlayerId() == playerID) {
+            std::shared_ptr<Common::Hex> pawnHex = boardPTR_->get_hexPointers().at(pawni->getCoordinates());
+            if ( pawnHex->getPieceType() != "Water" ) {
+                return false; // This means that at least one of player 1's pawns are on land.
             }
-
         }
+       }
         // for loop mennyt loppuun, joten kaikki pawnit vedessä
-        return true;
-    } else {
-        std::cout << "Player not found. ID: " << playerID << std::endl;
-        return true;
-    }
+    return true;
 }
 
 void MainWindow::handle_startButton()

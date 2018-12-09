@@ -190,7 +190,16 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             }
         } else if ( highlightedPawn_ != nullptr) {
             try {
-                runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
+
+                if (boardPTR_->pawnInTransport(highlightedPawn_)) {
+                    std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
+                    runner_->moveTransport(highlightedHex_->getCoordinates(), hexi->getCoordinates(),
+                                           highlightedHex_->getTransports().at(0)->getId());
+                    std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
+                } else {
+                    runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
+                }
+
                 std::cout << "Pawn Moved! " << std::endl;
                 std::cout << "Player: " << highlightedPawn_->getPlayerId() << " Pawn: " << highlightedPawn_->getId() << std::endl;
                 highlightedPawn_ = nullptr;
@@ -205,6 +214,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 }
             } catch (Common::IllegalMoveException errori ) {
                 std::cout << errori.msg() << std::endl;
+                std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
                 highlightedPawn_ = nullptr;
                 highlightedHex_ = nullptr;
             }

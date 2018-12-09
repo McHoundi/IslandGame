@@ -68,6 +68,7 @@ public:
     std::map<int, std::vector<int>> get_playerPawns();
     void addPawnToTransport(int pawnID, int transportID);
     void removePawnFromTransport(int pawnID, int transportID);
+    bool pawnInTransport(std::shared_ptr<Common::Pawn> pawn);
 
 
 

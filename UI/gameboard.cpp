@@ -392,17 +392,31 @@ void GameBoard::removePawnFromTransport(int pawnID, int transportID)
     }
 }
 
+bool GameBoard::pawnInTransport(std::shared_ptr<Common::Pawn> pawn)
+{
+    std::shared_ptr<Common::Hex> pawnHex = hexPointers_.at(pawn->getCoordinates());
+    if (pawnHex->getTransports().size() != 0) {
+        std::cout << pawnHex->getTransports().at(0)->isPawnInTransport(pawn) << std::endl;
+        return pawnHex->getTransports().at(0)->isPawnInTransport(pawn);
+    }
+    std::cout << "false loppu" << std::endl;
+    return false;
+
+}
+
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
 
     std::shared_ptr<Common::Transport> transport = transports_.at(id);
     std::shared_ptr<Common::Hex> current_hex = transport->getHex();
     std::shared_ptr<Common::Hex> target_hex;
+    QPointF XYcoords = cube_to_square(coord);
     if ( hexPointers_.find(coord) != hexPointers_.end() ) {
         target_hex = hexPointers_.at(coord);
     } else {
         return;
     }
+
 
     //Ylimääräinen check jolla tarkistetaan voiko transport liikkua hexiin.
     if ( testing_ != true ) {
@@ -410,6 +424,22 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
                 (hexPointers_.at(coord)->getTransports()).size() != 0) {
             std::cout << "There is already another actor or transport on this tile" << std::endl;
         } else {
+            if ( transport->getPawnsInTransport().size() != 0) {
+                for (auto pawni : transport->getPawnsInTransport()) {
+                    current_hex->removePawn(pawni);
+                    target_hex->addPawn(pawni);
+                    pawni->setCoordinates(target_hex->getCoordinates());
+
+                    pawngraphics* pawnItem = pawnItems_.at((pawni->getId()));
+                    if (pawnItem->get_pawnSlot() == 1) {
+                        pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                    } else if (pawnItem->get_pawnSlot() == 2) {
+                        pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()+HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+                    } else if (pawnItem->get_pawnSlot() == 3) {
+                        pawnItem->setRect(XYcoords.x()+HEX_SIZE*0.3, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                    }
+                }
+            }
             transport->addHex(target_hex);
             QPointF XYCOORDS = cube_to_square(coord);
             transportItems_.at(id)->movePicture(XYCOORDS);
@@ -639,6 +669,7 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
         // jos pawn siirretään maaliruutuun sen toinnallinen puoli poistetaan pelistä
         if (target_hex->getPieceType() != "Coral") {
             target_hex->addPawn(pawn);
+
         } else {
             addPoint(pawn->getPlayerId());
         }
@@ -651,7 +682,7 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
             QPointF XYCOORDS = cube_to_square(pawnCoord);
             if ( pawnItems_.find(pawnId) == pawnItems_.end() ) {
                 std::cout << "Tätä viestiä ei pitäisi näkyä" << std::endl;
-
+            /*
             } else if (transportInCurrent != nullptr && canMove) {
                 moveTransport(transportInCurrent->getId(), target_hex->getCoordinates());
                 if ( pawnSlots_.at(pawnCoord).at(0) == false) {
@@ -668,6 +699,7 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
                     pawnItems_.at(pawnId)->set_pawnSlot(3);
                 }
                 scene_->update();
+            */
 
             } else if (canMove) {
 
@@ -683,6 +715,11 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
                     pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
                     pawnSlots_.at(pawnCoord).at(2) = true;
                     pawnItems_.at(pawnId)->set_pawnSlot(3);
+                }
+
+                //transportin toiminnan testaukseen
+                if(target_hex->getTransports().size() != 0) {
+                    addPawnToTransport(pawnId, target_hex->getTransports().at(0)->getId());
                 }
                 scene_->update();
             }

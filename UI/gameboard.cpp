@@ -465,6 +465,7 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 
 
     std::shared_ptr<Common::Hex> current_hex = transport->getHex();
+    std::cout << "hakii" << std::endl;
     std::shared_ptr<Common::Hex> target_hex;
 
     if ( hexPointers_.find(coord) != hexPointers_.end() ) {
@@ -489,8 +490,8 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
                     pawngraphics* pawnItem;
                     QPointF XYcoords;
                     if ( pawnItems_.find(pawni->getId()) != pawnItems_.end() ) {
-                        pawnItem = pawnItems_.at((pawni->getId()));
-                        XYcoords = cube_to_square(coord);
+                         pawnItem = pawnItems_.at((pawni->getId()));
+                         XYcoords = cube_to_square(coord);
                     }
 
                     if (pawnItem->get_pawnSlot() == 1) {
@@ -541,6 +542,7 @@ void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
     hexPointers_[cubecoords] = newHex;
 
     //Graafinen puoli
+    if ( testing_ != true ) {
     QBrush brush;
     std::string type = newHex->getPieceType();
     if (type == "Peak") {
@@ -560,7 +562,7 @@ void GameBoard::addHex(std::shared_ptr<Common::Hex> newHex)
         std::cout << "Unrecognized type!" << std::endl;
     }
 
-    if ( testing_ != true ) {
+
         hexgraphics* HexItem = new hexgraphics;
         brush.setStyle(Qt::SolidPattern);
 

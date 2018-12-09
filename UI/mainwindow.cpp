@@ -68,6 +68,12 @@ MainWindow::MainWindow(QWidget *parent) :
     aloitusnappi_->setText("Start Game");
     scene1_->addWidget(aloitusnappi_);
 
+    boardingButton_ = new QPushButton;
+    connect(boardingButton_, &QPushButton::clicked, this, &MainWindow::handle_boardingButton);
+    boardingButton_->setGeometry(QRect(500, -300, 200, 50));
+    boardingButton_->setText("Board/Unboard");
+    scene1_->addWidget(boardingButton_);
+
     ui->graphicsView->setScene(scene1_);
 
 }
@@ -267,6 +273,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                         players_.at(current_player+1)->setActionsLeft(3);
                     }
 
+                    spinButton_->setText("SPIN!!");
+                    scene1_->update();
 
                     std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
@@ -305,7 +313,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                         statePTR_->changePlayerTurn(current_player+1);
                         players_.at(current_player+1)->setActionsLeft(3);
                     }
-
+                    spinButton_->setText("SPIN!!");
+                    scene1_->update();
 
                     std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
@@ -347,6 +356,8 @@ void MainWindow::handle_spinButton()
                 animalMovesLeft_ = -99;
             }
             wheelSpinned_ = true;
+            spinButton_->setText("Skip actor movement");
+            scene1_->update();
         } else {
             std::cout << "No animal of this type on board" << std::endl;
             int current_player = statePTR_->currentPlayer();
@@ -362,6 +373,36 @@ void MainWindow::handle_spinButton()
 
             std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+        }
+    } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ == true) {
+        highlightedTransport_ = nullptr;
+        highlightedHex_ = nullptr;
+        wheelSpinned_ = false;
+        int current_player = statePTR_->currentPlayer();
+
+        if (players_.find(current_player+1) == players_.end()) {
+            statePTR_->changePlayerTurn(1001);
+            players_.at(1001)->setActionsLeft(3);
+        } else {
+            statePTR_->changePlayerTurn(current_player+1);
+            players_.at(current_player+1)->setActionsLeft(3);
+        }
+
+
+        std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
+        statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+        spinButton_->setText("SPIN!");
+        scene1_->update();
+    }
+}
+
+void MainWindow::handle_boardingButton()
+{
+    if (statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT && highlightedHex_ != nullptr) {
+        if ( highlightedHex_->getTransports().size() != 0) {
+
+        } else {
+            std::cout << "No transports in selected tile!" << endl;
         }
     }
 }
@@ -389,7 +430,7 @@ void MainWindow::handle_startButton()
     std::cout << "aloitusnappia painettu" << std::endl;
     statePTR_->changePlayerTurn(1001);
     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-    players_.at(1001)->setActionsLeft(3);
+    players_.at(1001)->setActionsLeft(12);
 }
 
 unsigned int MainWindow::cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const

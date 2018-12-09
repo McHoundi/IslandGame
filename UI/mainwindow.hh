@@ -64,6 +64,8 @@ public slots:
 
     void handle_spinButton();
 
+    void handle_boardingButton();
+
 
 private:
     void showEventHelper();
@@ -87,9 +89,11 @@ private:
     std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr;
     std::shared_ptr<Common::IGameRunner> runner_;
     QPushButton* spinButton_;
+    QPushButton* boardingButton_;
     wheel* wheel_;
     std::pair<std::string,std::string> spinnerResult_;
     int animalMovesLeft_;
+
 
     unsigned int cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const;
 };

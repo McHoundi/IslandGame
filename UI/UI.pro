@@ -24,8 +24,8 @@ SOURCES += \
     main.cc \
     pawngraphics.cpp \
     wheel.cpp \
-    pixmapgraphics.cpp \
-    TST_gamestatetest.cpp
+    pixmapgraphics.cpp
+
 
 
 HEADERS  += \

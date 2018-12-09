@@ -34,22 +34,20 @@ MainWindow::MainWindow(QWidget *parent) :
     StartDialog dialogi;
     scene1_ = new QGraphicsScene;
 
-    std::shared_ptr<Student::GameBoard> boardPtr = std::make_shared<Student::GameBoard>();
-    boardPtr->set_testmode_off();
+    boardPTR_ = std::make_shared<Student::GameBoard>();
+    boardPTR_->set_testmode_off();
 
-    std::shared_ptr<GameState> statePtr = std::make_shared<GameState>();
+    statePTR_ = std::make_shared<GameState>();
 
 
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
     dialogi.exec();
 
     std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
-    boardPtr->set_scene(scene1_);
-    runner_ = Common::Initialization::getGameRunner(boardPtr, statePtr, pelaajat);
+    boardPTR_->set_scene(scene1_);
+    runner_ = Common::Initialization::getGameRunner(boardPTR_, statePTR_, pelaajat);
 
 
-    statePTR_ = statePtr;
-    boardPTR_ = boardPtr;
     playerVector_ = pelaajat;
 
 
@@ -88,7 +86,6 @@ std::vector<std::shared_ptr<Common::IPlayer>> MainWindow::initialize_players()
 
     int PlayerID = 1001;
     int i;
-    std::vector<std::string> playerColors{};
 
 
     std::vector<std::shared_ptr<Common::IPlayer> > playerVector;
@@ -97,6 +94,7 @@ std::vector<std::shared_ptr<Common::IPlayer>> MainWindow::initialize_players()
         IPelaaja = std::make_shared<Player>(PlayerID);
         playerVector.push_back(IPelaaja);
         players_[PlayerID] = IPelaaja;
+        statePTR_->addPlayer(PlayerID);
         PlayerID++;
     }
 

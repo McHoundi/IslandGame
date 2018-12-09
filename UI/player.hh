@@ -4,7 +4,6 @@
 #include "iplayer.hh"
 #include "memory"
 #include "vector"
-#include "pawn.hh"
 
 
 class Player : public Common::IPlayer

@@ -2,8 +2,7 @@
 #define GAMESTATE_HH
 
 #include "igamestate.hh"
-#include "gameboard.hh"
-#include "QObject"
+#include "vector"
 
 class GameState :  public Common::IGameState
 {
@@ -16,6 +15,9 @@ public:
     virtual void changeGamePhase(Common::GamePhase nextPhase);
     virtual void changePlayerTurn(int nextPlayer);
 
+    void addPlayer(int playerID);
+
+
 
 
 
@@ -23,6 +25,7 @@ public:
 private:
     Common::GamePhase phase_ = Common::GamePhase::MOVEMENT; //current GamePhase
     int player_ ; //Current player's ID
+    std::vector<int> availablePlayers_;
 
 };
 

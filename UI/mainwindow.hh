@@ -51,6 +51,8 @@ public:
     void run_movement_phase(std::shared_ptr<Common::IPlayer>);
     void run_game();
 
+    void initialize_runner();
+
 
 
     ~MainWindow();

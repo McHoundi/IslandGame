@@ -40,23 +40,18 @@ MainWindow::MainWindow(QWidget *parent) :
     statePTR_ = std::make_shared<GameState>();
 
 
+
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
     dialogi.exec();
-
-    std::vector<std::shared_ptr<Common::IPlayer> >  pelaajat = initialize_players();
+    playerVector_ = initialize_players();
     boardPTR_->set_scene(scene1_);
-    runner_ = Common::Initialization::getGameRunner(boardPTR_, statePTR_, pelaajat);
-
-
-    playerVector_ = pelaajat;
 
 
 
-    for ( std::shared_ptr<Common::IPlayer> pelaaja : pelaajat ) {
-        initialize_pawns(pelaaja);
-    }
 
-    draw_map();
+
+
+
 
 
 
@@ -129,6 +124,15 @@ void MainWindow::run_game()
     //set to first player's turn
 
 
+}
+
+void MainWindow::initialize_runner()
+{
+    runner_ = Common::Initialization::getGameRunner(boardPTR_, statePTR_, playerVector_);
+    for ( std::shared_ptr<Common::IPlayer> pelaaja : playerVector_ ) {
+        initialize_pawns(pelaaja);
+    }
+    draw_map();
 }
 
 void MainWindow::run_movement_phase(std::shared_ptr<Common::IPlayer>)

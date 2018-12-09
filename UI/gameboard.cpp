@@ -406,11 +406,11 @@ bool GameBoard::addPawnToTransport(int pawnID)
     if (transport->getCapacity() > 0) {
         transport->addPawn(pawn);
         if (pawnItem->get_pawnSlot() == 1) {
-            pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+            pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.6, XYcoords.y()-HEX_SIZE*0.6,PAWN_WIDTH,PAWN_HEIGHT);
         } else if (pawnItem->get_pawnSlot() == 2) {
-            pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()+HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+            pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.2, XYcoords.y()-HEX_SIZE*0.6,PAWN_WIDTH,PAWN_HEIGHT);
         } else if (pawnItem->get_pawnSlot() == 3) {
-            pawnItem->setRect(XYcoords.x()+HEX_SIZE*0.3, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+            pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.6, XYcoords.y()-HEX_SIZE*0.2,PAWN_WIDTH,PAWN_HEIGHT);
         }
         scene_->update();
         return true;
@@ -495,11 +495,11 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
                     }
 
                     if (pawnItem->get_pawnSlot() == 1) {
-                        pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                        pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.6, XYcoords.y()-HEX_SIZE*0.6,PAWN_WIDTH,PAWN_HEIGHT);
                     } else if (pawnItem->get_pawnSlot() == 2) {
-                        pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()+HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+                        pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.2, XYcoords.y()-HEX_SIZE*0.6,PAWN_WIDTH,PAWN_HEIGHT);
                     } else if (pawnItem->get_pawnSlot() == 3) {
-                        pawnItem->setRect(XYcoords.x()+HEX_SIZE*0.3, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                        pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.6, XYcoords.y()-HEX_SIZE*0.2,PAWN_WIDTH,PAWN_HEIGHT);
                     }
                 }
             }

@@ -10,6 +10,7 @@ class wheel : public QGraphicsPixmapItem
 public:
     wheel();
     void setPicture(std::pair<std::string, std::string> pari);
+    std::vector<QPixmap> get_pixmaps();
 
 private:
     std::vector<QPixmap> pixmaps_;

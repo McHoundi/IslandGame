@@ -70,7 +70,7 @@ public slots:
 
 private:
     void showEventHelper();
-    bool allPawnsInWater();
+    bool allPawnsSwimming();
     void updateTransportInfo();
 
     Ui::MainWindow *ui;
@@ -89,7 +89,6 @@ private:
     std::shared_ptr<Common::Actor> highlightedActor_ = nullptr;
     std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr;
     std::shared_ptr<Common::IGameRunner> runner_;
-    QPushButton* spinButton_;
     QPushButton* boardingButton_;
     wheel* wheel_;
     std::pair<std::string,std::string> spinnerResult_;

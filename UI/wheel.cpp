@@ -109,3 +109,8 @@ void wheel::setPicture( std::pair<std::string,std::string> pari)
             setPixmap(pixmaps_.at(15));
     }
 }
+
+std::vector<QPixmap> wheel::get_pixmaps()
+{
+    return pixmaps_;
+}

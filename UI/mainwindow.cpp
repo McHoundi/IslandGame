@@ -187,15 +187,22 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             try {
 
                 if (boardPTR_->pawnInTransport(highlightedPawn_)) {
-                    std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
-                    runner_->moveTransport(highlightedHex_->getCoordinates(), hexi->getCoordinates(),
-                                           highlightedHex_->getTransports().at(0)->getId());
-                    std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
+                    if((highlightedHex_->getTransports().at(0))->canMove(statePTR_->currentPlayer())){
+                        std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
+                        runner_->moveTransport(highlightedHex_->getCoordinates(), hexi->getCoordinates(),
+                                               highlightedHex_->getTransports().at(0)->getId());
+                        std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
+                    } else {
+                        std::cout << "Player " << statePTR_->currentPlayer()
+                                  << "can't move this boat. Unboard before moving." << std::endl;
+                    }
+
                 } else {
                     runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
                 }
 
-                std::cout << "Pawn Moved! " << std::endl;
+                updateTransportInfo();
+
                 std::cout << "Player: " << highlightedPawn_->getPlayerId() << " Pawn: " << highlightedPawn_->getId() << std::endl;
                 highlightedPawn_ = nullptr;
                 highlightedHex_ = nullptr;
@@ -208,9 +215,6 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                    statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                    std::cout << "Changed gamephase to SINKING" << std::endl;
                    ui->gamephasevaluelabel->setText("SINKING");
-                } else {
-                    //Current player's turn not over yet, so we'll update pawns' transport info
-                    updateTransportInfo();
 
                 }
 
@@ -228,6 +232,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
     } else if ( statePTR_->currentGamePhase() == Common::GamePhase::SINKING ) {
         try{
+            updateTransportInfo();
             Common::CubeCoordinate coords = hexi->getCoordinates();
             runner_->flipTile(coords);
             hexgraphics* hexItem;

@@ -550,7 +550,26 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
     } else {
         return;
     }
+    std::shared_ptr<Common::Transport> transportInCurrent = nullptr;
+    if (current_hex->getTransports().size() != 0) {
+        transportInCurrent = current_hex->getTransports().at(0);
+    }
+    bool canMove = true;
     std::vector<Common::CubeCoordinate> neighbour_tiles = current_hex->getNeighbourVector();
+
+
+    // Ylimääräinen check joka tarkistaa saako transportin sisällä oleva actor liikkua
+    if (transportInCurrent != nullptr) {
+        if (transportInCurrent->isPawnInTransport(pawn)) {
+            if (transportInCurrent->canMove(pawn->getPlayerId())){
+                canMove = true;
+            } else {
+                std::cout << "Player " << pawn->getPlayerId()
+                          << "can't move this boat. Unboard before moving." << std::endl;
+                canMove = false;
+            }
+        }
+    }
 
     //A few checks about integrity of this movement before moving
     /*
@@ -585,7 +604,25 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
             QPointF XYCOORDS = cube_to_square(pawnCoord);
             if ( pawnItems_.find(pawnId) == pawnItems_.end() ) {
                 std::cout << "Tätä viestiä ei pitäisi näkyä" << std::endl;
-            } else {
+
+            } else if (transportInCurrent != nullptr && canMove) {
+                moveTransport(transportInCurrent->getId(), target_hex->getCoordinates());
+                if ( pawnSlots_.at(pawnCoord).at(0) == false) {
+                    pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                    pawnSlots_.at(pawnCoord).at(0) = true;
+                    pawnItems_.at(pawnId)->set_pawnSlot(1);
+                } else if ( pawnSlots_.at(pawnCoord).at(1) == false ) {
+                    pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+                    pawnSlots_.at(pawnCoord).at(1) = true;
+                    pawnItems_.at(pawnId)->set_pawnSlot(2);
+                } else if ( pawnSlots_.at(pawnCoord).at(2) == false ) {
+                    pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE*0.3, XYCOORDS.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+                    pawnSlots_.at(pawnCoord).at(2) = true;
+                    pawnItems_.at(pawnId)->set_pawnSlot(3);
+                }
+                scene_->update();
+
+            } else if (canMove) {
 
                 if ( pawnSlots_.at(pawnCoord).at(0) == false) {
                     pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
@@ -601,10 +638,8 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
                     pawnItems_.at(pawnId)->set_pawnSlot(3);
                 }
                 scene_->update();
+            }
         }
-        }
-
-
 }
 
 void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)

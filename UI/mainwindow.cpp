@@ -75,6 +75,12 @@ MainWindow::MainWindow(QWidget *parent) :
     aloitusnappi_->setText("Start Game");
     scene1_->addWidget(aloitusnappi_);
 
+    boardingButton_ = new QPushButton;
+    connect(boardingButton_, &QPushButton::clicked, this, &MainWindow::handle_boardingButton);
+    boardingButton_->setGeometry(QRect(500, -300, 200, 50));
+    boardingButton_->setText("Board/Unboard");
+    scene1_->addWidget(boardingButton_);
+
     ui->graphicsView->setScene(scene1_);
 
 }
@@ -384,6 +390,17 @@ void MainWindow::handle_spinButton()
         statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
         spinButton_->setText("SPIN!");
         scene1_->update();
+    }
+}
+
+void MainWindow::handle_boardingButton()
+{
+    if (statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT && highlightedHex_ != nullptr) {
+        if ( highlightedHex_->getTransports().size() != 0) {
+
+        } else {
+            std::cout << "No transports in selected tile!" << endl;
+        }
     }
 }
 

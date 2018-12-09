@@ -372,10 +372,12 @@ std::map<int, std::vector<int> > GameBoard::get_playerPawns()
     return playerPawns_;
 }
 
-void GameBoard::addPawnToTransport(int pawnID, int transportID)
+bool GameBoard::addPawnToTransport(int pawnID)
 {
     std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnID);
-    std::shared_ptr<Common::Transport> transport = transports_.at(transportID);
+    std::shared_ptr<Common::Hex> pawnHex = hexPointers_.at(pawn->getCoordinates());
+    std::shared_ptr<Common::Transport> transport = pawnHex->getTransports().at(0);
+
     pawngraphics* pawnItem = pawnItems_.at(pawnID);
     QPointF XYcoords = cube_to_square(pawn->getCoordinates());
 
@@ -389,16 +391,20 @@ void GameBoard::addPawnToTransport(int pawnID, int transportID)
             pawnItem->setRect(XYcoords.x()+HEX_SIZE*0.3, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
         }
         scene_->update();
+        return true;
 
     } else {
         std::cout << "Transport is full" << std::endl;
+        return false;
     }
 }
 
-void GameBoard::removePawnFromTransport(int pawnID, int transportID)
+bool GameBoard::removePawnFromTransport(int pawnID)
 {
     std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnID);
-    std::shared_ptr<Common::Transport> transport = transports_.at(transportID);
+    std::shared_ptr<Common::Hex> pawnHex = hexPointers_.at(pawn->getCoordinates());
+    std::shared_ptr<Common::Transport> transport = pawnHex->getTransports().at(0);
+
     pawngraphics* pawnItem = pawnItems_.at(pawnID);
     QPointF XYcoords = cube_to_square(pawn->getCoordinates());
     if (transport->isPawnInTransport(pawn)) {
@@ -411,8 +417,10 @@ void GameBoard::removePawnFromTransport(int pawnID, int transportID)
         pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.3, XYcoords.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
     }
     scene_->update();
+    return true;
     } else {
         std::cout << "Pawn isn't in transport" << std::endl;
+        return false;
     }
 }
 

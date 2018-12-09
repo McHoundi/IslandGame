@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-//lisäillään nappuloita
+    //Lisätään nappeja
     spinButton_ = new QPushButton;
     connect(spinButton_, &QPushButton::clicked, this, &MainWindow::handle_spinButton);
     spinButton_->setGeometry(QRect(-10, 350, 250, 50));
@@ -68,11 +68,11 @@ MainWindow::MainWindow(QWidget *parent) :
     aloitusnappi_->setText("Start Game");
     scene1_->addWidget(aloitusnappi_);
 
-    boardingButton_ = new QPushButton;
-    connect(boardingButton_, &QPushButton::clicked, this, &MainWindow::handle_boardingButton);
-    boardingButton_->setGeometry(QRect(500, -300, 200, 50));
-    boardingButton_->setText("Board/Unboard");
-    scene1_->addWidget(boardingButton_);
+
+    //Boarding action nappuloiden connectointi
+    connect(ui->Pawn1BoardButton, &QPushButton::clicked, this, &MainWindow::handle_boardingButton);
+    connect(ui->Pawn2BoardButton, &QPushButton::clicked, this, &MainWindow::handle_boardingButton2);
+    connect(ui->Pawn3BoardButton, &QPushButton::clicked, this, &MainWindow::handle_boardingButton3);
 
     ui->graphicsView->setScene(scene1_);
 
@@ -407,8 +407,57 @@ void MainWindow::handle_spinButton()
 
 void MainWindow::handle_boardingButton()
 {
+    int current_player = statePTR_->currentPlayer();
+    int basePawnID = current_player - 1000;
+    basePawnID *= 10;
+    int pawn = basePawnID + 1;
 
+    if ( ui->Pawn1BoardButton->text() == "Board") {
+        if ( boardPTR_->addPawnToTransport(pawn) ) {
+            ui->Pawn1BoardButton->setText("Unboard");
+        }
+    } else {
+        if ( boardPTR_->removePawnFromTransport(pawn) ) {
+            ui->Pawn1BoardButton->setText("Board");
+        }
+    }
 
+}
+
+void MainWindow::handle_boardingButton2()
+{
+    int current_player = statePTR_->currentPlayer();
+    int basePawnID = current_player - 1000;
+    basePawnID *= 10;
+    int pawn = basePawnID + 2;
+
+    if ( ui->Pawn2BoardButton->text() == "Board") {
+        if ( boardPTR_->addPawnToTransport(pawn) ) {
+            ui->Pawn2BoardButton->setText("Unboard");
+        }
+    } else {
+        if ( boardPTR_->removePawnFromTransport(pawn) ) {
+            ui->Pawn2BoardButton->setText("Board");
+        }
+    }
+}
+
+void MainWindow::handle_boardingButton3()
+{
+    int current_player = statePTR_->currentPlayer();
+    int basePawnID = current_player - 1000;
+    basePawnID *= 10;
+    int pawn = basePawnID + 3;
+
+    if ( ui->Pawn3BoardButton->text() == "Board") {
+        if ( boardPTR_->addPawnToTransport(pawn) ) {
+            ui->Pawn3BoardButton->setText("Unboard");
+        }
+    } else {
+        if ( boardPTR_->removePawnFromTransport(pawn) ) {
+            ui->Pawn3BoardButton->setText("Board");
+        }
+    }
 }
 
 bool MainWindow::allPawnsInWater()

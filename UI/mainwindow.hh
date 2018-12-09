@@ -65,7 +65,8 @@ public slots:
     void handle_spinButton();
 
     void handle_boardingButton();
-
+    void handle_boardingButton2();
+    void handle_boardingButton3();
 
 private:
     void showEventHelper();

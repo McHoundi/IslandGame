@@ -398,13 +398,7 @@ void MainWindow::handle_spinButton()
 
 void MainWindow::handle_boardingButton()
 {
-    if (statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT && highlightedHex_ != nullptr) {
-        if ( highlightedHex_->getTransports().size() != 0) {
 
-        } else {
-            std::cout << "No transports in selected tile!" << endl;
-        }
-    }
 }
 
 bool MainWindow::allPawnsInWater()

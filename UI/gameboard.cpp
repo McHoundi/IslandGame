@@ -348,6 +348,50 @@ std::map<int, std::vector<int> > GameBoard::get_playerPawns()
     return playerPawns_;
 }
 
+void GameBoard::addPawnToTransport(int pawnID, int transportID)
+{
+    std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnID);
+    std::shared_ptr<Common::Transport> transport = transports_.at(transportID);
+    pawngraphics* pawnItem = pawnItems_.at(pawnID);
+    QPointF XYcoords = cube_to_square(pawn->getCoordinates());
+
+    if (transport->getCapacity() > 0) {
+        transport->addPawn(pawn);
+        if (pawnItem->get_pawnSlot() == 1) {
+            pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+        } else if (pawnItem->get_pawnSlot() == 2) {
+            pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()+HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+        } else if (pawnItem->get_pawnSlot() == 3) {
+            pawnItem->setRect(XYcoords.x()+HEX_SIZE*0.3, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+        }
+        scene_->update();
+
+    } else {
+        std::cout << "Transport is full" << std::endl;
+    }
+}
+
+void GameBoard::removePawnFromTransport(int pawnID, int transportID)
+{
+    std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnID);
+    std::shared_ptr<Common::Transport> transport = transports_.at(transportID);
+    pawngraphics* pawnItem = pawnItems_.at(pawnID);
+    QPointF XYcoords = cube_to_square(pawn->getCoordinates());
+    if (transport->isPawnInTransport(pawn)) {
+    transport->removePawn(pawn);
+    if (pawnItem->get_pawnSlot() == 1) {
+        pawnItem->setRect(XYcoords.x()+HEX_SIZE/5, XYcoords.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+    } else if (pawnItem->get_pawnSlot() == 2) {
+        pawnItem->setRect(XYcoords.x()+HEX_SIZE/5, XYcoords.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+    } else if (pawnItem->get_pawnSlot() == 3) {
+        pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.3, XYcoords.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+    }
+    scene_->update();
+    } else {
+        std::cout << "Pawn isn't in transport" << std::endl;
+    }
+}
+
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
 

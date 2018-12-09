@@ -66,6 +66,8 @@ public:
     bool checkAnimalTypeExists(std::string type);
     void add_pawn_to_player(int pawnId, int playerId);
     std::map<int, std::vector<int>> get_playerPawns();
+    void addPawnToTransport(int pawnID, int transportID);
+    void removePawnFromTransport(int pawnID, int transportID);
 
 
 

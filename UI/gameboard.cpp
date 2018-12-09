@@ -329,7 +329,7 @@ bool GameBoard::checkAnimalTypeExists(std::string type)
             return true;
         }
     }
-    for (auto const& it :transports_) {
+    for (auto const& it : transports_) {
         if (it.second->getTransportType() == type) {
             return true;
         }
@@ -341,6 +341,30 @@ void GameBoard::add_pawn_to_player(int pawnId, int playerId)
 {
     playerPawns_[playerId] = std::vector<int> {};
     playerPawns_.at(playerId).push_back(pawnId);
+}
+
+std::map<std::shared_ptr<Common::Pawn>,bool> GameBoard::pawns_NearOrIn_Transport(int currentPlayer)
+{
+    std::map<std::shared_ptr<Common::Pawn>,bool> transportyPawns;
+    for ( auto const& it : pawns_ ) {
+        std::shared_ptr<Common::Pawn> pawn = it.second;
+        std::shared_ptr<Common::Hex> pawnHex = hexPointers_.at(pawn->getCoordinates());
+
+        // Check if pawn belongs to current player, and if the hex contains a transport
+        if ( pawn->getPlayerId() == currentPlayer && pawnHex->getTransports().size() == 1 ) {
+
+            if ( pawnHex->getTransports().at(0)->isPawnInTransport(pawn) ) {
+                 transportyPawns[pawn] = true; //Pawn in the transport, adding the ptr and "true" to our map.
+            } else {
+                //There is a transport in the pawn's hex, but the pawn is not inside it. Adding pawnptr and "false" to the map.
+                transportyPawns[pawn] = false;
+            }
+
+
+        }
+
+    }
+    return transportyPawns;
 }
 
 std::map<int, std::vector<int> > GameBoard::get_playerPawns()

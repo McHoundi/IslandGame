@@ -14,7 +14,7 @@
 
 
 
-
+#include <algorithm>
 #include <QGraphicsScene>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsView>
@@ -170,6 +170,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 {
+    //MOVEMENT PHASE
     if ( statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT ) {
 
         if ( hexi->getPawnAmount() > 0 && highlightedPawn_ == nullptr ) {
@@ -202,25 +203,23 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                    std::cout << "All pawns in water! Can't move anymore." << std::endl;
                    statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                    std::cout << "Changed gamephase to SINKING" << std::endl;
+                } else {
+                    //Current player's turn not over yet, so we'll update pawns' transport info
+                    std::map<std::shared_ptr<Common::Pawn>,bool> transportInfo = boardPTR_->pawns_NearOrIn_Transport(statePTR_->currentPlayer());
+                    udpateTransportInfo(transportInfo);
+
                 }
+
             } catch (Common::IllegalMoveException errori ) {
                 std::cout << errori.msg() << std::endl;
                 highlightedPawn_ = nullptr;
                 highlightedHex_ = nullptr;
             }
-            //boardPTR_->movePawn(highlightedPawn_->getId(), hexi->getCoordinates());
-
-
-            //check if movement went through, clear highlights if it did, otherwise do nothing
-            //if ( highlightedPawn_->getCoordinates() == hexi->getCoordinates() ) {
-
-            //} else {
-                //Do nothing;
-            //}
 
 
         }
 
+     //SINKING PHASE
 
     } else if ( statePTR_->currentGamePhase() == Common::GamePhase::SINKING ) {
         try{
@@ -233,8 +232,6 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             waterbrush.setStyle(Qt::SolidPattern);
             hexItem->setBrush(waterbrush);
 
-
-
             statePTR_->changeGamePhase(Common::GamePhase::SPINNING);
 
         } catch (Common::IllegalMoveException errori) {
@@ -242,6 +239,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
         }
 
 
+    //SPINNING PHASE
 
     } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_) {
         Common::CubeCoordinate coords = hexi->getCoordinates();
@@ -252,7 +250,6 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             } else {
                 moves = std::to_string(animalMovesLeft_);
             }
-            std::cout << moves << std::endl; // Debug
             try {
                 runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), moves );
                 unsigned int distance = cubeCoordinateDistance(highlightedHex_->getCoordinates(), coords);
@@ -374,6 +371,7 @@ void MainWindow::handle_spinButton()
             std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
         }
+
     } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ == true) {
         highlightedTransport_ = nullptr;
         highlightedHex_ = nullptr;
@@ -388,7 +386,6 @@ void MainWindow::handle_spinButton()
             players_.at(current_player+1)->setActionsLeft(3);
         }
 
-
         std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
         statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
         spinButton_->setText("SPIN!");
@@ -396,9 +393,11 @@ void MainWindow::handle_spinButton()
     }
 }
 
+
+
 void MainWindow::handle_boardingButton()
 {
-    if (statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT && highlightedHex_ != nullptr) {
+    if (statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT && highlightedHex_ == nullptr) {
         if ( highlightedHex_->getTransports().size() != 0) {
 
         } else {
@@ -422,6 +421,60 @@ bool MainWindow::allPawnsInWater()
        }
         // for loop mennyt loppuun, joten kaikki pawnit vedessä
     return true;
+}
+
+void MainWindow::udpateTransportInfo(std::map<std::shared_ptr<Common::Pawn>, bool> TransportInfo)
+{
+    int current_player = statePTR_->currentPlayer();
+    int pawnBaseID = current_player - 1000;
+    pawnBaseID *= 10;
+
+    // These bools track whether pawns have been found in the "TransportInfo" map
+    bool pawn1 = false;
+    bool pawn2 = false;
+    bool pawn3 = false;
+
+    for ( auto const& it : TransportInfo ) {
+        std::shared_ptr<Common::Pawn> pawn = it.first;
+        if (pawn->getId() == pawnBaseID + 1) {
+            pawn1 = true;
+            ui->Pawn1BoardButton->show();
+            if ( it.second == false ) {
+                ui->Pawn1BoardButton->setText("Board");     //Pawn in a hex with transport, display option "Board"
+            } else {
+                ui->Pawn1BoardButton->setText("Unboard");   //Pawn inside a transport, display option "Unboard"
+            }
+        } else if (pawn->getId() == pawnBaseID + 2) {
+            pawn2 = true;
+            ui->Pawn2BoardButton->show();
+            if ( it.second == false ) {
+                ui->Pawn2BoardButton->setText("Board");
+            } else {
+                ui->Pawn2BoardButton->setText("Unboard");
+            }
+        } else if (pawn->getId() == pawnBaseID + 3) {
+            pawn3 = true;
+            ui->Pawn3BoardButton->show();
+            if ( it.second == false ) {
+                ui->Pawn3BoardButton->setText("Board");
+            } else {
+                ui->Pawn3BoardButton->setText("Unboard");
+            }
+        }
+    }
+
+    // Hide buttons, if pawns not found in map.
+    if ( pawn1 == false ) {
+        ui->Pawn1BoardButton->hide();
+    }
+
+    if ( pawn2 == false ) {
+        ui->Pawn2BoardButton->hide();
+    }
+
+    if ( pawn3 == false ) {
+        ui->Pawn3BoardButton->hide();
+    }
 }
 
 void MainWindow::handle_startButton()

@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&dialogi, &StartDialog::runClicked, this, &MainWindow::get_inputs);
     dialogi.exec();
     playerVector_ = initialize_players();
+    playerIter = playerVector_.begin();
     boardPTR_->set_scene(scene1_);
 
 
@@ -403,8 +404,12 @@ void MainWindow::handle_spinButton()
         int current_player = statePTR_->currentPlayer();
 
         if (players_.find(current_player+1) == players_.end()) {
-            statePTR_->changePlayerTurn(1001);
-            players_.at(1001)->setActionsLeft(3);
+            current_player = 1001;
+            if (boardPTR_->playerHasPawns(current_player)) {
+                statePTR_->changePlayerTurn(current_player);
+                players_.at(1001)->setActionsLeft(3);
+            }
+
         } else {
             statePTR_->changePlayerTurn(current_player+1);
             players_.at(current_player+1)->setActionsLeft(3);
@@ -420,7 +425,22 @@ void MainWindow::handle_spinButton()
     }
 }
 
-
+void MainWindow::change_player(){
+    if ( statePTR_->isAnyoneAlive() ) {
+        //END GAME, REIMPLEMENT
+        delete this;
+    } else {
+        ++playerIter;
+        if ( playerIter == playerVector_.end() ) {
+            playerIter = playerVector_.begin();
+        }
+        if (boardPTR_->playerHasPawns((*playerIter)->getPlayerId())) {
+            statePTR_->changePlayerTurn((*playerIter)->getPlayerId());
+        } else { //player has no pawns, call this function again.
+            change_player();
+        }
+    }
+}
 
 void MainWindow::handle_boardingButton()
 {

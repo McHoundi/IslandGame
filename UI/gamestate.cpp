@@ -37,6 +37,14 @@ void GameState::addPlayer(int playerID)
     availablePlayers_.push_back(playerID);
 }
 
+void GameState::removePlayer(int playerID)
+{
+    availablePlayers_.erase(std::remove(availablePlayers_.begin(), availablePlayers_.end(), playerID), availablePlayers_.end());
+}
+
+bool GameState::isAnyoneAlive(){
+    return availablePlayers_.size() > 0;
+}
 
 void GameState::changeGamePhase(Common::GamePhase nextPhase)
 {

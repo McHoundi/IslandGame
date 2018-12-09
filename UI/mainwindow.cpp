@@ -275,15 +275,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     highlightedHex_ = nullptr;
                     wheelSpinned_ = false;
 
-                    int current_player = statePTR_->currentPlayer();
-
-                    if (players_.find(current_player+1) == players_.end()) {
-                        statePTR_->changePlayerTurn(1001);
-                        players_.at(1001)->setActionsLeft(3);
-                    } else {
-                        statePTR_->changePlayerTurn(current_player+1);
-                        players_.at(current_player+1)->setActionsLeft(3);
-                    }
+                    change_player();
 
                     ui->spinButton->setText("SPIN!!");
                     scene1_->update();
@@ -319,15 +311,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     highlightedHex_ = nullptr;
                     wheelSpinned_ = false;
 
-                    int current_player = statePTR_->currentPlayer();
+                    change_player();
 
-                    if (players_.find(current_player+1) == players_.end()) {
-                        statePTR_->changePlayerTurn(1001);
-                        players_.at(1001)->setActionsLeft(3);
-                    } else {
-                        statePTR_->changePlayerTurn(current_player+1);
-                        players_.at(current_player+1)->setActionsLeft(3);
-                    }
                     ui->spinButton->setText("SPIN!!");
                     scene1_->update();
 
@@ -379,16 +364,7 @@ void MainWindow::handle_spinButton()
             scene1_->update();
         } else {
             std::cout << "No animal of this type on board" << std::endl;
-            int current_player = statePTR_->currentPlayer();
-
-            if (players_.find(current_player+1) == players_.end()) {
-                statePTR_->changePlayerTurn(1001);
-                players_.at(1001)->setActionsLeft(3);
-            } else {
-                statePTR_->changePlayerTurn(current_player+1);
-                players_.at(current_player+1)->setActionsLeft(3);
-            }
-
+            change_player();
 
             std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
@@ -401,19 +377,7 @@ void MainWindow::handle_spinButton()
         highlightedTransport_ = nullptr;
         highlightedHex_ = nullptr;
         wheelSpinned_ = false;
-        int current_player = statePTR_->currentPlayer();
-
-        if (players_.find(current_player+1) == players_.end()) {
-            current_player = 1001;
-            if (boardPTR_->playerHasPawns(current_player)) {
-                statePTR_->changePlayerTurn(current_player);
-                players_.at(1001)->setActionsLeft(3);
-            }
-
-        } else {
-            statePTR_->changePlayerTurn(current_player+1);
-            players_.at(current_player+1)->setActionsLeft(3);
-        }
+        change_player();
 
         std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
         ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
@@ -426,8 +390,9 @@ void MainWindow::handle_spinButton()
 }
 
 void MainWindow::change_player(){
-    if ( statePTR_->isAnyoneAlive() ) {
+    if ( statePTR_->isAnyoneAlive() == false ) {
         //END GAME, REIMPLEMENT
+        std::cout << "END OF GAME " << std::endl;
         delete this;
     } else {
         ++playerIter;
@@ -436,7 +401,9 @@ void MainWindow::change_player(){
         }
         if (boardPTR_->playerHasPawns((*playerIter)->getPlayerId())) {
             statePTR_->changePlayerTurn((*playerIter)->getPlayerId());
+            (*playerIter)->setActionsLeft(3);
         } else { //player has no pawns, call this function again.
+            std::cout << "PLAYER HAS NO MORE PAWNS. ID: " << (*playerIter)->getPlayerId() << std::endl;
             change_player();
         }
     }
@@ -575,9 +542,10 @@ void MainWindow::handle_startButton()
 {
     ui->startButton->setEnabled(false);
     std::cout << "aloitusnappia painettu" << std::endl;
-    statePTR_->changePlayerTurn(1001);
+    statePTR_->changePlayerTurn((*playerIter)->getPlayerId());
+    (*playerIter)->setActionsLeft(3);
     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-    players_.at(1001)->setActionsLeft(3);
+
 }
 
 unsigned int MainWindow::cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const

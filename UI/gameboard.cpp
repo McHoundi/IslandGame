@@ -732,12 +732,13 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 
 
         current_hex->removePawn(pawn);
-        // jos pawn siirretään maaliruutuun sen toinnallinen puoli poistetaan pelistä
+
         if (target_hex->getPieceType() != "Coral") {
             target_hex->addPawn(pawn);
-
+            // jos pawn siirretään maaliruutuun, sen toinnallinen puoli poistetaan pelistä
         } else {
             addPoint(pawn->getPlayerId());
+            pawns_.erase(pawn->getId());
         }
         if (testing_ != true ) {
             int pawnslot = pawnItems_.at(pawnId)->get_pawnSlot();
@@ -777,7 +778,7 @@ void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
                     pawnItems_.at(pawnId)->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
                     pawnSlots_.at(pawnCoord).at(1) = true;
                     pawnItems_.at(pawnId)->set_pawnSlot(2);
-                } else if ( pawnSlots_.at(pawnCoord).at(2) == false ) {
+                } else if ( pawnSlots_.at(pawnCoord).at(2) == false ) {// jos pawn siirretään maaliruutuun, sen toinnallinen puoli poistetaan pelistä
                     pawnItems_.at(pawnId)->setRect(XYCOORDS.x()-HEX_SIZE*0.3, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
                     pawnSlots_.at(pawnCoord).at(2) = true;
                     pawnItems_.at(pawnId)->set_pawnSlot(3);

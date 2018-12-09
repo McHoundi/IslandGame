@@ -43,7 +43,11 @@ void GameState::removePlayer(int playerID)
 }
 
 bool GameState::isAnyoneAlive(){
-    return availablePlayers_.size() > 0;
+    if ( availablePlayers_.size() > 1) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void GameState::changeGamePhase(Common::GamePhase nextPhase)

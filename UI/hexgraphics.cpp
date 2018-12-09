@@ -66,22 +66,8 @@ void hexgraphics::set_hexptr(std::shared_ptr<Common::Hex> kuusikulmio_ptr)
     hexptr = kuusikulmio_ptr;
 }
 
-
-
 void hexgraphics::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     emit hexClicked(hexptr);
 
 }
-
-
-
-
-/*
-
-
-
-shared_ptr<Common::Hex> -> piirrä tän avulla
- *
- *
-*/

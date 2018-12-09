@@ -4,7 +4,7 @@
 
 GameState::GameState()
 {
-    player_ = 1001; //Player 1 always starts
+
 }
 
 GameState::~GameState()

@@ -226,6 +226,11 @@ void GameBoard::removeTransport(int id)
         std::shared_ptr<Common::Transport> kulkuneuvo = transports_.at(id);
         std::shared_ptr<Common::Hex> kuusikulmio = kulkuneuvo->getHex();
         kuusikulmio->removeTransport(kulkuneuvo);
+        if (testing_ != true) {
+            delete transportItems_.at(kulkuneuvo->getId());
+        }
+
+
         transports_.erase(id);
     }
 }
@@ -339,8 +344,21 @@ bool GameBoard::checkAnimalTypeExists(std::string type)
 
 void GameBoard::add_pawn_to_player(int pawnId, int playerId)
 {
-    playerPawns_[playerId] = std::vector<int> {};
+    if ( playerPawns_.find(playerId) == playerPawns_.end() ) {
+        playerPawns_[playerId] = std::vector<int> {};
+    }
     playerPawns_.at(playerId).push_back(pawnId);
+}
+
+
+
+bool GameBoard::playerHasPawns(int playerID) {
+    for ( auto const& it : pawns_ ) {
+        if (it.second->getPlayerId() == playerID ) {
+            return true; //Player has atleast one pawn.
+        }
+    }
+    return false; //Player has no pawns left.
 }
 
 std::map<std::shared_ptr<Common::Pawn>,bool> GameBoard::pawns_NearOrIn_Transport(int currentPlayer)
@@ -438,13 +456,20 @@ bool GameBoard::pawnInTransport(std::shared_ptr<Common::Pawn> pawn)
 
 void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 {
+    std::shared_ptr<Common::Transport> transport;
+    if (transports_.find(id) != transports_.end()) {
+       transport = transports_.at(id);
+    } else {
+        return;
+    }
 
-    std::shared_ptr<Common::Transport> transport = transports_.at(id);
+
     std::shared_ptr<Common::Hex> current_hex = transport->getHex();
     std::shared_ptr<Common::Hex> target_hex;
-    QPointF XYcoords = cube_to_square(coord);
+
     if ( hexPointers_.find(coord) != hexPointers_.end() ) {
         target_hex = hexPointers_.at(coord);
+        std::cout << "hakii" << std::endl;
     } else {
         return;
     }
@@ -461,8 +486,13 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
                     current_hex->removePawn(pawni);
                     target_hex->addPawn(pawni);
                     pawni->setCoordinates(target_hex->getCoordinates());
+                    pawngraphics* pawnItem;
+                    QPointF XYcoords;
+                    if ( pawnItems_.find(pawni->getId()) != pawnItems_.end() ) {
+                        pawnItem = pawnItems_.at((pawni->getId()));
+                        XYcoords = cube_to_square(coord);
+                    }
 
-                    pawngraphics* pawnItem = pawnItems_.at((pawni->getId()));
                     if (pawnItem->get_pawnSlot() == 1) {
                         pawnItem->setRect(XYcoords.x()-HEX_SIZE/5, XYcoords.y()-HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
                     } else if (pawnItem->get_pawnSlot() == 2) {
@@ -551,7 +581,12 @@ void GameBoard::removeActor(int actorId)
         std::shared_ptr<Common::Actor> toimija = actors_.at(actorId);
         std::shared_ptr<Common::Hex> kuusikulmio = toimija->getHex();
         kuusikulmio->removeActor(toimija);
+
         actors_.erase(actorId);
+
+        if ( testing_ != true ) {
+            delete actorItems_.at(toimija->getId());
+        }
     }
 }
 
@@ -632,20 +667,16 @@ void GameBoard::removePawn(int pawnId)
 {
     std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnId);
     Common::CubeCoordinate pawnCoord = pawn->getCoordinates();
-    int playerID = pawn->getPlayerId();
     hexPointers_.at(pawnCoord)->removePawn(pawn);
 
     pawns_.erase(pawnId);
 
 
 
-    //Poistetaan vielä pawnin graafinen puoli sekä pawni pelaajien pawnlistasta.
+    //Poistetaan vielä pawnin graafinen puoli.
     if (testing_ != true) {
         delete pawnItems_.at(pawnId);
         pawnItems_.erase(pawnId);
-
-        std::vector<int> *pawnvector = &playerPawns_.at(playerID);
-        pawnvector->erase(std::remove(pawnvector->begin(), pawnvector->end(), pawnId), pawnvector->end());
     }
 }
 

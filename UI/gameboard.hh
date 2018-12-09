@@ -65,15 +65,13 @@ public:
     void set_testmode_off();
     bool checkAnimalTypeExists(std::string type);
     void add_pawn_to_player(int pawnId, int playerId);
+    void delete_pawn_from_player(int pawnId, int playerId);
     std::map<std::shared_ptr<Common::Pawn>,bool> pawns_NearOrIn_Transport(int currentPlayer); //check if any of player's pawns in a transport or in a hex that contains one
     std::map<int, std::vector<int>> get_playerPawns();
     bool addPawnToTransport(int pawnID);
     bool removePawnFromTransport(int pawnID);
     bool pawnInTransport(std::shared_ptr<Common::Pawn> pawn);
-
-
-
-
+    bool playerHasPawns(int playerID);
 
 private:
     bool testing_ = true;

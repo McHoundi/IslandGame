@@ -256,7 +256,8 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
         }
         if ( hexDummy->getPawns().empty() == false ) {
             for ( auto nappula : hexDummy->getPawns() ) {
-                delete pawnItems_.at(nappula->getId());
+                //delete pawnItems_.at(nappula->getId());
+                removePawn(nappula->getId());
             }
         }
         if (hexDummy->getTransports().empty() == false) {
@@ -276,7 +277,8 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
                 }
                 if ( hexDummy->getPawns().empty() == false ) {
                     for ( auto nappula : hexDummy->getPawns() ) {
-                        delete pawnItems_.at(nappula->getId());
+                        //delete pawnItems_.at(nappula->getId());
+                        removePawn(nappula->getId());
                     }
                 }
                 if (hexDummy->getTransports().empty() == false) {
@@ -291,7 +293,8 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
         hexDummy = hexPointers_.at(actorCoords);
         if ( hexDummy->getPawns().empty() == false ) {
             for ( auto nappula : hexDummy->getPawns() ) {
-                delete pawnItems_.at(nappula->getId());
+                //delete pawnItems_.at(nappula->getId());
+                removePawn(nappula->getId());
             }
         }
         if (hexDummy->getTransports().empty() == false) {
@@ -310,7 +313,8 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
         hexDummy = hexPointers_.at(actorCoords);
         if ( hexDummy->getPawns().empty() == false ) {
             for ( auto nappula : hexDummy->getPawns() ) {
-                delete pawnItems_.at(nappula->getId());
+                //delete pawnItems_.at(nappula->getId());
+                removePawn(nappula->getId());
             }
         }
     }
@@ -446,10 +450,8 @@ bool GameBoard::pawnInTransport(std::shared_ptr<Common::Pawn> pawn)
 {
     std::shared_ptr<Common::Hex> pawnHex = hexPointers_.at(pawn->getCoordinates());
     if (pawnHex->getTransports().size() != 0) {
-        std::cout << pawnHex->getTransports().at(0)->isPawnInTransport(pawn) << std::endl;
         return pawnHex->getTransports().at(0)->isPawnInTransport(pawn);
     }
-    std::cout << "false loppu" << std::endl;
     return false;
 
 }
@@ -465,12 +467,10 @@ void GameBoard::moveTransport(int id, Common::CubeCoordinate coord)
 
 
     std::shared_ptr<Common::Hex> current_hex = transport->getHex();
-    std::cout << "hakii" << std::endl;
     std::shared_ptr<Common::Hex> target_hex;
 
     if ( hexPointers_.find(coord) != hexPointers_.end() ) {
         target_hex = hexPointers_.at(coord);
-        std::cout << "hakii" << std::endl;
     } else {
         return;
     }
@@ -675,8 +675,11 @@ void GameBoard::removePawn(int pawnId)
 
     //Poistetaan vielä pawnin graafinen puoli.
     if (testing_ != true) {
-        delete pawnItems_.at(pawnId);
-        pawnItems_.erase(pawnId);
+        if (pawnItems_.find(pawnId) != pawnItems_.end()) {
+            delete pawnItems_.at(pawnId);
+            pawnItems_.erase(pawnId);
+        }
+
     }
 }
 

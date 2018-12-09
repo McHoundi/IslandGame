@@ -264,10 +264,14 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             }
             try {
                 runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), moves );
-                unsigned int distance = cubeCoordinateDistance(highlightedHex_->getCoordinates(), coords);
-                highlightedHex_ = boardPTR_->get_hexPointers().at(coords);
-                animalMovesLeft_ -= distance;
-                if (animalMovesLeft_ <= 0) {
+
+                if ( coords == highlightedActor_->getHex()->getCoordinates() ) {
+                    unsigned int distance = cubeCoordinateDistance(highlightedHex_->getCoordinates(), coords);
+                    highlightedHex_ = boardPTR_->get_hexPointers().at(coords);
+                    animalMovesLeft_ -= distance;
+                }
+
+                if (animalMovesLeft_ <= 0 && coords == highlightedActor_->getHex()->getCoordinates()) {
                     highlightedActor_ = nullptr;
                     highlightedHex_ = nullptr;
                     wheelSpinned_ = false;

@@ -18,17 +18,17 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>40</y>
       <width>1141</width>
-      <height>581</height>
+      <height>551</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="BoardingActionsLabel">
     <property name="geometry">
      <rect>
-      <x>1190</x>
-      <y>20</y>
+      <x>1150</x>
+      <y>80</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -40,8 +40,8 @@
    <widget class="QLabel" name="Pawn1Label">
     <property name="geometry">
      <rect>
-      <x>1160</x>
-      <y>50</y>
+      <x>1150</x>
+      <y>100</y>
       <width>63</width>
       <height>20</height>
      </rect>
@@ -53,8 +53,8 @@
    <widget class="QLabel" name="Pawn2Label">
     <property name="geometry">
      <rect>
-      <x>1160</x>
-      <y>75</y>
+      <x>1150</x>
+      <y>120</y>
       <width>63</width>
       <height>20</height>
      </rect>
@@ -66,8 +66,8 @@
    <widget class="QLabel" name="Pawn3Label">
     <property name="geometry">
      <rect>
-      <x>1160</x>
-      <y>100</y>
+      <x>1150</x>
+      <y>140</y>
       <width>63</width>
       <height>20</height>
      </rect>
@@ -79,8 +79,8 @@
    <widget class="QPushButton" name="Pawn1BoardButton">
     <property name="geometry">
      <rect>
-      <x>1220</x>
-      <y>50</y>
+      <x>1200</x>
+      <y>100</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -92,8 +92,8 @@
    <widget class="QPushButton" name="Pawn2BoardButton">
     <property name="geometry">
      <rect>
-      <x>1220</x>
-      <y>75</y>
+      <x>1200</x>
+      <y>120</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -105,8 +105,8 @@
    <widget class="QPushButton" name="Pawn3BoardButton">
     <property name="geometry">
      <rect>
-      <x>1220</x>
-      <y>100</y>
+      <x>1200</x>
+      <y>140</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -115,16 +115,136 @@
      <string>PushButton</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1434</width>
-     <height>25</height>
-    </rect>
-   </property>
+   <widget class="QLabel" name="wheellabel">
+    <property name="geometry">
+     <rect>
+      <x>1170</x>
+      <y>170</y>
+      <width>250</width>
+      <height>250</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="startButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>84</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start Game</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>0</y>
+      <width>84</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>0</y>
+      <width>84</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="spinButton">
+    <property name="geometry">
+     <rect>
+      <x>1160</x>
+      <y>460</y>
+      <width>250</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Spin!</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="playerlabel">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>10</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Current player:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gamephaselabel">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>40</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Current gamephase:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="playervaluelabel">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>10</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1001</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gamephasevaluelabel">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>40</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>MOVEMENT</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="spinvaluelabel">
+    <property name="geometry">
+     <rect>
+      <x>1160</x>
+      <y>430</y>
+      <width>241</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

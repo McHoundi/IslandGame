@@ -56,23 +56,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //Lisätään nappeja
-    spinButton_ = new QPushButton;
-    connect(spinButton_, &QPushButton::clicked, this, &MainWindow::handle_spinButton);
-    spinButton_->setGeometry(QRect(-10, 350, 250, 50));
-    spinButton_->setText("SPIN!!");
-    scene1_->addWidget(spinButton_);
 
-    aloitusnappi_ = new QPushButton;
-    connect(aloitusnappi_, &QPushButton::clicked,this, &MainWindow::handle_startButton);
-    aloitusnappi_->setGeometry(QRect(300, -300, 200, 50));
-    aloitusnappi_->setText("Start Game");
-    scene1_->addWidget(aloitusnappi_);
+    connect(ui->spinButton, &QPushButton::clicked, this, &MainWindow::handle_spinButton);
+    connect(ui->startButton, &QPushButton::clicked,this, &MainWindow::handle_startButton);
 
 
     //Boarding action nappuloiden connectointi
     connect(ui->Pawn1BoardButton, &QPushButton::clicked, this, &MainWindow::handle_boardingButton);
+    ui->Pawn1BoardButton->hide();
     connect(ui->Pawn2BoardButton, &QPushButton::clicked, this, &MainWindow::handle_boardingButton2);
+    ui->Pawn2BoardButton->hide();
     connect(ui->Pawn3BoardButton, &QPushButton::clicked, this, &MainWindow::handle_boardingButton3);
+    ui->Pawn3BoardButton->hide();
 
     ui->graphicsView->setScene(scene1_);
 
@@ -153,8 +148,7 @@ void MainWindow::draw_map()
 
     wheel_ = new wheel;
     wheel_->setPicture(std::make_pair("dolphin", "1"));
-    wheel_->setOffset(QPointF(350, 0));
-    scene1_->addItem(wheel_);
+    ui->wheellabel->setPixmap(wheel_->get_pixmaps().at(0));
 
     for (auto const& it : boardPTR_->get_hexItems() ) {
               hexgraphics* HexItem = it.second;
@@ -208,10 +202,12 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 if (players_.at(statePTR_->currentPlayer())->getActionsLeft() <= 0) {
                     statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                     std::cout << "Changed gamephase to SINKING" << std::endl;
-                } else if ( allPawnsInWater() == true ) {
+                    ui->gamephasevaluelabel->setText("SINKING");
+                } else if ( allPawnsSwimming() == true ) {
                    std::cout << "All pawns in water! Can't move anymore." << std::endl;
                    statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                    std::cout << "Changed gamephase to SINKING" << std::endl;
+                   ui->gamephasevaluelabel->setText("SINKING");
                 } else {
                     //Current player's turn not over yet, so we'll update pawns' transport info
                     updateTransportInfo();
@@ -242,9 +238,11 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             hexItem->setBrush(waterbrush);
 
             statePTR_->changeGamePhase(Common::GamePhase::SPINNING);
+            ui->gamephasevaluelabel->setText("SPINNING");
 
             //Päivitetään vielä transportInfo
             updateTransportInfo();
+
 
         } catch (Common::IllegalMoveException errori) {
             std::cout << errori.msg() << std::endl;
@@ -282,11 +280,14 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                         players_.at(current_player+1)->setActionsLeft(3);
                     }
 
-                    spinButton_->setText("SPIN!!");
+                    ui->spinButton->setText("SPIN!!");
                     scene1_->update();
 
+                    std::string player = std::to_string(statePTR_->currentPlayer());
+                    ui->playervaluelabel->setText(QString::fromStdString(player));
                     std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+                    ui->gamephasevaluelabel->setText("MOVEMENT");
 
                  }
 
@@ -322,11 +323,12 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                         statePTR_->changePlayerTurn(current_player+1);
                         players_.at(current_player+1)->setActionsLeft(3);
                     }
-                    spinButton_->setText("SPIN!!");
+                    ui->spinButton->setText("SPIN!!");
                     scene1_->update();
 
                     std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+                    ui->gamephasevaluelabel->setText("MOVEMENT");
                     updateTransportInfo();
 
                 }
@@ -357,7 +359,9 @@ void MainWindow::handle_spinButton()
 {
     if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ == false) {
         std::pair<std::string,std::string> tulos = runner_->spinWheel();
+        ui->spinvaluelabel->setText(QString::fromStdString(tulos.first) + " " + QString::fromStdString(tulos.second));
         wheel_->setPicture(tulos);
+        ui->wheellabel->setPixmap(wheel_->pixmap());
         spinnerResult_ = tulos;
         if (boardPTR_->checkAnimalTypeExists(tulos.first)) {
             if (spinnerResult_.second != "D") {
@@ -366,7 +370,7 @@ void MainWindow::handle_spinButton()
                 animalMovesLeft_ = -99;
             }
             wheelSpinned_ = true;
-            spinButton_->setText("Skip actor movement");
+            ui->spinButton->setText("Skip actor movement");
             scene1_->update();
         } else {
             std::cout << "No animal of this type on board" << std::endl;
@@ -382,7 +386,9 @@ void MainWindow::handle_spinButton()
 
 
             std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
+            ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+            ui->gamephasevaluelabel->setText("MOVEMENT");
             updateTransportInfo();
         }
 
@@ -401,8 +407,10 @@ void MainWindow::handle_spinButton()
         }
 
         std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
+        ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
         statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-        spinButton_->setText("SPIN!");
+        ui->gamephasevaluelabel->setText("MOVEMENT");
+        ui->spinButton->setText("SPIN!");
         scene1_->update();
         updateTransportInfo();
     }
@@ -465,7 +473,7 @@ void MainWindow::handle_boardingButton3()
     }
 }
 
-bool MainWindow::allPawnsInWater()
+bool MainWindow::allPawnsSwimming()
 {
     std::map<int,std::shared_ptr<Common::Pawn>> pawnMap = boardPTR_->get_pawns();
     int playerID = statePTR_->currentPlayer();
@@ -474,7 +482,9 @@ bool MainWindow::allPawnsInWater()
         if (pawni->getPlayerId() == playerID) {
             std::shared_ptr<Common::Hex> pawnHex = boardPTR_->get_hexPointers().at(pawni->getCoordinates());
             if ( pawnHex->getPieceType() != "Water" ) {
-                return false; // This means that at least one of player 1's pawns are on land.
+                return false; // Ainakin yksi pawni on maalla
+            } else if (boardPTR_->pawnInTransport(pawni)){
+                return false; // Ainakin yksi pawni on transportin kyydissä
             }
         }
        }
@@ -539,11 +549,11 @@ void MainWindow::updateTransportInfo()
 
 void MainWindow::handle_startButton()
 {
-    delete aloitusnappi_;
+    ui->startButton->setEnabled(false);
     std::cout << "aloitusnappia painettu" << std::endl;
     statePTR_->changePlayerTurn(1001);
     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
-    players_.at(1001)->setActionsLeft(12);
+    players_.at(1001)->setActionsLeft(3);
 }
 
 unsigned int MainWindow::cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const

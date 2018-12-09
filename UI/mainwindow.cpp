@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     playerVector_ = initialize_players();
     playerIter = playerVector_.begin();
     boardPTR_->set_scene(scene1_);
+    ui->spinButton->setEnabled(false);
 
 
 
@@ -165,6 +166,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 {
+    updateTransportInfo();
     //MOVEMENT PHASE
     if ( statePTR_->currentGamePhase() == Common::GamePhase::MOVEMENT ) {
 
@@ -245,6 +247,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
             statePTR_->changeGamePhase(Common::GamePhase::SPINNING);
             ui->gamephasevaluelabel->setText("SPINNING");
+            ui->spinButton->setEnabled(true);
 
             //Päivitetään vielä transportInfo
             updateTransportInfo();
@@ -289,7 +292,9 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     ui->playervaluelabel->setText(QString::fromStdString(player));
                     std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+                    ui->spinButton->setEnabled(false);
                     ui->gamephasevaluelabel->setText("MOVEMENT");
+                    updateTransportInfo();
 
                  }
 
@@ -323,6 +328,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
                     std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+                    ui->spinButton->setEnabled(false);
                     ui->gamephasevaluelabel->setText("MOVEMENT");
                     updateTransportInfo();
 
@@ -374,6 +380,7 @@ void MainWindow::handle_spinButton()
             std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
+            ui->spinButton->setEnabled(false);
             ui->gamephasevaluelabel->setText("MOVEMENT");
             updateTransportInfo();
         }
@@ -388,6 +395,7 @@ void MainWindow::handle_spinButton()
         ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
         statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
         ui->gamephasevaluelabel->setText("MOVEMENT");
+        ui->spinButton->setEnabled(false);
         ui->spinButton->setText("SPIN!");
         scene1_->update();
         updateTransportInfo();
@@ -409,6 +417,7 @@ void MainWindow::change_player(){
             (*playerIter)->setActionsLeft(3);
         } else { //player has no pawns, call this function again.
             std::cout << "PLAYER HAS NO MORE PAWNS. ID: " << (*playerIter)->getPlayerId() << std::endl;
+            statePTR_->removePlayer((*playerIter)->getPlayerId());
             change_player();
         }
     }

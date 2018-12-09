@@ -35,6 +35,7 @@ void GameState::changePlayerTurn(int nextPlayer)
 void GameState::addPlayer(int playerID)
 {
     availablePlayers_.push_back(playerID);
+
 }
 
 void GameState::removePlayer(int playerID)

@@ -278,7 +278,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     animalMovesLeft_ -= distance;
                 }
 
-                if (animalMovesLeft_ <= 0 && coords == highlightedActor_->getHex()->getCoordinates()) {
+                if ((animalMovesLeft_ == 0 || animalMovesLeft_ < -99)
+                        && coords == highlightedActor_->getHex()->getCoordinates()) {
                     highlightedActor_ = nullptr;
                     highlightedHex_ = nullptr;
                     wheelSpinned_ = false;
@@ -313,10 +314,15 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             std::cout << moves << std::endl; // Debug
             try {
                 runner_->moveTransportWithSpinner(highlightedHex_->getCoordinates(), coords, highlightedTransport_->getId(), moves);
-                unsigned int distance = cubeCoordinateDistance(highlightedHex_->getCoordinates(), coords);
-                highlightedHex_ = boardPTR_->get_hexPointers().at(coords);
-                animalMovesLeft_ -= distance;
-                if (animalMovesLeft_ <= 0) {
+
+                if ( coords == highlightedTransport_->getHex()->getCoordinates() ) {
+                    unsigned int distance = cubeCoordinateDistance(highlightedHex_->getCoordinates(), coords);
+                    highlightedHex_ = boardPTR_->get_hexPointers().at(coords);
+                    animalMovesLeft_ -= distance;
+                }
+
+                if ((animalMovesLeft_ == 0 || animalMovesLeft_ < -99) &&
+                        coords == highlightedTransport_->getHex()->getCoordinates()) {
                     highlightedTransport_ = nullptr;
                     highlightedHex_ = nullptr;
                     wheelSpinned_ = false;
@@ -326,7 +332,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     ui->spinButton->setText("SPIN!!");
                     scene1_->update();
 
-                    std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
+                    std::string player = std::to_string(statePTR_->currentPlayer());
+                    ui->playervaluelabel->setText(QString::fromStdString(player));
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
                     ui->spinButton->setEnabled(false);
                     ui->gamephasevaluelabel->setText("MOVEMENT");

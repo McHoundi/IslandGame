@@ -21,6 +21,7 @@
 #include "iostream"
 #include "QDebug"
 #include "startdialog.hh"
+#include "resultdialog.hh"
 #include "igamerunner.hh"
 #include "illegalmoveexception.hh"
 #include "initialize.hh"
@@ -409,11 +410,23 @@ void MainWindow::handle_spinButton()
     }
 }
 
+void MainWindow::end_game() {
+
+    if ( statePTR_->get_availablePlayers().size() == 1 ) {
+        boardPTR_->calculateEndOfGamePoints(statePTR_->get_availablePlayers().at(0));
+    }
+
+    ResultDialog Loppudialogi;
+    Loppudialogi.set_info(boardPTR_->get_PointMap(), playerVector_);
+    connect(&Loppudialogi, &ResultDialog::CloseClicked, this, &MainWindow::close);
+
+}
+
 void MainWindow::change_player(){
     if ( statePTR_->isAnyoneAlive() == false ) {
         //END GAME, REIMPLEMENT
-        std::cout << "END OF GAME " << std::endl;
-        delete this;
+        end_game();
+
     } else {
         ++playerIter;
         if ( playerIter == playerVector_.end() ) {
@@ -432,6 +445,7 @@ void MainWindow::change_player(){
 
 void MainWindow::handle_boardingButton()
 {
+
     int current_player = statePTR_->currentPlayer();
     int basePawnID = current_player - 1000;
     basePawnID *= 10;

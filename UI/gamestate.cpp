@@ -32,6 +32,11 @@ void GameState::changePlayerTurn(int nextPlayer)
 
 }
 
+std::vector<int> GameState::get_availablePlayers()
+{
+    return availablePlayers_;
+}
+
 void GameState::addPlayer(int playerID)
 {
     availablePlayers_.push_back(playerID);
@@ -44,6 +49,7 @@ void GameState::removePlayer(int playerID)
 }
 
 bool GameState::isAnyoneAlive(){
+    //Checks whether there are more than one players left.
     if ( availablePlayers_.size() > 1) {
         return true;
     } else {

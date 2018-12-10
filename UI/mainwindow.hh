@@ -100,6 +100,7 @@ private:
 
 
     unsigned int cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const;
+    void end_game();
 };
 
 #endif // MAINWINDOW_HH

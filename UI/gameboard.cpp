@@ -331,6 +331,22 @@ void GameBoard::addPoint(int playerID)
     }
 }
 
+void GameBoard::calculateEndOfGamePoints(int playerID)
+{
+    for ( auto const& it : pawns_ ) {
+        std::shared_ptr<Common::Pawn> pawn = it.second;
+        if ( pawn->getPlayerId() == playerID ) {
+            addPoint(playerID);
+            pawns_.erase(pawn->getId());
+        }
+    }
+}
+
+std::map<int, int> GameBoard::get_PointMap()
+{
+    return playerPoints_;
+}
+
 bool GameBoard::checkAnimalTypeExists(std::string type)
 {
     for (auto const& it : actors_ ) {

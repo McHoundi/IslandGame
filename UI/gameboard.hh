@@ -72,11 +72,14 @@ public:
     bool removePawnFromTransport(int pawnID);
     bool pawnInTransport(std::shared_ptr<Common::Pawn> pawn);
     bool playerHasPawns(int playerID);
+    void calculateEndOfGamePoints(int playerID);
+    std::map<int,int> get_PointMap();
 
 private:
     bool testing_ = true;
     void doGraphicalAction(std::shared_ptr<Common::Actor> actor);
     void addPoint(int playerID);
+
 
     int layerCount_ = 20;              //Hexagoni-layerien max määrä kartassa.
     std::map<Common::CubeCoordinate, QPointF> midpoints_; //Hexagonien keskipisteet CubeCoordinate ja xy-muodoissa

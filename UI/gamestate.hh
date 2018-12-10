@@ -15,6 +15,7 @@ public:
     virtual void changeGamePhase(Common::GamePhase nextPhase);
     virtual void changePlayerTurn(int nextPlayer);
 
+    std::vector<int> get_availablePlayers();
     void addPlayer(int playerID);
     void removePlayer(int playerID);
     bool isAnyoneAlive();

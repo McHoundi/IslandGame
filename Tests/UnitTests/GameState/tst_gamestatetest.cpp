@@ -14,7 +14,6 @@ public:
 private slots:
     void initTestCase();
     void test_changeGamePhase();
-    void test_falseGamePhaseOrder();
     void test_changeCurrentPlayer();
     void test_NonExistentPlayer();
 private:
@@ -56,22 +55,6 @@ void GameStateTest::test_changeGamePhase()
     state_.reset();
 }
 
-void GameStateTest::test_falseGamePhaseOrder()
-{
-    state_ = std::make_shared<GameState>();
-    QVERIFY(state_->currentGamePhase()==Common::GamePhase::MOVEMENT);
-
-    state_->changeGamePhase(Common::GamePhase::SPINNING);
-    QVERIFY(state_->currentGamePhase()==Common::GamePhase::MOVEMENT);
-
-    state_->changeGamePhase(Common::GamePhase::SINKING);
-    QVERIFY(state_->currentGamePhase()==Common::GamePhase::SINKING);
-
-    state_->changeGamePhase(Common::GamePhase::MOVEMENT);
-    QVERIFY(state_->currentGamePhase()==Common::GamePhase::SINKING);
-
-    state_.reset();
-}
 
 void GameStateTest::test_changeCurrentPlayer()
 {

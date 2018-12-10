@@ -50,15 +50,24 @@ MainWindow::MainWindow(QWidget *parent) :
     boardPTR_->set_scene(scene1_);
     ui->spinButton->setEnabled(false);
 
-    ui->textEdit->setText("Testi tulostusasdadadaf);");
-    ui->textEdit->append("rivi 2 fggfihjkre09gjth");
-    ui->textEdit->append("gfjrigwjiegjrei");
-    ui->textEdit->append("neljäs");
 
 
 
+    infoBox* infolaatikko = new infoBox;
 
 
+    infobox_ = infolaatikko;
+    infobox_->setReadOnly(true);
+    infobox_->setGeometry(1160,530,250,141);
+    ui->gridLayout->addWidget(infobox_);
+
+    boardPTR_->set_infoBox(infolaatikko);
+    statePTR_->set_infobox(infolaatikko);
+
+    infobox_->setText("Testi tulostusasdadadaf);");
+    infobox_->append("rivi 2 fggfihjkre09gjth");
+    infobox_->append("gfjrigwjiegjrei");
+    infobox_->append("neljäs");
 
 
 
@@ -194,8 +203,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                      break;
                  }
              if ( highlightedPawn_ == nullptr ) {
-                 ui->textEdit->append("Player " + QString::fromStdString(std::to_string(current_player)) + " has no pawns in this tile!");
-                 ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
+                 infobox_->printInfo("Player " + std::to_string(current_player) + " has no pawns in this tile!");
+
              } else {
                  //Hex&Pawn highlighted!!
              }
@@ -211,9 +220,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                                                highlightedHex_->getTransports().at(0)->getId());
                         std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
                     } else {
-                        ui->textEdit->append("Player " + QString::fromStdString(std::to_string(statePTR_->currentPlayer())) +
+                        infobox_->printInfo("Player " + std::to_string(statePTR_->currentPlayer()) +
                                              "can't move this boat. Unboard before moving.");
-                        ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
                     }
 
                 } else {
@@ -230,8 +238,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     std::cout << "Changed gamephase to SINKING" << std::endl;
                     ui->gamephasevaluelabel->setText("SINKING");
                 } else if ( allPawnsSwimming() == true ) {
-                   ui->textEdit->append("All pawns in water! Can't move anymore.");
-                   ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
+                   infobox_->printInfo("All pawns in water! Can't move anymore.");
 
                    statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                    std::cout << "Changed gamephase to SINKING" << std::endl;

@@ -3,6 +3,7 @@
 
 #include "igamestate.hh"
 #include "vector"
+#include "infobox.hh"
 
 class GameState :  public Common::IGameState
 {
@@ -20,10 +21,12 @@ public:
     void removePlayer(int playerID);
     bool isAnyoneAlive();
 
+    void set_infobox(infoBox *boxi);
 private:
     Common::GamePhase phase_ = Common::GamePhase::MOVEMENT; //current GamePhase
     int player_ ; //Current player's ID
     std::vector<int> availablePlayers_;
+    infoBox* infobox_;
 
 };
 

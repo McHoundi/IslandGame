@@ -4,7 +4,7 @@
 
 GameState::GameState()
 {
-
+    phase_ = Common::GamePhase::MOVEMENT;
 }
 
 GameState::~GameState()
@@ -43,6 +43,10 @@ void GameState::addPlayer(int playerID)
 
 }
 
+void GameState::set_infobox(infoBox* boxi) {
+    infobox_ = boxi;
+}
+
 void GameState::removePlayer(int playerID)
 {
     availablePlayers_.erase(std::remove(availablePlayers_.begin(), availablePlayers_.end(), playerID), availablePlayers_.end());
@@ -61,11 +65,22 @@ void GameState::changeGamePhase(Common::GamePhase nextPhase)
 {
     if ( currentGamePhase() == Common::GamePhase::MOVEMENT  && nextPhase == Common::GamePhase::SINKING ){
         phase_ = nextPhase;
+        if ( infobox_ != nullptr ) {
+            infobox_->printInfo("Gamephase changed to SINKING");
+        }
+
     } else if ( currentGamePhase() == Common::GamePhase::SINKING && nextPhase == Common::GamePhase::SPINNING ){
         phase_ = nextPhase;
+        if ( infobox_ != nullptr ) {
+            infobox_->printInfo("Gamephase changed to SPINNING");
+        }
     } else if ( currentGamePhase() == Common::GamePhase::SPINNING && nextPhase == Common::GamePhase::MOVEMENT ) {
         phase_ = nextPhase;
+        if ( infobox_ != nullptr ) {
+            infobox_->printInfo("Gamephase changed to MOVEMENT");
+        }
     }
+
 
 }
 

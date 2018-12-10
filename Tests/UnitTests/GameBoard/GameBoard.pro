@@ -51,7 +51,8 @@ SOURCES += \
     ../../../UI/player.cpp \
     ../../../UI/pawngraphics.cpp \
     ../../../UI/hexgraphics.cpp \
-    ../../../UI/pixmapgraphics.cpp
+    ../../../UI/pixmapgraphics.cpp \
+    ../../../UI/infobox.cpp
 
 
 
@@ -77,7 +78,9 @@ HEADERS += \
     ../../../UI/player.hh \
     ../../../UI/pawngraphics.hh \
     ../../../UI/hexgraphics.hh \
-    ../../../UI/pixmapgraphics.hh
+    ../../../UI/pixmapgraphics.hh \
+    ../../../UI/infobox.hh
+
 
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

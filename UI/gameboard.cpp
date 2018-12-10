@@ -352,6 +352,11 @@ std::map<int, int> GameBoard::get_PointMap()
     return playerPoints_;
 }
 
+void GameBoard::set_infoBox(infoBox *laatikko)
+{
+    infobox_ = laatikko;
+}
+
 bool GameBoard::checkAnimalTypeExists(std::string type)
 {
     for (auto const& it : actors_ ) {
@@ -726,6 +731,7 @@ void GameBoard::removePawn(int pawnId)
 
 void GameBoard::movePawn(int pawnId, Common::CubeCoordinate pawnCoord)
 {
+
     std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnId);
     std::shared_ptr<Common::Hex> current_hex = hexPointers_.at(pawn->getCoordinates());
     std::shared_ptr<Common::Hex> target_hex;

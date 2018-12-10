@@ -19,6 +19,7 @@
 #include "math.h"
 #include "player.hh"
 #include "pixmapgraphics.hh"
+#include "infobox.hh"
 
 namespace Student {
 
@@ -74,6 +75,7 @@ public:
     bool playerHasPawns(int playerID);
     void calculateEndOfGamePoints(int playerID);
     std::map<int,int> get_PointMap();
+    void set_infoBox(infoBox* laatikko);
 
 private:
     bool testing_ = true;
@@ -95,6 +97,7 @@ private:
     std::map<int,std::vector<int>> playerPawns_; // key=playerID, value= vector of player's pawns.
     std::map<int,int> playerPoints_; // points of each player
 
+    infoBox* infobox_;
     QGraphicsScene* scene_;
 
 };

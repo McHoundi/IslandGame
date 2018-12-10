@@ -25,7 +25,8 @@ SOURCES += \
     pawngraphics.cpp \
     wheel.cpp \
     pixmapgraphics.cpp \
-    resultdialog.cpp
+    resultdialog.cpp \
+    infobox.cpp
 
 
 
@@ -39,7 +40,8 @@ HEADERS  += \
     pawngraphics.hh \
     wheel.hh \
     pixmapgraphics.hh \
-    resultdialog.hh
+    resultdialog.hh \
+    infobox.hh
 
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine

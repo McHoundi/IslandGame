@@ -20,6 +20,8 @@
 #include "pixmapgraphics.hh"
 #include "wheel.hh"
 #include "QPushButton"
+#include "infobox.hh"
+
 
 #include "vector"
 
@@ -92,6 +94,7 @@ private:
     std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr;
     std::shared_ptr<Common::IGameRunner> runner_;
     QPushButton* startButton_;
+    infoBox* infobox_;
 
     std::vector<std::shared_ptr<Common::IPlayer>>::iterator playerIter;
     wheel* wheel_;

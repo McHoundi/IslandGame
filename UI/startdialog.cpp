@@ -18,3 +18,4 @@ void StartDialog::accept()
     emit runClicked(ui->PlayersSpinbox->value());
     QDialog::accept();
 }
+

@@ -11,6 +11,7 @@
 #include <QLayout>
 #include <QWidget>
 #include <QPushButton>
+#include <QScrollBar>
 
 
 
@@ -49,6 +50,10 @@ MainWindow::MainWindow(QWidget *parent) :
     boardPTR_->set_scene(scene1_);
     ui->spinButton->setEnabled(false);
 
+    ui->textEdit->setText("Testi tulostusasdadadaf);");
+    ui->textEdit->append("rivi 2 fggfihjkre09gjth");
+    ui->textEdit->append("gfjrigwjiegjrei");
+    ui->textEdit->append("neljäs");
 
 
 
@@ -61,7 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //Lisätään nappeja
 
     connect(ui->spinButton, &QPushButton::clicked, this, &MainWindow::handle_spinButton);
-    connect(ui->startButton, &QPushButton::clicked,this, &MainWindow::handle_startButton);
+
+
 
 
     //Boarding action nappuloiden connectointi
@@ -138,6 +144,12 @@ void MainWindow::initialize_runner()
     }
     draw_map();
 
+    // start button lisätään tässä jotta se tulostuu kartan päälle
+    startButton_ = new QPushButton;
+    connect(startButton_, &QPushButton::clicked,this, &MainWindow::handle_startButton);
+    startButton_->setGeometry(QRect(-150, -150, 300, 75));
+    startButton_->setText("Start Game");
+    scene1_->addWidget(startButton_);
 }
 
 void MainWindow::run_movement_phase(std::shared_ptr<Common::IPlayer>)
@@ -182,7 +194,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                      break;
                  }
              if ( highlightedPawn_ == nullptr ) {
-                 std::cout << "Player " << current_player << " has no pawns in this tile!" << std::endl;
+                 ui->textEdit->append("Player " + QString::fromStdString(std::to_string(current_player)) + " has no pawns in this tile!");
+                 ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
              } else {
                  //Hex&Pawn highlighted!!
              }
@@ -198,8 +211,9 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                                                highlightedHex_->getTransports().at(0)->getId());
                         std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
                     } else {
-                        std::cout << "Player " << statePTR_->currentPlayer()
-                                  << "can't move this boat. Unboard before moving." << std::endl;
+                        ui->textEdit->append("Player " + QString::fromStdString(std::to_string(statePTR_->currentPlayer())) +
+                                             "can't move this boat. Unboard before moving.");
+                        ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
                     }
 
                 } else {
@@ -216,7 +230,9 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     std::cout << "Changed gamephase to SINKING" << std::endl;
                     ui->gamephasevaluelabel->setText("SINKING");
                 } else if ( allPawnsSwimming() == true ) {
-                   std::cout << "All pawns in water! Can't move anymore." << std::endl;
+                   ui->textEdit->append("All pawns in water! Can't move anymore.");
+                   ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
+
                    statePTR_->changeGamePhase(Common::GamePhase::SINKING);
                    std::cout << "Changed gamephase to SINKING" << std::endl;
                    ui->gamephasevaluelabel->setText("SINKING");
@@ -315,6 +331,11 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             }
             std::cout << moves << std::endl; // Debug
             try {
+                std::shared_ptr<Common::Pawn> pawnptr;
+                //Laitetaan delfiinin sisällä oleva pawni muistiin, mikäli siellä moinen on
+                if ( highlightedTransport_->getPawnsInTransport().size() > 0 ) {
+                    pawnptr = highlightedTransport_->getPawnsInTransport().at(0);
+                }
                 runner_->moveTransportWithSpinner(highlightedHex_->getCoordinates(), coords, highlightedTransport_->getId(), moves);
 
                 if ( coords == highlightedTransport_->getHex()->getCoordinates() ) {
@@ -328,6 +349,14 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     highlightedTransport_ = nullptr;
                     highlightedHex_ = nullptr;
                     wheelSpinned_ = false;
+
+                    //Jos spinnattiin "D", siirretään pawni graafisesti myös
+                    //uimaan removePawnFromTransport funktion avulla
+                    if ( moves == "D") {
+                        if ( pawnptr != nullptr ) {
+                            boardPTR_->removePawnFromTransport(pawnptr->getId());
+                        }
+                    }
 
                     change_player();
 
@@ -355,14 +384,20 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             }
         } else if (hexi->getTransports().size() != 0)  {
             if (hexi->getTransports().at(0)->getTransportType() == spinnerResult_.first) {
-                highlightedTransport_ = (hexi->getTransports()).at(0);
-                highlightedHex_ = hexi;
+                if (hexi->getTransports().at(0)->canMove(statePTR_->currentPlayer())) {
+                    highlightedTransport_ = (hexi->getTransports()).at(0);
+                    highlightedHex_ = hexi;
+                } else {
+                    std::cout << "Can't move dolphin that is carrying other player's pawn" << std::endl;
+                }
+
             } else {
                 std::cout << "Wrong animal clicked" << std::endl;
             }
         }
 
     }
+
 }
 
 void MainWindow::handle_spinButton()
@@ -582,7 +617,7 @@ void MainWindow::updateTransportInfo()
 
 void MainWindow::handle_startButton()
 {
-    ui->startButton->setEnabled(false);
+    delete startButton_;
     std::cout << "aloitusnappia painettu" << std::endl;
     statePTR_->changePlayerTurn((*playerIter)->getPlayerId());
     (*playerIter)->setActionsLeft(3);
@@ -597,3 +632,6 @@ unsigned int MainWindow::cubeCoordinateDistance(Common::CubeCoordinate source, C
              + abs(source.z - target.z)) / 2);
 
 }
+
+
+

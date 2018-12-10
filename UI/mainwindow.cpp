@@ -137,6 +137,7 @@ void MainWindow::initialize_runner()
         initialize_pawns(pelaaja);
     }
     draw_map();
+
 }
 
 void MainWindow::run_movement_phase(std::shared_ptr<Common::IPlayer>)
@@ -418,7 +419,8 @@ void MainWindow::end_game() {
 
     ResultDialog Loppudialogi;
     Loppudialogi.set_info(boardPTR_->get_PointMap(), playerVector_);
-    connect(&Loppudialogi, &ResultDialog::CloseClicked, this, &MainWindow::close);
+    Loppudialogi.exec();
+    MainWindow::close();
 
 }
 

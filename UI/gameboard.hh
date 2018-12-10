@@ -21,7 +21,6 @@
 #include "player.hh"
 #include "pixmapgraphics.hh"
 #include "infobox.hh"
-#include "vortexdialog.hh"
 
 namespace Student {
 
@@ -80,6 +79,7 @@ public:
     void set_infoBox(infoBox* laatikko);
 
 private:
+    void show_vortexinfo();
     bool testing_ = true;
     void doGraphicalAction(std::shared_ptr<Common::Actor> actor);
     void addPoint(int playerID);

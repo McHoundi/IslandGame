@@ -704,7 +704,7 @@ void GameBoard::addActor(std::shared_ptr<Common::Actor> actor, Common::CubeCoord
 
         doGraphicalAction(actor);
         if (actor->getActorType() == "vortex") {
-
+            infobox_->printInfo("A " + actor->getActorType() + " appeared and destroyed everything around it.");
         } else {
             infobox_->printInfo("A " + actor->getActorType() + " appeared.");
         }

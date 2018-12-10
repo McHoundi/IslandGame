@@ -26,8 +26,7 @@ SOURCES += \
     wheel.cpp \
     pixmapgraphics.cpp \
     resultdialog.cpp \
-    infobox.cpp \
-    vortexinfo.cpp
+    infobox.cpp
 
 
 
@@ -42,8 +41,7 @@ HEADERS  += \
     wheel.hh \
     pixmapgraphics.hh \
     resultdialog.hh \
-    infobox.hh \
-    vortexinfo.hh
+    infobox.hh
 
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
@@ -84,8 +82,7 @@ POST_TARGETDEPS += copyfiles
 FORMS += \
     mainwindow.ui \
     startdialog.ui \
-    resultdialog.ui \
-    vortexinfo.ui
+    resultdialog.ui
 
 RESOURCES += \
     images.qrc

@@ -26,7 +26,6 @@
 #include "igamerunner.hh"
 #include "illegalmoveexception.hh"
 #include "initialize.hh"
-#include "vortexdialog.hh"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

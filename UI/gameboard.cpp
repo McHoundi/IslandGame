@@ -306,6 +306,11 @@ void GameBoard::doGraphicalAction(std::shared_ptr<Common::Actor> actor)
         hexDummy = hexPointers_.at(actorCoords);
         if (hexDummy->getTransports().empty() == false) {
             for ( auto kulkuneuvo : hexDummy->getTransports() ) {
+                if ( kulkuneuvo->getPawnsInTransport().size() > 0 ) {
+                    for ( auto pawn : kulkuneuvo->getPawnsInTransport() ) {
+                        removePawnFromTransport(pawn->getId());
+                    }
+                }
                 delete transportItems_.at(kulkuneuvo->getId());
             }
         }
@@ -425,10 +430,29 @@ bool GameBoard::removePawnFromTransport(int pawnID)
 {
     std::shared_ptr<Common::Pawn> pawn = pawns_.at(pawnID);
     std::shared_ptr<Common::Hex> pawnHex = hexPointers_.at(pawn->getCoordinates());
-    std::shared_ptr<Common::Transport> transport = pawnHex->getTransports().at(0);
-
+    std::shared_ptr<Common::Transport> transport;
     pawngraphics* pawnItem = pawnItems_.at(pawnID);
     QPointF XYcoords = cube_to_square(pawn->getCoordinates());
+    if ( pawnHex->getTransports().size() > 0 ){
+            transport = pawnHex->getTransports().at(0);
+    } else {
+
+        //Tämä tapahtuu, mikäli ollaan liikutettu delfiini "D":llä pois pelaajan alta
+        pawnItem = pawnItems_.at(pawnID);
+        if (pawnItem->get_pawnSlot() == 1) {
+            pawnItem->setRect(XYcoords.x()+HEX_SIZE/5, XYcoords.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+        } else if (pawnItem->get_pawnSlot() == 2) {
+            pawnItem->setRect(XYcoords.x()+HEX_SIZE/5, XYcoords.y()-HEX_SIZE*0.3,PAWN_WIDTH,PAWN_HEIGHT);
+        } else if (pawnItem->get_pawnSlot() == 3) {
+            pawnItem->setRect(XYcoords.x()-HEX_SIZE*0.3, XYcoords.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
+        }
+        scene_->update();
+        return false;
+    }
+
+
+    pawnItem = pawnItems_.at(pawnID);
+
     if (transport->isPawnInTransport(pawn)) {
     transport->removePawn(pawn);
     if (pawnItem->get_pawnSlot() == 1) {
@@ -442,6 +466,7 @@ bool GameBoard::removePawnFromTransport(int pawnID)
     return true;
     } else {
         std::cout << "Pawn isn't in transport" << std::endl;
+
         return false;
     }
 }
@@ -821,13 +846,10 @@ void GameBoard::addPawn(int playerId, int pawnId, Common::CubeCoordinate coord)
         pawngraphics* uusi_nappula = new pawngraphics;
         //Player player(123);
         QPointF XYCOORDS = cube_to_square(coord);
-        int pawnAmount = hexi->getPawnAmount();
 
-        if ( pawnAmount == 0 ) {
-            uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
-            pawnSlots_.at(coord).at(0) = true;
-            uusi_nappula->set_pawnSlot(1);
-        } else if ( pawnSlots_.at(coord).at(0) == false ) {
+
+
+        if ( pawnSlots_.at(coord).at(0) == false ) {
             uusi_nappula->setRect(XYCOORDS.x()+HEX_SIZE/5, XYCOORDS.y()+HEX_SIZE/5,PAWN_WIDTH,PAWN_HEIGHT);
             pawnSlots_.at(coord).at(0) = true;
             uusi_nappula->set_pawnSlot(1);

@@ -91,7 +91,7 @@ private:
     std::shared_ptr<Common::Actor> highlightedActor_ = nullptr;
     std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr;
     std::shared_ptr<Common::IGameRunner> runner_;
-    QPushButton* boardingButton_;
+    QPushButton* startButton_;
 
     std::vector<std::shared_ptr<Common::IPlayer>>::iterator playerIter;
     wheel* wheel_;

@@ -57,6 +57,7 @@ SOURCES += \
 
 
 
+
 HEADERS += \
     ../../../GameLogic/Engine/piecefactory.hh \
     ../../../GameLogic/Engine/hex.hh \
@@ -81,9 +82,9 @@ HEADERS += \
     ../../../UI/pixmapgraphics.hh \
     ../../../UI/infobox.hh
 
-
-
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+
 
 INCLUDEPATH += ../../../UI \
                 ../../../GameLogic/Engine/

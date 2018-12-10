@@ -275,6 +275,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
     } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_) {
         Common::CubeCoordinate coords = hexi->getCoordinates();
+
+        //Actoria liikutetaan
         if ( highlightedActor_ != nullptr) {
             std::string moves;
             if (animalMovesLeft_ == -99) {
@@ -317,6 +319,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 infobox_->printInfo(errori.msg() + "!");
             }
 
+            //Transportia liikutetaan
         } else if (highlightedTransport_ != nullptr) {
             std::string moves;
             if (animalMovesLeft_ == -99) {
@@ -371,6 +374,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 infobox_->printInfo(errori.msg() + "!");
             }
 
+            // Valitaan liikutettava actor
         } else if ( hexi->getActors().size() != 0) {
             if (hexi->getActors().at(0)->getActorType() == spinnerResult_.first) {
                 highlightedActor_ = (hexi->getActors()).at(0);
@@ -378,6 +382,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
             } else {
                 infobox_->printInfo("Wrong animal clicked");
             }
+            //valitaan liikutettava delfiini
         } else if (hexi->getTransports().size() != 0)  {
             if (hexi->getTransports().at(0)->getTransportType() == spinnerResult_.first) {
                 if (hexi->getTransports().at(0)->canMove(statePTR_->currentPlayer())) {
@@ -424,6 +429,7 @@ void MainWindow::handle_spinButton()
             updateTransportInfo();
         }
 
+        //Tässä tapauksessa pyörää on pyöritetty, ja suoritetaan "Skip actor movement" toiminnallisuus
     } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ == true) {
         highlightedTransport_ = nullptr;
         highlightedHex_ = nullptr;

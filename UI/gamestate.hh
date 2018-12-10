@@ -16,11 +16,8 @@ public:
     virtual void changePlayerTurn(int nextPlayer);
 
     void addPlayer(int playerID);
-
-
-
-
-
+    void removePlayer(int playerID);
+    bool isAnyoneAlive();
 
 private:
     Common::GamePhase phase_ = Common::GamePhase::MOVEMENT; //current GamePhase

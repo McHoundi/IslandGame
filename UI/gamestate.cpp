@@ -35,8 +35,21 @@ void GameState::changePlayerTurn(int nextPlayer)
 void GameState::addPlayer(int playerID)
 {
     availablePlayers_.push_back(playerID);
+
 }
 
+void GameState::removePlayer(int playerID)
+{
+    availablePlayers_.erase(std::remove(availablePlayers_.begin(), availablePlayers_.end(), playerID), availablePlayers_.end());
+}
+
+bool GameState::isAnyoneAlive(){
+    if ( availablePlayers_.size() > 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 void GameState::changeGamePhase(Common::GamePhase nextPhase)
 {

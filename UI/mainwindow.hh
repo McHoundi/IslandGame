@@ -50,9 +50,8 @@ public:
 
     std::vector<std::shared_ptr<Common::IPlayer>> initialize_players();
     void initialize_pawns(std::shared_ptr<Common::IPlayer> pelaaja);
-    void run_movement_phase(std::shared_ptr<Common::IPlayer>);
     void run_game();
-
+    // Alustaa pelin runnerin
     void initialize_runner();
 
 
@@ -60,6 +59,7 @@ public:
     ~MainWindow();
 
 public slots:
+    // slotit eri nappien painalluksille
     void hex_chosen(std::shared_ptr<Common::Hex> hexi);
 
     void handle_startButton();
@@ -72,10 +72,9 @@ public slots:
 
 
 private:
-    void showEventHelper();
-    bool allPawnsSwimming();
-    void updateTransportInfo();
-    void change_player();
+    bool allPawnsSwimming(); // kertoo ovatko kaikki pawnit vedessä ilman transporttia
+    void updateTransportInfo(); // päivittää board/unboard painikkeet
+    void change_player(); // vaihtaa pelaajan vuoron seuraavaan
 
     Ui::MainWindow *ui;
     int playerCount_; //aloitusikkunassa määritetty pelaajien määrä.
@@ -88,20 +87,20 @@ private:
     std::vector<std::shared_ptr<Common::IPlayer> > playerVector_;
     std::map<int,std::shared_ptr<Common::IPlayer> > players_; // map of players, searchable by playerID
     bool wheelSpinned_ = false;
-    std::shared_ptr<Common::Hex> highlightedHex_ = nullptr;
-    std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr;
-    std::shared_ptr<Common::Actor> highlightedActor_ = nullptr;
-    std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr;
+    std::shared_ptr<Common::Hex> highlightedHex_ = nullptr; //valittu ruutu
+    std::shared_ptr<Common::Pawn> highlightedPawn_ = nullptr; // valittu nappula
+    std::shared_ptr<Common::Actor> highlightedActor_ = nullptr; // valittu actor
+    std::shared_ptr<Common::Transport> highlightedTransport_ = nullptr; // valittu transport
     std::shared_ptr<Common::IGameRunner> runner_;
     QPushButton* startButton_;
-    infoBox* infobox_;
+    infoBox* infobox_; // ui:n laatikko johon tulostetaan pelin kannalta hyödyllistä tietoa
 
     std::vector<std::shared_ptr<Common::IPlayer>>::iterator playerIter;
-    wheel* wheel_;
-    std::pair<std::string,std::string> spinnerResult_;
+    wheel* wheel_; // osoitin wheel itemiin joka toteuttaa visualisoidun kiekon
+    std::pair<std::string,std::string> spinnerResult_; // spinWheelin tulos, (eläin, arvo)
     int animalMovesLeft_;
 
-
+    // laskee kahden pisteen välisen etäisyyden ruuduissa
     unsigned int cubeCoordinateDistance(Common::CubeCoordinate source, Common::CubeCoordinate target) const;
     void end_game();
 };

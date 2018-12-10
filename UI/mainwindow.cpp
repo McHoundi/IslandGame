@@ -157,12 +157,6 @@ void MainWindow::initialize_runner()
     scene1_->addWidget(startButton_);
 }
 
-void MainWindow::run_movement_phase(std::shared_ptr<Common::IPlayer>)
-{
-
-
-}
-
 
 void MainWindow::draw_map()
 {

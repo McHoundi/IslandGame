@@ -65,23 +65,22 @@ public:
     virtual void moveTransport(int id, Common::CubeCoordinate coord);
     virtual void removeTransport(int id);
     void set_testmode_off();
-    bool checkAnimalTypeExists(std::string type);
-    void add_pawn_to_player(int pawnId, int playerId);
-    void delete_pawn_from_player(int pawnId, int playerId);
+    bool checkAnimalTypeExists(std::string type); // tarkistaa onko laudalla annettua eläintä
+    void add_pawn_to_player(int pawnId, int playerId); // lisää pelaajalle pawnin
+    void delete_pawn_from_player(int pawnId, int playerId); // poistaa pawnin pelaajalta
     std::map<std::shared_ptr<Common::Pawn>,bool> pawns_NearOrIn_Transport(int currentPlayer); //check if any of player's pawns in a transport or in a hex that contains one
-    std::map<int, std::vector<int>> get_playerPawns();
-    bool addPawnToTransport(int pawnID);
-    bool removePawnFromTransport(int pawnID);
+    std::map<int, std::vector<int>> get_playerPawns(); // palauttaa mapin jossa avaimena pelaaja ja sisältönä pelaajan pawnit vectorissa
+    bool addPawnToTransport(int pawnID); // lisää nappulan transportin sisään
+    bool removePawnFromTransport(int pawnID); // poistaa nappulan transportista
     bool pawnInTransport(std::shared_ptr<Common::Pawn> pawn);
-    bool playerHasPawns(int playerID);
-    void calculateEndOfGamePoints(int playerID);
-    std::map<int,int> get_PointMap();
-    void set_infoBox(infoBox* laatikko);
+    bool playerHasPawns(int playerID); // kertoo onko pelaajalla vielä nappuloita
+    void calculateEndOfGamePoints(int playerID); // laskee viimeiseksi jäänelle pelaajalle pisteet jäljelle jääneiden pawnien perusteella
+    std::map<int,int> get_PointMap(); // palauttaa mapin pelaajien pisteistä, avaimena pelaajan id
+    void set_infoBox(infoBox* laatikko); // asettaa osoittimen ui:n infoboxiin tulostuksia varten
 
 private:
-    void show_vortexinfo();
-    bool testing_ = true;
-    void doGraphicalAction(std::shared_ptr<Common::Actor> actor);
+    bool testing_ = true; //testmode: skippaa graafiset elementit gameboardin testauksen yhteydessä.
+    void doGraphicalAction(std::shared_ptr<Common::Actor> actor); //Toteuttaa actorin doActionin graafisille olioille
     void addPoint(int playerID);
 
 

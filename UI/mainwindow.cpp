@@ -26,6 +26,7 @@
 #include "igamerunner.hh"
 #include "illegalmoveexception.hh"
 #include "initialize.hh"
+#include "vortexdialog.hh"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -58,16 +59,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     infobox_ = infolaatikko;
     infobox_->setReadOnly(true);
-    infobox_->setGeometry(1160,530,250,141);
+    infobox_->setGeometry(1160,530,250,100);
     ui->gridLayout->addWidget(infobox_);
 
     boardPTR_->set_infoBox(infolaatikko);
     statePTR_->set_infobox(infolaatikko);
 
-    infobox_->setText("Testi tulostusasdadadaf);");
-    infobox_->append("rivi 2 fggfihjkre09gjth");
-    infobox_->append("gfjrigwjiegjrei");
-    infobox_->append("neljäs");
 
 
 
@@ -202,6 +199,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                      highlightedHex_ = hexi;
                      break;
                  }
+             }
              if ( highlightedPawn_ == nullptr ) {
                  infobox_->printInfo("Player " + std::to_string(current_player) + " has no pawns in this tile!");
 
@@ -209,16 +207,15 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                  //Hex&Pawn highlighted!!
              }
 
-            }
+
         } else if ( highlightedPawn_ != nullptr) {
             try {
 
                 if (boardPTR_->pawnInTransport(highlightedPawn_)) {
                     if((highlightedHex_->getTransports().at(0))->canMove(statePTR_->currentPlayer())){
-                        std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
                         runner_->moveTransport(highlightedHex_->getCoordinates(), hexi->getCoordinates(),
                                                highlightedHex_->getTransports().at(0)->getId());
-                        std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
+                        infobox_->printInfo("Moves left: " + std::to_string(players_.at(statePTR_->currentPlayer())->getActionsLeft()));
                     } else {
                         infobox_->printInfo("Player " + std::to_string(statePTR_->currentPlayer()) +
                                              "can't move this boat. Unboard before moving.");
@@ -226,29 +223,27 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
                 } else {
                     runner_->movePawn(highlightedPawn_->getCoordinates(), hexi->getCoordinates(), highlightedPawn_->getId());
+                    infobox_->printInfo("Moves left: " + std::to_string(players_.at(statePTR_->currentPlayer())->getActionsLeft()));
                 }
 
                 updateTransportInfo();
 
-                std::cout << "Player: " << highlightedPawn_->getPlayerId() << " Pawn: " << highlightedPawn_->getId() << std::endl;
                 highlightedPawn_ = nullptr;
                 highlightedHex_ = nullptr;
                 if (players_.at(statePTR_->currentPlayer())->getActionsLeft() <= 0) {
                     statePTR_->changeGamePhase(Common::GamePhase::SINKING);
-                    std::cout << "Changed gamephase to SINKING" << std::endl;
                     ui->gamephasevaluelabel->setText("SINKING");
                 } else if ( allPawnsSwimming() == true ) {
                    infobox_->printInfo("All pawns in water! Can't move anymore.");
 
-                   statePTR_->changeGamePhase(Common::GamePhase::SINKING);
-                   std::cout << "Changed gamephase to SINKING" << std::endl;
+                   statePTR_->changeGamePhase(Common::GamePhase::SINKING);                 
                    ui->gamephasevaluelabel->setText("SINKING");
 
                 }
 
             } catch (Common::IllegalMoveException errori ) {
-                std::cout << errori.msg() << std::endl;
-                std::cout << players_.at(statePTR_->currentPlayer())->getActionsLeft() << std::endl;
+                infobox_->printInfo(errori.msg() + "!");
+                infobox_->printInfo("Moves left: " + std::to_string(players_.at(statePTR_->currentPlayer())->getActionsLeft()));
                 highlightedPawn_ = nullptr;
                 highlightedHex_ = nullptr;
             }
@@ -279,7 +274,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
 
         } catch (Common::IllegalMoveException errori) {
-            std::cout << errori.msg() << std::endl;
+            infobox_->printInfo(errori.msg() + "!");
         }
 
 
@@ -293,6 +288,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 moves = "D";
             } else {
                 moves = std::to_string(animalMovesLeft_);
+                infobox_->printInfo("Moves left: " + moves);
             }
             try {
                 runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), moves );
@@ -316,7 +312,6 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
                     std::string player = std::to_string(statePTR_->currentPlayer());
                     ui->playervaluelabel->setText(QString::fromStdString(player));
-                    std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
                     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
                     ui->spinButton->setEnabled(false);
                     ui->gamephasevaluelabel->setText("MOVEMENT");
@@ -326,7 +321,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
 
             } catch (Common::IllegalMoveException errori) {
-                std::cout << errori.msg() << std::endl;
+                infobox_->printInfo(errori.msg() + "!");
             }
 
         } else if (highlightedTransport_ != nullptr) {
@@ -335,8 +330,9 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 moves = "D";
             } else {
                 moves = std::to_string(animalMovesLeft_);
+                infobox_->printInfo("Moves left: " + moves);
+
             }
-            std::cout << moves << std::endl; // Debug
             try {
                 std::shared_ptr<Common::Pawn> pawnptr;
                 //Laitetaan delfiinin sisällä oleva pawni muistiin, mikäli siellä moinen on
@@ -379,7 +375,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
 
                 }
             } catch (Common::IllegalMoveException errori) {
-                std::cout << errori.msg() << std::endl;
+                infobox_->printInfo(errori.msg() + "!");
             }
 
         } else if ( hexi->getActors().size() != 0) {
@@ -387,7 +383,7 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 highlightedActor_ = (hexi->getActors()).at(0);
                 highlightedHex_ = hexi;
             } else {
-                std::cout << "Wrong animal clicked" << std::endl;
+                infobox_->printInfo("Wrong animal clicked");
             }
         } else if (hexi->getTransports().size() != 0)  {
             if (hexi->getTransports().at(0)->getTransportType() == spinnerResult_.first) {
@@ -395,11 +391,11 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                     highlightedTransport_ = (hexi->getTransports()).at(0);
                     highlightedHex_ = hexi;
                 } else {
-                    std::cout << "Can't move dolphin that is carrying other player's pawn" << std::endl;
+                    infobox_->printInfo("Can't move dolphin that is carrying other player's pawn");
                 }
 
             } else {
-                std::cout << "Wrong animal clicked" << std::endl;
+                infobox_->printInfo("Wrong animal clicked");
             }
         }
 
@@ -425,10 +421,9 @@ void MainWindow::handle_spinButton()
             ui->spinButton->setText("Skip actor movement");
             scene1_->update();
         } else {
-            std::cout << "No animal of this type on board" << std::endl;
+            infobox_->printInfo("No animal of this type on board");
             change_player();
 
-            std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
             ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
             statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
             ui->spinButton->setEnabled(false);
@@ -442,7 +437,6 @@ void MainWindow::handle_spinButton()
         wheelSpinned_ = false;
         change_player();
 
-        std::cout << "next player: " << statePTR_->currentPlayer() << std::endl;
         ui->playervaluelabel->setText(QString::fromStdString(std::to_string((statePTR_->currentPlayer()))));
         statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);
         ui->gamephasevaluelabel->setText("MOVEMENT");
@@ -466,6 +460,8 @@ void MainWindow::end_game() {
 
 }
 
+
+
 void MainWindow::change_player(){
     // Ennen isAnyoneAlive checkiä poistetaan pelaaja, jos spinning tai sinking vaiheessa hänen nappulansa ovat kuolleet.
     if ( boardPTR_->playerHasPawns((*playerIter)->getPlayerId()) == false ) {
@@ -484,8 +480,9 @@ void MainWindow::change_player(){
         if (boardPTR_->playerHasPawns((*playerIter)->getPlayerId())) {
             statePTR_->changePlayerTurn((*playerIter)->getPlayerId());
             (*playerIter)->setActionsLeft(3);
+             infobox_->printInfo("Changing turn... \nNext player: " + std::to_string(statePTR_->currentPlayer()));
         } else { //player has no pawns, call this function again.
-            std::cout << "PLAYER HAS NO MORE PAWNS. ID: " << (*playerIter)->getPlayerId() << std::endl;
+            infobox_->printInfo( "PLAYER HAS NO MORE PAWNS. ID: " + std::to_string((*playerIter)->getPlayerId()));
             statePTR_->removePlayer((*playerIter)->getPlayerId());
             change_player();
         }
@@ -625,7 +622,6 @@ void MainWindow::updateTransportInfo()
 void MainWindow::handle_startButton()
 {
     delete startButton_;
-    std::cout << "aloitusnappia painettu" << std::endl;
     statePTR_->changePlayerTurn((*playerIter)->getPlayerId());
     (*playerIter)->setActionsLeft(3);
     statePTR_->changeGamePhase(Common::GamePhase::MOVEMENT);

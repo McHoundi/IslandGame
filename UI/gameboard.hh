@@ -4,6 +4,7 @@
 #include <map>
 #include <unordered_map>
 
+#include <QDialog>
 #include "pawngraphics.hh"
 #include "pixmapgraphics.hh"
 #include "hexgraphics.hh"
@@ -20,6 +21,7 @@
 #include "player.hh"
 #include "pixmapgraphics.hh"
 #include "infobox.hh"
+#include "vortexdialog.hh"
 
 namespace Student {
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1434</width>
+    <width>1280</width>
     <height>995</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1141</width>
+      <width>981</width>
       <height>741</height>
      </rect>
     </property>
@@ -27,7 +27,7 @@
    <widget class="QLabel" name="BoardingActionsLabel">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>80</y>
       <width>131</width>
       <height>20</height>
@@ -40,7 +40,7 @@
    <widget class="QLabel" name="Pawn1Label">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>100</y>
       <width>63</width>
       <height>20</height>
@@ -53,7 +53,7 @@
    <widget class="QLabel" name="Pawn2Label">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>120</y>
       <width>63</width>
       <height>20</height>
@@ -66,7 +66,7 @@
    <widget class="QLabel" name="Pawn3Label">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>140</y>
       <width>63</width>
       <height>20</height>
@@ -79,7 +79,7 @@
    <widget class="QPushButton" name="Pawn1BoardButton">
     <property name="geometry">
      <rect>
-      <x>1210</x>
+      <x>1050</x>
       <y>100</y>
       <width>81</width>
       <height>21</height>
@@ -92,7 +92,7 @@
    <widget class="QPushButton" name="Pawn2BoardButton">
     <property name="geometry">
      <rect>
-      <x>1210</x>
+      <x>1050</x>
       <y>120</y>
       <width>81</width>
       <height>21</height>
@@ -105,7 +105,7 @@
    <widget class="QPushButton" name="Pawn3BoardButton">
     <property name="geometry">
      <rect>
-      <x>1210</x>
+      <x>1050</x>
       <y>140</y>
       <width>81</width>
       <height>21</height>
@@ -118,7 +118,7 @@
    <widget class="QLabel" name="wheellabel">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>200</y>
       <width>250</width>
       <height>250</height>
@@ -131,7 +131,7 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>1320</x>
+      <x>1160</x>
       <y>720</y>
       <width>84</width>
       <height>28</height>
@@ -144,9 +144,9 @@
    <widget class="QPushButton" name="spinButton">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>470</y>
-      <width>250</width>
+      <width>271</width>
       <height>50</height>
      </rect>
     </property>
@@ -157,7 +157,7 @@
    <widget class="QLabel" name="playerlabel">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>10</y>
       <width>131</width>
       <height>20</height>
@@ -170,7 +170,7 @@
    <widget class="QLabel" name="gamephaselabel">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>40</y>
       <width>151</width>
       <height>20</height>
@@ -183,7 +183,7 @@
    <widget class="QLabel" name="playervaluelabel">
     <property name="geometry">
      <rect>
-      <x>1300</x>
+      <x>1140</x>
       <y>10</y>
       <width>121</width>
       <height>20</height>
@@ -196,7 +196,7 @@
    <widget class="QLabel" name="gamephasevaluelabel">
     <property name="geometry">
      <rect>
-      <x>1300</x>
+      <x>1140</x>
       <y>40</y>
       <width>121</width>
       <height>20</height>
@@ -209,7 +209,7 @@
    <widget class="QLabel" name="spinvaluelabel">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1000</x>
       <y>430</y>
       <width>241</width>
       <height>20</height>
@@ -222,9 +222,9 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>1170</x>
+      <x>1000</x>
       <y>540</y>
-      <width>241</width>
+      <width>271</width>
       <height>151</height>
      </rect>
     </property>

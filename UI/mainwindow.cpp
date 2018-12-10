@@ -425,6 +425,11 @@ void MainWindow::end_game() {
 }
 
 void MainWindow::change_player(){
+    // Ennen isAnyoneAlive checkiä poistetaan pelaaja, jos spinning tai sinking vaiheessa hänen nappulansa ovat kuolleet.
+    if ( boardPTR_->playerHasPawns((*playerIter)->getPlayerId()) == false ) {
+        statePTR_->removePlayer((*playerIter)->getPlayerId());
+    }
+
     if ( statePTR_->isAnyoneAlive() == false ) {
         //END GAME, REIMPLEMENT
         end_game();

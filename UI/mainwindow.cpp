@@ -286,6 +286,8 @@ void MainWindow::hex_chosen(std::shared_ptr<Common::Hex> hexi)
                 infobox_->printInfo("Moves left: " + moves);
             }
             try {
+
+
                 runner_->moveActor(highlightedHex_->getCoordinates(), coords, highlightedActor_->getId(), moves );
 
                 if ( coords == highlightedActor_->getHex()->getCoordinates() ) {
@@ -432,6 +434,7 @@ void MainWindow::handle_spinButton()
         //Tässä tapauksessa pyörää on pyöritetty, ja suoritetaan "Skip actor movement" toiminnallisuus
     } else if (statePTR_->currentGamePhase() == Common::GamePhase::SPINNING && wheelSpinned_ == true) {
         highlightedTransport_ = nullptr;
+        highlightedActor_ = nullptr;
         highlightedHex_ = nullptr;
         wheelSpinned_ = false;
         change_player();

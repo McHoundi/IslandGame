@@ -24,7 +24,8 @@ SOURCES += \
     main.cc \
     pawngraphics.cpp \
     wheel.cpp \
-    pixmapgraphics.cpp
+    pixmapgraphics.cpp \
+    resultdialog.cpp
 
 
 
@@ -37,7 +38,8 @@ HEADERS  += \
     startdialog.hh \
     pawngraphics.hh \
     wheel.hh \
-    pixmapgraphics.hh
+    pixmapgraphics.hh \
+    resultdialog.hh
 
 
 INCLUDEPATH += $$PWD/../GameLogic/Engine
@@ -77,7 +79,8 @@ POST_TARGETDEPS += copyfiles
 
 FORMS += \
     mainwindow.ui \
-    startdialog.ui
+    startdialog.ui \
+    resultdialog.ui
 
 RESOURCES += \
     images.qrc
